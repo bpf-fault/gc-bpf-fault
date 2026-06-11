@@ -148,3 +148,19 @@ rescanned (were 0 objects on xalan).
   allocation-into-unmaterialized-regions guard (see docs/class-b-design.md).
 - v2 perf table contaminated by concurrent B.0 builds/tests (my error);
   clean v3 run queued after v2 completes: results/perf_quick_v3.txt.
+
+## Class A round-1 eval COMPLETE (2026-06-12, results/perf_quick_v3.txt)
+Clean table (-Xmx4G, -n 6 last iteration, avg of 2 invocations, vs Barrier):
+  lusearch: 2674 | Bpf 2450 (-8%) | Uffd 2803 (+5%) | Segv 2930 (+10%)
+  xalan:    2797 | Bpf 1182 (-58%)| Uffd 1200 (-57%)| Segv 1181 (-58%)
+  h2:       3711 | Bpf 5711 (+54%)| Uffd 6063 (+63%)| Segv 6391 (+72%)
+  pmd:      1904 | Bpf 1990 (+5%) | Uffd 2113 (+11%)| Segv 2306 (+21%)
+h2 diagnosed via USDT (results consistent across v1/v2/v3): 2K-8K dirty
+pages/GC, ~282k objects rescanned per nursery GC (15.8M/56 GCs) — dense
+small mature objects on dirty pages = page-grain remset worst case
+(write-density tradeoff per Cracauer / card-size literature). xalan is the
+mirror image: object-grain modbuf rescans whole large arrays, page-grain
+wins 2.5x. Story: page-WP barrier wins on spatially-clustered writes,
+parity on moderate (lusearch/pmd, where Bpf is the only backend at/below
+Barrier), loses on dense-random-write (h2). Within page-WP backends, Bpf
+is consistently fastest (h2: Bpf +54% vs Segv +72%).

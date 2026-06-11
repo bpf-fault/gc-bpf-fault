@@ -17,3 +17,16 @@ xalan Segv inv2 1147ms
 h2 Barrier inv1 3723ms
 h2 Barrier inv2 3772ms
 h2 Bpf inv1 5731ms
+h2 Bpf inv2 5640ms
+h2 Uffd inv1 6257ms
+h2 Uffd inv2 6085ms
+h2 Segv inv1 6330ms
+h2 Segv inv2 6509ms
+pmd Barrier inv1 1913ms
+pmd Barrier inv2 1872ms
+pmd Bpf inv1 2015ms
+pmd Bpf inv2 1966ms
+pmd Uffd inv1 2141ms
+pmd Uffd inv2 2148ms
+pmd Segv inv1 2250ms
+pmd Segv inv2 2322ms
