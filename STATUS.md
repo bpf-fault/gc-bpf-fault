@@ -89,3 +89,16 @@ then retries; uffd baseline = SIGBUS + UFFDIO_COPY per ART).
 - /mydata/gc-bpf-fault (this repo), /mydata/mmtk-core, /mydata/mmtk-openjdk
   (both clean clones; our changes go on branch `gc-bpf-fault`),
   /mydata/openjdk-mmtk (JDK fork build tree), /mydata/dacapo.
+
+## Class B progress (2026-06-11)
+- docs/class-b-design.md: full design. Vehicle = modify Compressor (NOT a new
+  plan): its SecondRoots-before-Compact phase order IS the ART flip point, and
+  stock STW Compressor becomes the apples-to-apples baseline.
+- micro/test_flip: the flip primitive VALIDATED on bpf-fault — populate,
+  mremap(MREMAP_DONTUNMAP) pages to a from-space alias, register the emptied
+  range, materialize via in-kernel missing-fault copy from the alias.
+  PASS at 1 GiB: mremap 0.38ms + register 0.63ms (the entire would-be pause
+  cost), per-fault p50 2.6us, p999 10us, all contents verified.
+- Next: B.0 in MMTk — per-region mremap in compact_region, copy objects into
+  a 1MiB shadow via forward(), install pages (bpf: state+touch / uffd:
+  UFFDIO_COPY), still STW; then B.1 resume-after-SecondRoots.
