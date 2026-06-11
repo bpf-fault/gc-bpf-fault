@@ -1,0 +1,6 @@
+micro/build/
+micro/*.bpf.o
+micro/*.skel.h
+micro/vmlinux.h
+micro/bench_wp_barrier
+micro/bench_compact

@@ -1,0 +1,54 @@
+# SPDX-License-Identifier: GPL-2.0-only
+#
+# gc-bpf-fault microbenchmarks.
+# Builds against the bpf-fault kernel tree's libbpf (which carries
+# bpf_map__attach_fault_ops) and the running kernel's BTF.
+
+KDIR     ?= /mydata/linux
+BPFTOOL  ?= $(KDIR)/tools/bpf/bpftool/bpftool
+LIBBPF_SRC = $(KDIR)/tools/lib/bpf
+BUILD_DIR  = $(CURDIR)/build
+LIBBPF_DIR = $(BUILD_DIR)/libbpf
+INCLUDE_DIR = $(BUILD_DIR)/include
+
+CLANG    ?= clang
+CC       ?= gcc
+
+BPF_CFLAGS  = -g -O2 -target bpf -D__TARGET_ARCH_x86
+USER_CFLAGS = -g -O2 -Wall -I$(INCLUDE_DIR) -I$(CURDIR)
+USER_LDFLAGS = $(LIBBPF_DIR)/libbpf.a -lelf -lz -lzstd -lpthread
+
+VMLINUX_BTF ?= /sys/kernel/btf/vmlinux
+
+all: bench_wp_barrier bench_compact
+
+$(LIBBPF_DIR)/libbpf.a: $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(LIBBPF_DIR)
+	$(MAKE) -C $(LIBBPF_SRC) BUILD_STATIC_ONLY=1 \
+		OUTPUT=$(LIBBPF_DIR)/ DESTDIR=$(BUILD_DIR) prefix= \
+		all install_headers
+
+$(LIBBPF_DIR):
+	mkdir -p $@
+
+vmlinux.h: $(BPFTOOL)
+	$(BPFTOOL) btf dump file $(VMLINUX_BTF) format c > $@
+
+$(BPFTOOL):
+	$(MAKE) -C $(KDIR)/tools/bpf/bpftool
+
+%.bpf.o: %.bpf.c vmlinux.h $(LIBBPF_DIR)/libbpf.a
+	$(CLANG) $(BPF_CFLAGS) -I$(INCLUDE_DIR) -c $< -o $@
+
+%.skel.h: %.bpf.o $(BPFTOOL)
+	$(BPFTOOL) gen skeleton $< > $@
+
+bench_wp_barrier: bench_wp_barrier.c gc_wp_ops.skel.h gc_common.h $(LIBBPF_DIR)/libbpf.a
+	$(CC) $(USER_CFLAGS) -o $@ $< $(USER_LDFLAGS) -static
+
+bench_compact: bench_compact.c gc_compact_ops.skel.h gc_common.h $(LIBBPF_DIR)/libbpf.a
+	$(CC) $(USER_CFLAGS) -o $@ $< $(USER_LDFLAGS) -static
+
+clean:
+	rm -rf bench_wp_barrier bench_compact *.bpf.o *.skel.h vmlinux.h $(BUILD_DIR)
+
+.PHONY: all clean
