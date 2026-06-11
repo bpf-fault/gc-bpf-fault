@@ -96,3 +96,45 @@ black_allocations_begin_.)
 3. WP-range ops over large sparse regions: per-cycle protect of the whole
    mature space would benefit from a chunked/async variant (cf. snapshot
    finalize fix; relevant to Class A too).
+
+## B.1 implementation design (settled 2026-06-12)
+
+Pause-side (all STW):
+1. Through SecondRoots unchanged (roots forwarded; forwarding trace is
+   roots-only — verified trace_forward_root does not enqueue).
+2. LOS ref fixup (AfterCompact's update_references over LOS) moves INTO the
+   pause — it is metadata-only (forward()) plus LOS-object writes, no
+   compressor-space dereferences.
+3. FlipAll packet: per region — reset page states, set [start,
+   predicted_to) to PENDING, flip (mremap + register). ~1ms/GB.
+4. Cursor preset: post-compact cursor for each region computed in the pause
+   from the offset vector as forward(cursor) (no copying needed), then
+   page-aligned UP so window-time allocation never shares a page with
+   staged installs (waste <= 4KB/region). reset_allocator also in pause;
+   reset_cursor skipped in concurrent mode.
+5. v0 runs with MMTK_NO_REFERENCE_TYPES=true MMTK_NO_FINALIZER=true:
+   RefEnqueue/RefForwarding-style Release work dereferences forwarded
+   compressor-space refs, which are not materialized until staged.
+   (B.2: stage-on-demand for pause-tail work, or pre-flip enqueueing.)
+
+Window (mutators running):
+6. Stage packets in the Concurrent work bucket (ConcurrentImmix precedent):
+   per region — slide-compact in the arena, set pages STAGED, install
+   (bpf: touch -> in-kernel copy; uffd: UFFDIO_COPY), finish_region.
+7. Page states: 0 zero-fill (beyond cursor) / 1 staged / 2 pending.
+   bpf handler: 1 -> copy from arena; 0 -> zero-fill; 2 -> return error ->
+   SIGBUS. Mutator SIGBUS handler (chained, installed by compact_faults):
+   wait-mode v0 = spin until state==1, return (retry installs in-kernel);
+   uffd: same but handler issues UFFDIO_COPY itself (EEXIST ok).
+   Steal-mode (v1, ART-style self-service): faulting mutator CASes the
+   region Unstaged->Staging and runs stage_region itself; risk = running
+   scan_object/copy_to in signal context (ART does equivalent).
+8. Window close: Concurrent-bucket sentinel — forwarding.release(), arena
+   madvise, uffd unregister; clears window-open flag.
+9. Next-GC guard: schedule_collection (or prepare) spins until the window
+   flag clears — mark bitmap + offset vector stay valid for the whole
+   window (next prepare bzeroes mark bits).
+
+Metrics vs stock Compressor: compact-phase pause (stock: full copy; B.1:
+flip-all + cursor preset only), window duration, mutator SIGBUS wait time
+histogram, end-to-end benchmark time.
