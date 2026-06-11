@@ -102,3 +102,16 @@ then retries; uffd baseline = SIGBUS + UFFDIO_COPY per ART).
 - Next: B.0 in MMTk — per-region mremap in compact_region, copy objects into
   a 1MiB shadow via forward(), install pages (bpf: state+touch / uffd:
   UFFDIO_COPY), still STW; then B.1 resume-after-SecondRoots.
+
+## Class A perf round 1 + LOS fix (2026-06-11 evening)
+First quick numbers (-Xmx4G, -n 6 last iter, results/perf_quick.txt):
+lusearch Bpf~parity with Barrier, uffd +15%, segv +30%; xalan/h2 all
+page-WP configs ~2x SLOWER -> bpftrace showed dirty pages/GC small but the
+conservative stash = ~97k LOS objects rescanned every nursery GC (xalan).
+FIX (committed): WP-track LOS pages (coalesced runs, chunk-granular
+registration via ensure_registered_range, spanning search bound 256MiB).
+After fix: xalan Barrier 2831ms / Bpf 1129ms / Uffd 1228ms / Segv 1208ms —
+page-grain remset BEATS object-grain modbuf (whole-array rescans) 2.5x.
+Validation v2 sweep + perf rerun in results/correctness_sweep_v2.txt,
+perf_quick_v2.txt (running). Immortal/nonmoving still conservatively
+rescanned (were 0 objects on xalan).
