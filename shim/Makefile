@@ -33,10 +33,13 @@ $(BPFTOOL):
 gc_wp_ops.bpf.o: ../micro/gc_wp_ops.bpf.c vmlinux.h $(LIBBPF_DIR)/libbpf.a
 	$(CLANG) $(BPF_CFLAGS) -I$(INCLUDE_DIR) -I$(CURDIR) -c $< -o $@
 
-gc_wp_ops.skel.h: gc_wp_ops.bpf.o $(BPFTOOL)
+gc_b0_ops.bpf.o: gc_b0_ops.bpf.c vmlinux.h $(LIBBPF_DIR)/libbpf.a
+	$(CLANG) $(BPF_CFLAGS) -I$(INCLUDE_DIR) -I$(CURDIR) -c $< -o $@
+
+%.skel.h: %.bpf.o $(BPFTOOL)
 	$(BPFTOOL) gen skeleton $< > $@
 
-libgcbpf.so: gcbpf.c gc_wp_ops.skel.h $(LIBBPF_DIR)/libbpf.a
+libgcbpf.so: gcbpf.c gc_wp_ops.skel.h gc_b0_ops.skel.h $(LIBBPF_DIR)/libbpf.a
 	$(CC) -g -O2 -Wall -fPIC -shared -I$(INCLUDE_DIR) -o $@ $< \
 		$(LIBBPF_DIR)/libbpf.a -lelf -lz -lzstd -lpthread
 

@@ -14,35 +14,27 @@ Completed requests
 	Delivery schedule .......   4029 ( 4.0%)
 	New order ...............  44509 (44.5%)
 	New order rollback ......    452 ( 0.5%)
-===== DaCapo 23.11-MR2-chopin h2 completed warmup 1 in 5433 msec =====
-===== DaCapo processed 100000 requests in 5415 msec, 18467 requests per second =====
-===== DaCapo tail latency, simple: 50% 465 usec, 90% 3192 usec, 99% 12695 usec, 99.9% 119601 usec, 99.99% 133154 usec, max 145944 usec, measured over 100000 events =====
-===== DaCapo tail latency, metered 100ms smoothing: 50% 1917 usec, 90% 14652 usec, 99% 29011 usec, 99.9% 119601 usec, 99.99% 133154 usec, max 145944 usec, measured over 100000 events =====
-===== DaCapo tail latency, metered full smoothing: 50% 56017 usec, 90% 191830 usec, 99% 244982 usec, 99.9% 250912 usec, 99.99% 257991 usec, max 272141 usec, measured over 100000 events =====
-Resetting database to initial state...............java.lang.reflect.InvocationTargetException
-java.lang.reflect.InvocationTargetException
-	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:118)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
-	at org.dacapo.harness.H2.postIteration(H2.java:115)
-	at org.dacapo.harness.Benchmark.run(Benchmark.java:274)
-	at org.dacapo.harness.TestHarness.runBenchmark(TestHarness.java:225)
-	at org.dacapo.harness.TestHarness.main(TestHarness.java:170)
-	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
-	at Harness.main(Harness.java:39)
-Caused by: org.h2.jdbc.JdbcSQLNonTransientConnectionException: The database is open in exclusive mode; can not open additional connections [90135-220]
-	at org.h2.message.DbException.getJdbcSQLException(DbException.java:690)
-	at org.h2.message.DbException.getJdbcSQLException(DbException.java:489)
-	at org.h2.message.DbException.get(DbException.java:223)
-	at org.h2.message.DbException.get(DbException.java:199)
-	at org.h2.message.DbException.get(DbException.java:188)
-	at org.h2.engine.SessionLocal.checkSuspended(SessionLocal.java:1250)
-	at org.h2.engine.SessionLocal.transitionToState(SessionLocal.java:1242)
-	at org.h2.engine.SessionLocal.setCurrentCommand(SessionLocal.java:1220)
-	at org.h2.engine.SessionLocal.endStatement(SessionLocal.java:1703)
-	at org.h2.command.Command.executeUpdate(Command.java:291)
-	at org.h2.jdbc.JdbcConnection.commit(JdbcConnection.java:447)
-	at org.dacapo.h2.TPCC.resetToInitialData(Unknown Source)
-	at org.dacapo.h2.TPCC.postIteration(Unknown Source)
-	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
-	... 8 more
+===== DaCapo 23.11-MR2-chopin h2 completed warmup 1 in 5409 msec =====
+===== DaCapo processed 100000 requests in 5392 msec, 18545 requests per second =====
+===== DaCapo tail latency, simple: 50% 465 usec, 90% 3165 usec, 99% 12676 usec, 99.9% 117641 usec, 99.99% 132175 usec, max 144357 usec, measured over 100000 events =====
+===== DaCapo tail latency, metered 100ms smoothing: 50% 1856 usec, 90% 15041 usec, 99% 28172 usec, 99.9% 117641 usec, 99.99% 132175 usec, max 144357 usec, measured over 100000 events =====
+===== DaCapo tail latency, metered full smoothing: 50% 77019 usec, 90% 233964 usec, 99% 305442 usec, 99.9% 313850 usec, 99.99% 320295 usec, max 342477 usec, measured over 100000 events =====
+Resetting database to initial state....................
+===== DaCapo 23.11-MR2-chopin h2 starting =====
+Starting 100000 requests...
+5%10%15%20%25%30%35%40%45%50%55%60%65%70%75%80%85%90%95%100%
+Completed requests
+	Stock level .............   3973 ( 4.0%)
+	Order status by name ....   2361 ( 2.4%)
+	Order status by ID ......   1609 ( 1.6%)
+	Payment by name .........  25847 (25.8%)
+	Payment by ID ...........  17220 (17.2%)
+	Delivery schedule .......   4029 ( 4.0%)
+	New order ...............  44509 (44.5%)
+	New order rollback ......    452 ( 0.5%)
+===== DaCapo 23.11-MR2-chopin h2 PASSED in 6153 msec =====
+===== DaCapo processed 100000 requests in 6148 msec, 16265 requests per second =====
+===== DaCapo tail latency, simple: 50% 440 usec, 90% 2972 usec, 99% 13407 usec, 99.9% 162596 usec, 99.99% 178457 usec, max 195451 usec, measured over 100000 events =====
+===== DaCapo tail latency, metered 100ms smoothing: 50% 1967 usec, 90% 18870 usec, 99% 31204 usec, 99.9% 162596 usec, 99.99% 178457 usec, max 195451 usec, measured over 100000 events =====
+===== DaCapo tail latency, metered full smoothing: 50% 472 usec, 90% 3763 usec, 99% 25068 usec, 99.9% 162596 usec, 99.99% 178457 usec, max 195451 usec, measured over 100000 events =====
+Resetting database to initial state....................

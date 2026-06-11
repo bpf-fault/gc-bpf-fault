@@ -105,3 +105,118 @@ uint64_t gcbpf_fault_count(void)
 {
 	return skel ? skel->bss->wp_fault_count : 0;
 }
+
+/* ------------------------------------------------------------------ */
+/*  Class B: fault-driven Compressor compaction (gc_b0_ops)            */
+/* ------------------------------------------------------------------ */
+
+#ifndef MREMAP_DONTUNMAP
+#define MREMAP_DONTUNMAP 4
+#endif
+
+#include "gc_b0_ops.skel.h"
+
+static struct gc_b0_ops_bpf *b0_skel;
+static struct bpf_link *b0_link;
+static uint64_t *b0_state;
+static uint64_t b0_space_base;
+static uint64_t b0_arena_base;
+static uint64_t b0_span;
+
+/* Returns the arena base address, or 0 on failure. */
+uint64_t gcb0_init(uint64_t space_base, uint64_t span_len)
+{
+	size_t pages = span_len / 4096;
+	size_t map_bytes;
+	long page = sysconf(_SC_PAGESIZE);
+	void *arena;
+
+	libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
+
+	arena = mmap(NULL, span_len, PROT_NONE,
+		     MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE, -1, 0);
+	if (arena == MAP_FAILED) {
+		perror("gcb0: arena mmap");
+		return 0;
+	}
+
+	b0_skel = gc_b0_ops_bpf__open();
+	if (!b0_skel) {
+		fprintf(stderr, "gcb0: open skeleton failed\n");
+		return 0;
+	}
+	b0_skel->rodata->space_base = space_base;
+	b0_skel->rodata->arena_base = (unsigned long)arena;
+	b0_skel->rodata->span_len = span_len;
+	if (bpf_map__set_max_entries(b0_skel->maps.page_state, pages)) {
+		fprintf(stderr, "gcb0: set_max_entries failed\n");
+		return 0;
+	}
+	if (gc_b0_ops_bpf__load(b0_skel)) {
+		fprintf(stderr, "gcb0: load failed (root? memlock?)\n");
+		return 0;
+	}
+
+	map_bytes = (pages * sizeof(uint64_t) + page - 1) & ~(page - 1);
+	b0_state = mmap(NULL, map_bytes, PROT_READ | PROT_WRITE, MAP_SHARED,
+			bpf_map__fd(b0_skel->maps.page_state), 0);
+	if (b0_state == MAP_FAILED) {
+		perror("gcb0: mmap page_state");
+		b0_state = NULL;
+		return 0;
+	}
+
+	b0_space_base = space_base;
+	b0_arena_base = (uint64_t)arena;
+	b0_span = span_len;
+	return b0_arena_base;
+}
+
+/* Flip a region: move its physical pages into the arena slot and register
+ * the (now empty) original range for missing-fault handling. */
+int gcb0_flip(uint64_t start, uint64_t len)
+{
+	void *dst = (void *)(b0_arena_base + (start - b0_space_base));
+	void *r;
+
+	if (!b0_skel)
+		return -1;
+	r = mremap((void *)start, len, len,
+		   MREMAP_MAYMOVE | MREMAP_FIXED | MREMAP_DONTUNMAP, dst);
+	if (r == MAP_FAILED) {
+		perror("gcb0: mremap flip");
+		return -1;
+	}
+	if (!b0_link) {
+		b0_link = bpf_map__attach_fault_ops(b0_skel->maps.gc_b0_ops,
+						    (void *)start, len, 0);
+		if (!b0_link) {
+			perror("gcb0: attach_fault_ops");
+			return -1;
+		}
+		return 0;
+	}
+	if (bpf_link__fault_register(bpf_link__fd(b0_link), start, len)) {
+		/* Already registered from a previous cycle is fine. */
+		if (errno != EBUSY && errno != EEXIST) {
+			perror("gcb0: fault_register");
+			return -1;
+		}
+	}
+	return 0;
+}
+
+uint64_t *gcb0_state(void)
+{
+	return b0_state;
+}
+
+uint64_t gcb0_fault_count(void)
+{
+	return b0_skel ? b0_skel->bss->b0_fault_count : 0;
+}
+
+uint64_t gcb0_staged_installs(void)
+{
+	return b0_skel ? b0_skel->bss->b0_staged_installs : 0;
+}

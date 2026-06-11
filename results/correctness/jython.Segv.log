@@ -14,7 +14,7 @@ Running 2 round(s) of the suite at warp factor 20:
 * Round 1 done.
 * Round 2 done.
 
-===== DaCapo 23.11-MR2-chopin jython completed warmup 1 in 11342 msec =====
+===== DaCapo 23.11-MR2-chopin jython completed warmup 1 in 11315 msec =====
 ===== DaCapo 23.11-MR2-chopin jython starting =====
 -------------------------------------------------------------------------------
 PYBENCH 2.0
@@ -30,4 +30,4 @@ Running 2 round(s) of the suite at warp factor 20:
 * Round 1 done.
 * Round 2 done.
 
-===== DaCapo 23.11-MR2-chopin jython PASSED in 8743 msec =====
+===== DaCapo 23.11-MR2-chopin jython PASSED in 8770 msec =====

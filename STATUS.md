@@ -115,3 +115,19 @@ page-grain remset BEATS object-grain modbuf (whole-array rescans) 2.5x.
 Validation v2 sweep + perf rerun in results/correctness_sweep_v2.txt,
 perf_quick_v2.txt (running). Immortal/nonmoving still conservatively
 rescanned (were 0 objects on xalan).
+
+## Class B.0 implemented (2026-06-12 session)
+- mmtk-core (committed): `compact_faults` option (None|Bpf|Uffd) +
+  util/compact_faults.rs + Compressor compact_region rework: per-region
+  mremap flip into a linear arena, slide-compact at alias addresses
+  (metadata at real addresses), stage + install (bpf: touch -> in-kernel
+  arena copy; uffd: UFFDIO_COPY). Tail pages zero-fill via state array.
+- shim: gc_b0_ops.bpf.c + gcb0_init/flip/state API in libgcbpf.so (built).
+- NOT yet tested in the JVM (mock tests can't drive Compressor GC — stock
+  Compressor fails mock_test_allocate_with_initialize_collection too).
+  Separate JDK conf `b0test` building for testing without touching the
+  image used by the running v2 validation. Test:
+  sudo MMTK_PLAN=Compressor MMTK_COMPACT_FAULTS={Bpf|Uffd} java ...
+- Open risks: cycle-2 mremap of a registered VMA (kernel may reject —
+  would be a bpf-fault finding); uffd re-register per cycle (EBUSY?);
+  last-region mremap if region partially mapped.

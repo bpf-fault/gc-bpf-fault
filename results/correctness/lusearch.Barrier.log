@@ -4,17 +4,17 @@ Version: lucene 9.7.0 (use -p to print nominal benchmark stats)
 Starting 524288 requests...
 Completing query batches: 5%Completing query batches: 10%Completing query batches: 15%Completing query batches: 20%Completing query batches: 25%Completing query batches: 30%Completing query batches: 35%Completing query batches: 40%Completing query batches: 45%Completing query batches: 50%Completing query batches: 55%Completing query batches: 60%Completing query batches: 65%Completing query batches: 70%Completing query batches: 75%Completing query batches: 80%Completing query batches: 85%Completing query batches: 90%Completing query batches: 95%Completing query batches: 100%
 Completed requests
-===== DaCapo 23.11-MR2-chopin lusearch completed warmup 1 in 3262 msec =====
-===== DaCapo processed 524288 requests in 3256 msec, 161022 requests per second =====
-===== DaCapo tail latency, simple: 50% 58 usec, 90% 395 usec, 99% 1028 usec, 99.9% 6413 usec, 99.99% 68010 usec, max 164472 usec, measured over 524288 events =====
-===== DaCapo tail latency, metered 100ms smoothing: 50% 335 usec, 90% 3727 usec, 99% 21304 usec, 99.9% 33263 usec, 99.99% 72255 usec, max 164472 usec, measured over 524288 events =====
-===== DaCapo tail latency, metered full smoothing: 50% 255178 usec, 90% 659205 usec, 99% 731944 usec, 99.9% 736411 usec, 99.99% 736878 usec, max 743558 usec, measured over 524288 events =====
+===== DaCapo 23.11-MR2-chopin lusearch completed warmup 1 in 3145 msec =====
+===== DaCapo processed 524288 requests in 3139 msec, 167023 requests per second =====
+===== DaCapo tail latency, simple: 50% 57 usec, 90% 392 usec, 99% 1136 usec, 99.9% 5843 usec, 99.99% 31611 usec, max 147556 usec, measured over 524288 events =====
+===== DaCapo tail latency, metered 100ms smoothing: 50% 390 usec, 90% 4188 usec, 99% 21331 usec, 99.9% 26884 usec, 99.99% 52914 usec, max 147556 usec, measured over 524288 events =====
+===== DaCapo tail latency, metered full smoothing: 50% 159899 usec, 90% 521701 usec, 99% 589454 usec, 99.9% 592389 usec, 99.99% 592844 usec, max 598406 usec, measured over 524288 events =====
 ===== DaCapo 23.11-MR2-chopin lusearch starting =====
 Starting 524288 requests...
 Completing query batches: 5%Completing query batches: 10%Completing query batches: 15%Completing query batches: 20%Completing query batches: 25%Completing query batches: 30%Completing query batches: 35%Completing query batches: 40%Completing query batches: 45%Completing query batches: 50%Completing query batches: 55%Completing query batches: 60%Completing query batches: 65%Completing query batches: 70%Completing query batches: 75%Completing query batches: 80%Completing query batches: 85%Completing query batches: 90%Completing query batches: 95%Completing query batches: 100%
 Completed requests
-===== DaCapo 23.11-MR2-chopin lusearch PASSED in 2529 msec =====
-===== DaCapo processed 524288 requests in 2527 msec, 207474 requests per second =====
-===== DaCapo tail latency, simple: 50% 59 usec, 90% 396 usec, 99% 837 usec, 99.9% 1964 usec, 99.99% 6894 usec, max 10601 usec, measured over 524288 events =====
-===== DaCapo tail latency, metered 100ms smoothing: 50% 251 usec, 90% 4526 usec, 99% 21223 usec, 99.9% 25926 usec, 99.99% 27385 usec, max 30790 usec, measured over 524288 events =====
-===== DaCapo tail latency, metered full smoothing: 50% 118389 usec, 90% 254338 usec, 99% 304477 usec, 99.9% 310432 usec, 99.99% 311069 usec, max 311565 usec, measured over 524288 events =====
+===== DaCapo 23.11-MR2-chopin lusearch PASSED in 2243 msec =====
+===== DaCapo processed 524288 requests in 2241 msec, 233952 requests per second =====
+===== DaCapo tail latency, simple: 50% 52 usec, 90% 379 usec, 99% 722 usec, 99.9% 2394 usec, 99.99% 6717 usec, max 10134 usec, measured over 524288 events =====
+===== DaCapo tail latency, metered 100ms smoothing: 50% 251 usec, 90% 4005 usec, 99% 18295 usec, 99.9% 26095 usec, 99.99% 27429 usec, max 30703 usec, measured over 524288 events =====
+===== DaCapo tail latency, metered full smoothing: 50% 55291 usec, 90% 187692 usec, 99% 220123 usec, 99.9% 224466 usec, 99.99% 224965 usec, max 226908 usec, measured over 524288 events =====
