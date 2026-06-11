@@ -1,0 +1,200 @@
+=== backend=bpf pages=131072 threads=1 cycles=5 frac=0.25 (32768 writes/cycle) ===
+  cycle 0: protect=14.434ms mutate=97.747ms collect=0.006ms dirty=32768/32768
+  cycle 1: protect=14.771ms mutate=96.676ms collect=0.005ms dirty=32768/32768
+  cycle 2: protect=14.257ms mutate=95.778ms collect=0.005ms dirty=32768/32768
+  cycle 3: protect=13.543ms mutate=96.355ms collect=0.005ms dirty=32768/32768
+  cycle 4: protect=13.487ms mutate=95.829ms collect=0.005ms dirty=32768/32768
+    Per-fault latency (ns): avg=2910 min=2564 p50=2855 p99=3607 p999=9227 max=51246 (n=163840)
+    Context switches during run: 15
+RESULT bench=wp_barrier backend=bpf threads=1 pages=131072 cycles=5 frac=0.25 protect_ms=14.098 mutate_ms=96.477 collect_ms=0.005 faults_per_cycle=32768 lat_avg=2910 lat_p50=2855 lat_p99=3607 lat_p999=9227 lat_max=51246 csw=15
+
+=== backend=uffd pages=131072 threads=1 cycles=5 frac=0.25 (32768 writes/cycle) ===
+  cycle 0: protect=15.108ms mutate=537.173ms collect=0.014ms dirty=32768/32768
+  cycle 1: protect=14.984ms mutate=530.966ms collect=0.010ms dirty=32768/32768
+  cycle 2: protect=14.807ms mutate=527.047ms collect=0.009ms dirty=32768/32768
+  cycle 3: protect=14.843ms mutate=529.292ms collect=0.009ms dirty=32768/32768
+  cycle 4: protect=14.839ms mutate=529.845ms collect=0.009ms dirty=32768/32768
+    Per-fault latency (ns): avg=16147 min=15148 p50=15970 p99=19857 p999=23975 max=87975 (n=163840)
+    Context switches during run: 327694
+RESULT bench=wp_barrier backend=uffd threads=1 pages=131072 cycles=5 frac=0.25 protect_ms=14.916 mutate_ms=530.864 collect_ms=0.010 faults_per_cycle=32768 lat_avg=16147 lat_p50=15970 lat_p99=19857 lat_p999=23975 lat_max=87975 csw=327694
+
+=== backend=segv pages=131072 threads=1 cycles=5 frac=0.25 (32768 writes/cycle) ===
+  cycle 0: protect=14.849ms mutate=318.603ms collect=0.014ms dirty=32768/32768
+  cycle 1: protect=100.542ms mutate=324.166ms collect=0.015ms dirty=32768/32768
+  cycle 2: protect=98.584ms mutate=320.247ms collect=0.014ms dirty=32768/32768
+  cycle 3: protect=99.629ms mutate=319.337ms collect=0.014ms dirty=32768/32768
+  cycle 4: protect=99.411ms mutate=325.175ms collect=0.010ms dirty=32768/32768
+    Per-fault latency (ns): avg=9775 min=5931 p50=8987 p99=15599 p999=90459 max=407432 (n=163840)
+    Context switches during run: 255
+RESULT bench=wp_barrier backend=segv threads=1 pages=131072 cycles=5 frac=0.25 protect_ms=82.603 mutate_ms=321.506 collect_ms=0.013 faults_per_cycle=32768 lat_avg=9775 lat_p50=8987 lat_p99=15599 lat_p999=90459 lat_max=407432 csw=255
+
+=== backend=none pages=131072 threads=1 cycles=5 frac=0.25 (32768 writes/cycle) ===
+  cycle 0: protect=0.000ms mutate=7.007ms collect=0.000ms dirty=0/32768
+  cycle 1: protect=0.000ms mutate=5.948ms collect=0.000ms dirty=0/32768
+  cycle 2: protect=0.000ms mutate=5.943ms collect=0.000ms dirty=0/32768
+  cycle 3: protect=0.000ms mutate=5.936ms collect=0.000ms dirty=0/32768
+  cycle 4: protect=0.000ms mutate=5.929ms collect=0.000ms dirty=0/32768
+    Per-fault latency (ns): avg=157 min=20 p50=140 p99=431 p999=561 max=22382 (n=163840)
+    Context switches during run: 11
+RESULT bench=wp_barrier backend=none threads=1 pages=131072 cycles=5 frac=0.25 protect_ms=0.000 mutate_ms=6.153 collect_ms=0.000 faults_per_cycle=32768 lat_avg=157 lat_p50=140 lat_p99=431 lat_p999=561 lat_max=22382 csw=11
+
+=== backend=bpf pages=131072 threads=2 cycles=5 frac=0.25 (32768 writes/cycle) ===
+  cycle 0: protect=12.781ms mutate=70.426ms collect=0.006ms dirty=32768/32768
+  cycle 1: protect=12.901ms mutate=69.888ms collect=0.005ms dirty=32768/32768
+  cycle 2: protect=12.754ms mutate=68.868ms collect=0.005ms dirty=32768/32768
+  cycle 3: protect=12.704ms mutate=68.591ms collect=0.005ms dirty=32768/32768
+  cycle 4: protect=12.747ms mutate=68.983ms collect=0.005ms dirty=32768/32768
+    Per-fault latency (ns): avg=4190 min=2685 p50=4128 p99=5360 p999=9368 max=45826 (n=163840)
+    Context switches during run: 24
+RESULT bench=wp_barrier backend=bpf threads=2 pages=131072 cycles=5 frac=0.25 protect_ms=12.777 mutate_ms=69.351 collect_ms=0.005 faults_per_cycle=32768 lat_avg=4190 lat_p50=4128 lat_p99=5360 lat_p999=9368 lat_max=45826 csw=24
+
+=== backend=uffd pages=131072 threads=2 cycles=5 frac=0.25 (32768 writes/cycle) ===
+  cycle 0: protect=12.925ms mutate=299.757ms collect=0.010ms dirty=32768/32768
+  cycle 1: protect=13.950ms mutate=301.171ms collect=0.010ms dirty=32768/32768
+  cycle 2: protect=13.814ms mutate=301.375ms collect=0.010ms dirty=32768/32768
+  cycle 3: protect=14.654ms mutate=307.412ms collect=0.011ms dirty=32768/32768
+  cycle 4: protect=14.658ms mutate=305.148ms collect=0.010ms dirty=32768/32768
+    Per-fault latency (ns): avg=18438 min=13335 p50=18194 p99=23043 p999=27531 max=125695 (n=163840)
+    Context switches during run: 245770
+RESULT bench=wp_barrier backend=uffd threads=2 pages=131072 cycles=5 frac=0.25 protect_ms=14.000 mutate_ms=302.973 collect_ms=0.010 faults_per_cycle=32768 lat_avg=18438 lat_p50=18194 lat_p99=23043 lat_p999=27531 lat_max=125695 csw=245770
+
+=== backend=segv pages=131072 threads=2 cycles=5 frac=0.25 (32768 writes/cycle) ===
+  cycle 0: protect=13.117ms mutate=291.789ms collect=0.014ms dirty=32768/32768
+  cycle 1: protect=97.270ms mutate=291.478ms collect=0.014ms dirty=32768/32768
+  cycle 2: protect=95.219ms mutate=292.625ms collect=0.012ms dirty=32768/32768
+  cycle 3: protect=96.955ms mutate=292.517ms collect=0.013ms dirty=32768/32768
+  cycle 4: protect=97.047ms mutate=296.977ms collect=0.013ms dirty=32768/32768
+    Per-fault latency (ns): avg=17814 min=6201 p50=17303 p99=26990 p999=219891 max=2026160 (n=163840)
+    Context switches during run: 1705
+RESULT bench=wp_barrier backend=segv threads=2 pages=131072 cycles=5 frac=0.25 protect_ms=79.922 mutate_ms=293.077 collect_ms=0.013 faults_per_cycle=32768 lat_avg=17814 lat_p50=17303 lat_p99=26990 lat_p999=219891 lat_max=2026160 csw=1705
+
+=== backend=none pages=131072 threads=2 cycles=5 frac=0.25 (32768 writes/cycle) ===
+  cycle 0: protect=0.000ms mutate=3.882ms collect=0.000ms dirty=0/32768
+  cycle 1: protect=0.000ms mutate=2.993ms collect=0.000ms dirty=0/32768
+  cycle 2: protect=0.000ms mutate=2.970ms collect=0.000ms dirty=0/32768
+  cycle 3: protect=0.000ms mutate=2.992ms collect=0.000ms dirty=0/32768
+  cycle 4: protect=0.000ms mutate=2.954ms collect=0.000ms dirty=0/32768
+    Per-fault latency (ns): avg=159 min=20 p50=140 p99=451 p999=591 max=15760 (n=163840)
+    Context switches during run: 21
+RESULT bench=wp_barrier backend=none threads=2 pages=131072 cycles=5 frac=0.25 protect_ms=0.000 mutate_ms=3.158 collect_ms=0.000 faults_per_cycle=32768 lat_avg=159 lat_p50=140 lat_p99=451 lat_p999=591 lat_max=15760 csw=21
+
+=== backend=bpf pages=131072 threads=4 cycles=5 frac=0.25 (32768 writes/cycle) ===
+  cycle 0: protect=13.109ms mutate=48.704ms collect=0.005ms dirty=32768/32768
+  cycle 1: protect=12.698ms mutate=49.038ms collect=0.005ms dirty=32768/32768
+  cycle 2: protect=12.289ms mutate=49.058ms collect=0.005ms dirty=32768/32768
+  cycle 3: protect=12.262ms mutate=49.242ms collect=0.005ms dirty=32768/32768
+  cycle 4: protect=12.270ms mutate=48.949ms collect=0.005ms dirty=32768/32768
+    Per-fault latency (ns): avg=5933 min=2675 p50=5871 p99=8196 p999=11441 max=72386 (n=163840)
+    Context switches during run: 47
+RESULT bench=wp_barrier backend=bpf threads=4 pages=131072 cycles=5 frac=0.25 protect_ms=12.525 mutate_ms=48.998 collect_ms=0.005 faults_per_cycle=32768 lat_avg=5933 lat_p50=5871 lat_p99=8196 lat_p999=11441 lat_max=72386 csw=47
+
+=== backend=uffd pages=131072 threads=4 cycles=5 frac=0.25 (32768 writes/cycle) ===
+  cycle 0: protect=12.919ms mutate=255.952ms collect=0.010ms dirty=32768/32768
+  cycle 1: protect=14.140ms mutate=255.889ms collect=0.005ms dirty=32768/32768
+  cycle 2: protect=14.127ms mutate=257.812ms collect=0.005ms dirty=32768/32768
+  cycle 3: protect=13.891ms mutate=263.687ms collect=0.005ms dirty=32768/32768
+  cycle 4: protect=14.057ms mutate=258.657ms collect=0.005ms dirty=32768/32768
+    Per-fault latency (ns): avg=31444 min=17653 p50=31159 p99=37610 p999=45335 max=1110317 (n=163840)
+    Context switches during run: 163905
+RESULT bench=wp_barrier backend=uffd threads=4 pages=131072 cycles=5 frac=0.25 protect_ms=13.827 mutate_ms=258.399 collect_ms=0.006 faults_per_cycle=32768 lat_avg=31444 lat_p50=31159 lat_p99=37610 lat_p999=45335 lat_max=1110317 csw=163905
+
+=== backend=segv pages=131072 threads=4 cycles=5 frac=0.25 (32768 writes/cycle) ===
+  cycle 0: protect=12.881ms mutate=352.851ms collect=0.011ms dirty=32768/32768
+  cycle 1: protect=95.849ms mutate=358.820ms collect=0.011ms dirty=32768/32768
+  cycle 2: protect=97.492ms mutate=354.138ms collect=0.006ms dirty=32768/32768
+  cycle 3: protect=97.792ms mutate=359.126ms collect=0.010ms dirty=32768/32768
+  cycle 4: protect=96.775ms mutate=372.623ms collect=0.010ms dirty=32768/32768
+    Per-fault latency (ns): avg=42198 min=6372 p50=33823 p99=57668 p999=5039147 max=5090012 (n=163840)
+    Context switches during run: 89229
+RESULT bench=wp_barrier backend=segv threads=4 pages=131072 cycles=5 frac=0.25 protect_ms=80.158 mutate_ms=359.512 collect_ms=0.009 faults_per_cycle=32768 lat_avg=42198 lat_p50=33823 lat_p99=57668 lat_p999=5039147 lat_max=5090012 csw=89229
+
+=== backend=none pages=131072 threads=4 cycles=5 frac=0.25 (32768 writes/cycle) ===
+  cycle 0: protect=0.000ms mutate=1.978ms collect=0.000ms dirty=0/32768
+  cycle 1: protect=0.000ms mutate=1.744ms collect=0.000ms dirty=0/32768
+  cycle 2: protect=0.000ms mutate=1.494ms collect=0.000ms dirty=0/32768
+  cycle 3: protect=0.000ms mutate=1.469ms collect=0.000ms dirty=0/32768
+  cycle 4: protect=0.000ms mutate=1.453ms collect=0.000ms dirty=0/32768
+    Per-fault latency (ns): avg=157 min=20 p50=140 p99=451 p999=571 max=137367 (n=163840)
+    Context switches during run: 42
+RESULT bench=wp_barrier backend=none threads=4 pages=131072 cycles=5 frac=0.25 protect_ms=0.000 mutate_ms=1.628 collect_ms=0.000 faults_per_cycle=32768 lat_avg=157 lat_p50=140 lat_p99=451 lat_p999=571 lat_max=137367 csw=42
+
+=== backend=bpf pages=131072 threads=8 cycles=5 frac=0.25 (32768 writes/cycle) ===
+  cycle 0: protect=12.702ms mutate=36.461ms collect=0.006ms dirty=32768/32768
+  cycle 1: protect=12.929ms mutate=35.892ms collect=0.005ms dirty=32768/32768
+  cycle 2: protect=12.778ms mutate=36.195ms collect=0.005ms dirty=32768/32768
+  cycle 3: protect=12.059ms mutate=36.206ms collect=0.005ms dirty=32768/32768
+  cycle 4: protect=11.993ms mutate=36.592ms collect=0.005ms dirty=32768/32768
+    Per-fault latency (ns): avg=8703 min=2565 p50=8626 p99=12543 p999=15839 max=48851 (n=163840)
+    Context switches during run: 85
+RESULT bench=wp_barrier backend=bpf threads=8 pages=131072 cycles=5 frac=0.25 protect_ms=12.492 mutate_ms=36.269 collect_ms=0.005 faults_per_cycle=32768 lat_avg=8703 lat_p50=8626 lat_p99=12543 lat_p999=15839 lat_max=48851 csw=85
+
+=== backend=uffd pages=131072 threads=8 cycles=5 frac=0.25 (32768 writes/cycle) ===
+  cycle 0: protect=13.574ms mutate=250.597ms collect=0.011ms dirty=32768/32768
+  cycle 1: protect=15.043ms mutate=254.284ms collect=0.010ms dirty=32768/32768
+  cycle 2: protect=15.156ms mutate=266.307ms collect=0.009ms dirty=32768/32768
+  cycle 3: protect=13.928ms mutate=268.216ms collect=0.010ms dirty=32768/32768
+  cycle 4: protect=13.809ms mutate=265.248ms collect=0.011ms dirty=32768/32768
+    Per-fault latency (ns): avg=63552 min=15659 p50=63840 p99=72736 p999=87433 max=326551 (n=163840)
+    Context switches during run: 163951
+RESULT bench=wp_barrier backend=uffd threads=8 pages=131072 cycles=5 frac=0.25 protect_ms=14.302 mutate_ms=260.930 collect_ms=0.010 faults_per_cycle=32768 lat_avg=63552 lat_p50=63840 lat_p99=72736 lat_p999=87433 lat_max=326551 csw=163951
+
+=== backend=segv pages=131072 threads=8 cycles=5 frac=0.25 (32768 writes/cycle) ===
+  cycle 0: protect=13.744ms mutate=389.420ms collect=0.006ms dirty=32768/32768
+  cycle 1: protect=94.911ms mutate=397.060ms collect=0.007ms dirty=32768/32768
+  cycle 2: protect=93.522ms mutate=391.520ms collect=0.008ms dirty=32768/32768
+  cycle 3: protect=97.151ms mutate=404.178ms collect=0.009ms dirty=32768/32768
+  cycle 4: protect=96.920ms mutate=394.803ms collect=0.006ms dirty=32768/32768
+    Per-fault latency (ns): avg=91635 min=6803 p50=86111 p99=123471 p999=5125339 max=10174143 (n=163840)
+    Context switches during run: 76929
+RESULT bench=wp_barrier backend=segv threads=8 pages=131072 cycles=5 frac=0.25 protect_ms=79.250 mutate_ms=395.396 collect_ms=0.007 faults_per_cycle=32768 lat_avg=91635 lat_p50=86111 lat_p99=123471 lat_p999=5125339 lat_max=10174143 csw=76929
+
+=== backend=none pages=131072 threads=8 cycles=5 frac=0.25 (32768 writes/cycle) ===
+  cycle 0: protect=0.000ms mutate=1.401ms collect=0.000ms dirty=0/32768
+  cycle 1: protect=0.000ms mutate=0.758ms collect=0.000ms dirty=0/32768
+  cycle 2: protect=0.000ms mutate=0.753ms collect=0.000ms dirty=0/32768
+  cycle 3: protect=0.000ms mutate=0.761ms collect=0.000ms dirty=0/32768
+  cycle 4: protect=0.000ms mutate=0.764ms collect=0.000ms dirty=0/32768
+    Per-fault latency (ns): avg=148 min=20 p50=140 p99=451 p999=581 max=22002 (n=163840)
+    Context switches during run: 82
+RESULT bench=wp_barrier backend=none threads=8 pages=131072 cycles=5 frac=0.25 protect_ms=0.000 mutate_ms=0.887 collect_ms=0.000 faults_per_cycle=32768 lat_avg=148 lat_p50=140 lat_p99=451 lat_p999=581 lat_max=22002 csw=82
+
+=== backend=bpf pages=131072 threads=16 cycles=5 frac=0.25 (32768 writes/cycle) ===
+  cycle 0: protect=13.153ms mutate=23.403ms collect=0.005ms dirty=32768/32768
+  cycle 1: protect=12.640ms mutate=23.107ms collect=0.005ms dirty=32768/32768
+  cycle 2: protect=12.264ms mutate=23.870ms collect=0.005ms dirty=32768/32768
+  cycle 3: protect=12.250ms mutate=23.866ms collect=0.005ms dirty=32768/32768
+  cycle 4: protect=12.239ms mutate=24.728ms collect=0.005ms dirty=32768/32768
+    Per-fault latency (ns): avg=11396 min=2675 p50=11301 p99=16862 p999=20969 max=201176 (n=163840)
+    Context switches during run: 172
+RESULT bench=wp_barrier backend=bpf threads=16 pages=131072 cycles=5 frac=0.25 protect_ms=12.509 mutate_ms=23.795 collect_ms=0.005 faults_per_cycle=32768 lat_avg=11396 lat_p50=11301 lat_p99=16862 lat_p999=20969 lat_max=201176 csw=172
+
+=== backend=uffd pages=131072 threads=16 cycles=5 frac=0.25 (32768 writes/cycle) ===
+  cycle 0: protect=13.385ms mutate=273.268ms collect=0.010ms dirty=32768/32768
+  cycle 1: protect=13.997ms mutate=274.301ms collect=0.010ms dirty=32768/32768
+  cycle 2: protect=13.882ms mutate=278.525ms collect=0.010ms dirty=32768/32768
+  cycle 3: protect=13.718ms mutate=277.201ms collect=0.010ms dirty=32768/32768
+  cycle 4: protect=13.839ms mutate=277.462ms collect=0.010ms dirty=32768/32768
+    Per-fault latency (ns): avg=134664 min=14828 p50=134441 p99=144991 p999=151213 max=379821 (n=163840)
+    Context switches during run: 164013
+RESULT bench=wp_barrier backend=uffd threads=16 pages=131072 cycles=5 frac=0.25 protect_ms=13.764 mutate_ms=276.151 collect_ms=0.010 faults_per_cycle=32768 lat_avg=134664 lat_p50=134441 lat_p99=144991 lat_p999=151213 lat_max=379821 csw=164013
+
+=== backend=segv pages=131072 threads=16 cycles=5 frac=0.25 (32768 writes/cycle) ===
+  cycle 0: protect=14.273ms mutate=473.298ms collect=0.006ms dirty=32768/32768
+  cycle 1: protect=96.514ms mutate=505.632ms collect=0.006ms dirty=32768/32768
+  cycle 2: protect=96.287ms mutate=499.535ms collect=0.007ms dirty=32768/32768
+  cycle 3: protect=96.292ms mutate=481.239ms collect=0.006ms dirty=32768/32768
+  cycle 4: protect=95.436ms mutate=507.138ms collect=0.008ms dirty=32768/32768
+    Per-fault latency (ns): avg=232805 min=7013 p50=241582 p99=289071 p999=5296509 max=9388604 (n=163840)
+    Context switches during run: 50429
+RESULT bench=wp_barrier backend=segv threads=16 pages=131072 cycles=5 frac=0.25 protect_ms=79.760 mutate_ms=493.368 collect_ms=0.007 faults_per_cycle=32768 lat_avg=232805 lat_p50=241582 lat_p99=289071 lat_p999=5296509 lat_max=9388604 csw=50429
+
+=== backend=none pages=131072 threads=16 cycles=5 frac=0.25 (32768 writes/cycle) ===
+  cycle 0: protect=0.000ms mutate=0.911ms collect=0.000ms dirty=0/32768
+  cycle 1: protect=0.000ms mutate=0.454ms collect=0.000ms dirty=0/32768
+  cycle 2: protect=0.000ms mutate=0.419ms collect=0.000ms dirty=0/32768
+  cycle 3: protect=0.000ms mutate=0.399ms collect=0.000ms dirty=0/32768
+  cycle 4: protect=0.000ms mutate=0.388ms collect=0.000ms dirty=0/32768
+    Per-fault latency (ns): avg=148 min=20 p50=140 p99=461 p999=591 max=37911 (n=163840)
+    Context switches during run: 165
+RESULT bench=wp_barrier backend=none threads=16 pages=131072 cycles=5 frac=0.25 protect_ms=0.000 mutate_ms=0.514 collect_ms=0.000 faults_per_cycle=32768 lat_avg=148 lat_p50=140 lat_p99=461 lat_p999=591 lat_max=37911 csw=165
+

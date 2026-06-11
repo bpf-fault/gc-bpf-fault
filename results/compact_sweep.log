@@ -1,0 +1,220 @@
+=== backend=bpf pages=131072 threads=1 gc_thread=0 ===
+    Per-fault latency (ns): avg=3102 min=2485 p50=2845 p99=8226 p999=12563 max=326772 (n=131072)
+    Mutator phase: 411.501 ms (131072 accesses)
+RESULT bench=compact backend=bpf threads=1 pages=131072 gc=0 total_ms=411.501 sweep_ms=0.000 lat_avg=3102 lat_p50=2845 lat_p99=8226 lat_p999=12563 lat_max=326772 csw=3 bad=0
+
+=== backend=uffd_sigbus pages=131072 threads=1 gc_thread=0 ===
+    Per-fault latency (ns): avg=6919 min=6171 p50=6562 p99=12012 p999=16460 max=358891 (n=131072)
+    Mutator phase: 912.235 ms (131072 accesses)
+RESULT bench=compact backend=uffd_sigbus threads=1 pages=131072 gc=0 total_ms=912.235 sweep_ms=0.000 lat_avg=6919 lat_p50=6562 lat_p99=12012 lat_p999=16460 lat_max=358891 csw=6 bad=0
+
+=== backend=uffd_thread pages=131072 threads=1 gc_thread=0 ===
+    Per-fault latency (ns): avg=17137 min=11882 p50=16761 p99=22372 p999=28283 max=348673 (n=131072)
+    Mutator phase: 2251.396 ms (131072 accesses)
+RESULT bench=compact backend=uffd_thread threads=1 pages=131072 gc=0 total_ms=2251.396 sweep_ms=0.000 lat_avg=17137 lat_p50=16761 lat_p99=22372 lat_p999=28283 lat_max=348673 csw=262135 bad=0
+
+=== backend=segv pages=131072 threads=1 gc_thread=0 ===
+    Per-fault latency (ns): avg=10435 min=7093 p50=9408 p99=17954 p999=181269 max=1122299 (n=131072)
+    Mutator phase: 1373.636 ms (131072 accesses)
+RESULT bench=compact backend=segv threads=1 pages=131072 gc=0 total_ms=1373.636 sweep_ms=0.000 lat_avg=10435 lat_p50=9408 lat_p99=17954 lat_p999=181269 lat_max=1122299 csw=172 bad=0
+
+=== backend=bpf pages=131072 threads=1 gc_thread=1 ===
+    Per-fault latency (ns): avg=1836 min=40 p50=321 p99=9127 p999=12684 max=189775 (n=131072)
+    Mutator phase: 245.479 ms (131072 accesses)
+    GC sweep: 243.758 ms
+RESULT bench=compact backend=bpf threads=1 pages=131072 gc=1 total_ms=245.479 sweep_ms=243.758 lat_avg=1836 lat_p50=321 lat_p99=9127 lat_p999=12684 lat_max=189775 csw=3 bad=0
+
+=== backend=uffd_sigbus pages=131072 threads=1 gc_thread=1 ===
+    Per-fault latency (ns): avg=2432 min=50 p50=161 p99=12813 p999=14547 max=130334 (n=131072)
+    Mutator phase: 323.667 ms (131072 accesses)
+    GC sweep: 328.717 ms
+RESULT bench=compact backend=uffd_sigbus threads=1 pages=131072 gc=1 total_ms=323.667 sweep_ms=328.717 lat_avg=2432 lat_p50=161 lat_p99=12813 lat_p999=14547 lat_max=130334 csw=4 bad=0
+
+=== backend=uffd_thread pages=131072 threads=1 gc_thread=1 ===
+    Per-fault latency (ns): avg=2873 min=100 p50=150 p99=21861 p999=28153 max=179646 (n=131072)
+    Mutator phase: 381.700 ms (131072 accesses)
+    GC sweep: 372.349 ms
+RESULT bench=compact backend=uffd_thread threads=1 pages=131072 gc=1 total_ms=381.700 sweep_ms=372.349 lat_avg=2873 lat_p50=150 lat_p99=21861 lat_p999=28153 lat_max=179646 csw=37086 bad=0
+
+=== backend=segv pages=131072 threads=1 gc_thread=1 ===
+    Per-fault latency (ns): avg=6072 min=60 p50=280 p99=29084 p999=42098 max=434483 (n=131072)
+    Mutator phase: 801.332 ms (131072 accesses)
+    GC sweep: 798.343 ms
+RESULT bench=compact backend=segv threads=1 pages=131072 gc=1 total_ms=801.332 sweep_ms=798.343 lat_avg=6072 lat_p50=280 lat_p99=29084 lat_p999=42098 lat_max=434483 csw=23819 bad=0
+
+=== backend=bpf pages=131072 threads=2 gc_thread=0 ===
+    Per-fault latency (ns): avg=3818 min=2485 p50=3556 p99=9488 p999=13686 max=168816 (n=131072)
+    Mutator phase: 261.430 ms (131072 accesses)
+RESULT bench=compact backend=bpf threads=2 pages=131072 gc=0 total_ms=261.430 sweep_ms=0.000 lat_avg=3818 lat_p50=3556 lat_p99=9488 lat_p999=13686 lat_max=168816 csw=3 bad=0
+
+=== backend=uffd_sigbus pages=131072 threads=2 gc_thread=0 ===
+    Per-fault latency (ns): avg=8595 min=6192 p50=8286 p99=14387 p999=18665 max=307005 (n=131072)
+    Mutator phase: 573.876 ms (131072 accesses)
+RESULT bench=compact backend=uffd_sigbus threads=2 pages=131072 gc=0 total_ms=573.876 sweep_ms=0.000 lat_avg=8595 lat_p50=8286 lat_p99=14387 lat_p999=18665 lat_max=307005 csw=6 bad=0
+
+=== backend=uffd_thread pages=131072 threads=2 gc_thread=0 ===
+    Per-fault latency (ns): avg=19129 min=12273 p50=18735 p99=25027 p999=42620 max=376594 (n=131072)
+    Mutator phase: 1265.550 ms (131072 accesses)
+RESULT bench=compact backend=uffd_thread threads=2 pages=131072 gc=0 total_ms=1265.550 sweep_ms=0.000 lat_avg=19129 lat_p50=18735 lat_p99=25027 lat_p999=42620 lat_max=376594 csw=194557 bad=0
+
+=== backend=segv pages=131072 threads=2 gc_thread=0 ===
+    Per-fault latency (ns): avg=14123 min=7414 p50=11031 p99=31128 p999=172913 max=479647 (n=131072)
+    Mutator phase: 945.790 ms (131072 accesses)
+RESULT bench=compact backend=segv threads=2 pages=131072 gc=0 total_ms=945.790 sweep_ms=0.000 lat_avg=14123 lat_p50=11031 lat_p99=31128 lat_p999=172913 lat_max=479647 csw=20209 bad=0
+
+=== backend=bpf pages=131072 threads=2 gc_thread=1 ===
+    Per-fault latency (ns): avg=2645 min=40 p50=3487 p99=9468 p999=13495 max=204172 (n=131072)
+    Mutator phase: 180.784 ms (131072 accesses)
+    GC sweep: 180.655 ms
+RESULT bench=compact backend=bpf threads=2 pages=131072 gc=1 total_ms=180.784 sweep_ms=180.655 lat_avg=2645 lat_p50=3487 lat_p99=9468 lat_p999=13495 lat_max=204172 csw=5 bad=0
+
+=== backend=uffd_sigbus pages=131072 threads=2 gc_thread=1 ===
+    Per-fault latency (ns): avg=4622 min=40 p50=541 p99=14547 p999=17914 max=219251 (n=131072)
+    Mutator phase: 309.519 ms (131072 accesses)
+    GC sweep: 356.879 ms
+RESULT bench=compact backend=uffd_sigbus threads=2 pages=131072 gc=1 total_ms=309.519 sweep_ms=356.879 lat_avg=4622 lat_p50=541 lat_p99=14547 lat_p999=17914 lat_max=219251 csw=5 bad=0
+
+=== backend=uffd_thread pages=131072 threads=2 gc_thread=1 ===
+    Per-fault latency (ns): avg=6183 min=30 p50=251 p99=25558 p999=30668 max=209913 (n=131072)
+    Mutator phase: 410.489 ms (131072 accesses)
+    GC sweep: 416.777 ms
+RESULT bench=compact backend=uffd_thread threads=2 pages=131072 gc=1 total_ms=410.489 sweep_ms=416.777 lat_avg=6183 lat_p50=251 lat_p99=25558 lat_p999=30668 lat_max=209913 csw=58986 bad=0
+
+=== backend=segv pages=131072 threads=2 gc_thread=1 ===
+    Per-fault latency (ns): avg=13320 min=40 p50=11411 p99=52899 p999=192520 max=353371 (n=131072)
+    Mutator phase: 885.778 ms (131072 accesses)
+    GC sweep: 885.372 ms
+RESULT bench=compact backend=segv threads=2 pages=131072 gc=1 total_ms=885.778 sweep_ms=885.372 lat_avg=13320 lat_p50=11411 lat_p99=52899 lat_p999=192520 lat_max=353371 csw=32828 bad=0
+
+=== backend=bpf pages=131072 threads=4 gc_thread=0 ===
+    Per-fault latency (ns): avg=4312 min=2755 p50=4018 p99=10320 p999=15619 max=202599 (n=131072)
+    Mutator phase: 148.340 ms (131072 accesses)
+RESULT bench=compact backend=bpf threads=4 pages=131072 gc=0 total_ms=148.340 sweep_ms=0.000 lat_avg=4312 lat_p50=4018 lat_p99=10320 lat_p999=15619 lat_max=202599 csw=5 bad=0
+
+=== backend=uffd_sigbus pages=131072 threads=4 gc_thread=0 ===
+    Per-fault latency (ns): avg=10560 min=7574 p50=9959 p99=17563 p999=22943 max=386854 (n=131072)
+    Mutator phase: 353.761 ms (131072 accesses)
+RESULT bench=compact backend=uffd_sigbus threads=4 pages=131072 gc=0 total_ms=353.761 sweep_ms=0.000 lat_avg=10560 lat_p50=9959 lat_p99=17563 lat_p999=22943 lat_max=386854 csw=7 bad=0
+
+=== backend=uffd_thread pages=131072 threads=4 gc_thread=0 ===
+    Per-fault latency (ns): avg=23784 min=13305 p50=23023 p99=32160 p999=173655 max=343964 (n=131072)
+    Mutator phase: 787.863 ms (131072 accesses)
+RESULT bench=compact backend=uffd_thread threads=4 pages=131072 gc=0 total_ms=787.863 sweep_ms=0.000 lat_avg=23784 lat_p50=23023 lat_p99=32160 lat_p999=173655 lat_max=343964 csw=131080 bad=0
+
+=== backend=segv pages=131072 threads=4 gc_thread=0 ===
+    Per-fault latency (ns): avg=30545 min=8285 p50=26109 p99=86963 p999=211856 max=503892 (n=131072)
+    Mutator phase: 1008.990 ms (131072 accesses)
+RESULT bench=compact backend=segv threads=4 pages=131072 gc=0 total_ms=1008.990 sweep_ms=0.000 lat_avg=30545 lat_p50=26109 lat_p99=86963 lat_p999=211856 lat_max=503892 csw=37472 bad=0
+
+=== backend=bpf pages=131072 threads=4 gc_thread=1 ===
+    Per-fault latency (ns): avg=3835 min=40 p50=4348 p99=10860 p999=16902 max=189264 (n=131072)
+    Mutator phase: 132.175 ms (131072 accesses)
+    GC sweep: 132.416 ms
+RESULT bench=compact backend=bpf threads=4 pages=131072 gc=1 total_ms=132.175 sweep_ms=132.416 lat_avg=3835 lat_p50=4348 lat_p99=10860 lat_p999=16902 lat_max=189264 csw=9 bad=0
+
+=== backend=uffd_sigbus pages=131072 threads=4 gc_thread=1 ===
+    Per-fault latency (ns): avg=7235 min=50 p50=9478 p99=17032 p999=22322 max=185407 (n=131072)
+    Mutator phase: 242.887 ms (131072 accesses)
+    GC sweep: 349.728 ms
+RESULT bench=compact backend=uffd_sigbus threads=4 pages=131072 gc=1 total_ms=242.887 sweep_ms=349.728 lat_avg=7235 lat_p50=9478 lat_p99=17032 lat_p999=22322 lat_max=185407 csw=6 bad=0
+
+=== backend=uffd_thread pages=131072 threads=4 gc_thread=1 ===
+    Per-fault latency (ns): avg=11908 min=30 p50=310 p99=33513 p999=63880 max=223438 (n=131072)
+    Mutator phase: 395.944 ms (131072 accesses)
+    GC sweep: 428.972 ms
+RESULT bench=compact backend=uffd_thread threads=4 pages=131072 gc=1 total_ms=395.944 sweep_ms=428.972 lat_avg=11908 lat_p50=310 lat_p99=33513 lat_p999=63880 lat_max=223438 csw=57296 bad=0
+
+=== backend=segv pages=131072 threads=4 gc_thread=1 ===
+    Per-fault latency (ns): avg=29408 min=30 p50=27211 p99=168525 p999=327011 max=1134573 (n=131072)
+    Mutator phase: 970.025 ms (131072 accesses)
+    GC sweep: 969.902 ms
+RESULT bench=compact backend=segv threads=4 pages=131072 gc=1 total_ms=970.025 sweep_ms=969.902 lat_avg=29408 lat_p50=27211 lat_p99=168525 lat_p999=327011 lat_max=1134573 csw=48192 bad=0
+
+=== backend=bpf pages=131072 threads=8 gc_thread=0 ===
+    Per-fault latency (ns): avg=5900 min=3216 p50=5580 p99=12453 p999=20749 max=201717 (n=131072)
+    Mutator phase: 100.759 ms (131072 accesses)
+RESULT bench=compact backend=bpf threads=8 pages=131072 gc=0 total_ms=100.759 sweep_ms=0.000 lat_avg=5900 lat_p50=5580 lat_p99=12453 lat_p999=20749 lat_max=201717 csw=4 bad=0
+
+=== backend=uffd_sigbus pages=131072 threads=8 gc_thread=0 ===
+    Per-fault latency (ns): avg=17239 min=8435 p50=17342 p99=24135 p999=30477 max=278180 (n=131072)
+    Mutator phase: 287.069 ms (131072 accesses)
+RESULT bench=compact backend=uffd_sigbus threads=8 pages=131072 gc=0 total_ms=287.069 sweep_ms=0.000 lat_avg=17239 lat_p50=17342 lat_p99=24135 lat_p999=30477 lat_max=278180 csw=11 bad=0
+
+=== backend=uffd_thread pages=131072 threads=8 gc_thread=0 ===
+    Per-fault latency (ns): avg=47145 min=34765 p50=45115 p99=55784 p999=231343 max=335668 (n=131072)
+    Mutator phase: 777.857 ms (131072 accesses)
+RESULT bench=compact backend=uffd_thread threads=8 pages=131072 gc=0 total_ms=777.857 sweep_ms=0.000 lat_avg=47145 lat_p50=45115 lat_p99=55784 lat_p999=231343 lat_max=335668 csw=131076 bad=0
+
+=== backend=segv pages=131072 threads=8 gc_thread=0 ===
+    Per-fault latency (ns): avg=60032 min=8586 p50=48501 p99=241491 p999=618917 max=3272542 (n=131072)
+    Mutator phase: 989.037 ms (131072 accesses)
+RESULT bench=compact backend=segv threads=8 pages=131072 gc=0 total_ms=989.037 sweep_ms=0.000 lat_avg=60032 lat_p50=48501 lat_p99=241491 lat_p999=618917 lat_max=3272542 csw=71273 bad=0
+
+=== backend=bpf pages=131072 threads=8 gc_thread=1 ===
+    Per-fault latency (ns): avg=5348 min=40 p50=5601 p99=12423 p999=20368 max=216064 (n=131072)
+    Mutator phase: 91.604 ms (131072 accesses)
+    GC sweep: 92.251 ms
+RESULT bench=compact backend=bpf threads=8 pages=131072 gc=1 total_ms=91.604 sweep_ms=92.251 lat_avg=5348 lat_p50=5601 lat_p99=12423 lat_p999=20368 lat_max=216064 csw=8 bad=0
+
+=== backend=uffd_sigbus pages=131072 threads=8 gc_thread=1 ===
+    Per-fault latency (ns): avg=12386 min=110 p50=15890 p99=23574 p999=30357 max=308638 (n=131072)
+    Mutator phase: 207.064 ms (131072 accesses)
+    GC sweep: 339.316 ms
+RESULT bench=compact backend=uffd_sigbus threads=8 pages=131072 gc=1 total_ms=207.064 sweep_ms=339.316 lat_avg=12386 lat_p50=15890 lat_p99=23574 lat_p999=30357 lat_max=308638 csw=13 bad=0
+
+=== backend=uffd_thread pages=131072 threads=8 gc_thread=1 ===
+    Per-fault latency (ns): avg=25918 min=30 p50=321 p99=65593 p999=175959 max=372647 (n=131072)
+    Mutator phase: 427.683 ms (131072 accesses)
+    GC sweep: 463.370 ms
+RESULT bench=compact backend=uffd_thread threads=8 pages=131072 gc=1 total_ms=427.683 sweep_ms=463.370 lat_avg=25918 lat_p50=321 lat_p99=65593 lat_p999=175959 lat_max=372647 csw=59072 bad=0
+
+=== backend=segv pages=131072 threads=8 gc_thread=1 ===
+    Per-fault latency (ns): avg=56430 min=30 p50=33873 p99=383297 p999=886097 max=2867595 (n=131072)
+    Mutator phase: 928.172 ms (131072 accesses)
+    GC sweep: 928.297 ms
+RESULT bench=compact backend=segv threads=8 pages=131072 gc=1 total_ms=928.172 sweep_ms=928.297 lat_avg=56430 lat_p50=33873 lat_p99=383297 lat_p999=886097 lat_max=2867595 csw=93764 bad=0
+
+=== backend=bpf pages=131072 threads=16 gc_thread=0 ===
+    Per-fault latency (ns): avg=6625 min=3366 p50=6221 p99=15789 p999=28003 max=303187 (n=131072)
+    Mutator phase: 56.799 ms (131072 accesses)
+RESULT bench=compact backend=bpf threads=16 pages=131072 gc=0 total_ms=56.799 sweep_ms=0.000 lat_avg=6625 lat_p50=6221 lat_p99=15789 lat_p999=28003 lat_max=303187 csw=8 bad=0
+
+=== backend=uffd_sigbus pages=131072 threads=16 gc_thread=0 ===
+    Per-fault latency (ns): avg=33736 min=13936 p50=33593 p99=41628 p999=55294 max=282318 (n=131072)
+    Mutator phase: 279.157 ms (131072 accesses)
+RESULT bench=compact backend=uffd_sigbus threads=16 pages=131072 gc=0 total_ms=279.157 sweep_ms=0.000 lat_avg=33736 lat_p50=33593 lat_p99=41628 lat_p999=55294 lat_max=282318 csw=9 bad=0
+
+=== backend=uffd_thread pages=131072 threads=16 gc_thread=0 ===
+    Per-fault latency (ns): avg=100814 min=80340 p50=101139 p99=114404 p999=127418 max=360865 (n=131072)
+    Mutator phase: 828.742 ms (131072 accesses)
+RESULT bench=compact backend=uffd_thread threads=16 pages=131072 gc=0 total_ms=828.742 sweep_ms=0.000 lat_avg=100814 lat_p50=101139 lat_p99=114404 lat_p999=127418 lat_max=360865 csw=131080 bad=0
+
+=== backend=segv pages=131072 threads=16 gc_thread=0 ===
+    Per-fault latency (ns): avg=123861 min=7984 p50=70872 p99=708926 p999=2605134 max=4736711 (n=131072)
+    Mutator phase: 1016.902 ms (131072 accesses)
+RESULT bench=compact backend=segv threads=16 pages=131072 gc=0 total_ms=1016.902 sweep_ms=0.000 lat_avg=123861 lat_p50=70872 lat_p99=708926 lat_p999=2605134 lat_max=4736711 csw=119812 bad=0
+
+=== backend=bpf pages=131072 threads=16 gc_thread=1 ===
+    Per-fault latency (ns): avg=6106 min=40 p50=6001 p99=16070 p999=27923 max=289702 (n=131072)
+    Mutator phase: 52.701 ms (131072 accesses)
+    GC sweep: 53.696 ms
+RESULT bench=compact backend=bpf threads=16 pages=131072 gc=1 total_ms=52.701 sweep_ms=53.696 lat_avg=6106 lat_p50=6001 lat_p99=16070 lat_p999=27923 lat_max=289702 csw=10 bad=0
+
+=== backend=uffd_sigbus pages=131072 threads=16 gc_thread=1 ===
+    Per-fault latency (ns): avg=26487 min=40 p50=34634 p99=43872 p999=53170 max=379510 (n=131072)
+    Mutator phase: 219.384 ms (131072 accesses)
+    GC sweep: 351.614 ms
+RESULT bench=compact backend=uffd_sigbus threads=16 pages=131072 gc=1 total_ms=219.384 sweep_ms=351.614 lat_avg=26487 lat_p50=34634 lat_p99=43872 lat_p999=53170 lat_max=379510 csw=14 bad=0
+
+=== backend=uffd_thread pages=131072 threads=16 gc_thread=1 ===
+    Per-fault latency (ns): avg=53875 min=30 p50=311 p99=136535 p999=338253 max=609931 (n=131072)
+    Mutator phase: 443.110 ms (131072 accesses)
+    GC sweep: 474.053 ms
+RESULT bench=compact backend=uffd_thread threads=16 pages=131072 gc=1 total_ms=443.110 sweep_ms=474.053 lat_avg=53875 lat_p50=311 lat_p99=136535 lat_p999=338253 lat_max=609931 csw=57251 bad=0
+
+=== backend=segv pages=131072 threads=16 gc_thread=1 ===
+    Per-fault latency (ns): avg=116214 min=30 p50=45064 p99=851042 p999=2074351 max=5086125 (n=131072)
+    Mutator phase: 954.146 ms (131072 accesses)
+    GC sweep: 954.272 ms
+RESULT bench=compact backend=segv threads=16 pages=131072 gc=1 total_ms=954.146 sweep_ms=954.272 lat_avg=116214 lat_p50=45064 lat_p99=851042 lat_p999=2074351 lat_max=5086125 csw=119646 bad=0
+
