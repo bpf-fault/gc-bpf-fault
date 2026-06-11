@@ -1,0 +1,22 @@
+Using scaled threading model. 32 processors detected, 32 threads used to drive the workload, in a possible range of [1,1024]
+Version: h2 2.2.220 derby 10.15.2.0 (use -p to print nominal benchmark stats)
+Preparing the H2 database...
+TPCC configuration: scale: 16, terminals: 32, transactions: 100000
+===== DaCapo 23.11-MR2-chopin h2 starting warmup 1 =====
+Starting 100000 requests...
+5%10%15%20%25%30%35%40%45%50%55%60%65%70%75%80%85%90%95%100%
+Completed requests
+	Stock level .............   3973 ( 4.0%)
+	Order status by name ....   2361 ( 2.4%)
+	Order status by ID ......   1609 ( 1.6%)
+	Payment by name .........  25847 (25.8%)
+	Payment by ID ...........  17220 (17.2%)
+	Delivery schedule .......   4029 ( 4.0%)
+	New order ...............  44509 (44.5%)
+	New order rollback ......    452 ( 0.5%)
+===== DaCapo 23.11-MR2-chopin h2 completed warmup 1 in 4945 msec =====
+===== DaCapo processed 100000 requests in 4928 msec, 20292 requests per second =====
+===== DaCapo tail latency, simple: 50% 453 usec, 90% 2911 usec, 99% 11220 usec, 99.9% 97167 usec, 99.99% 107005 usec, max 117282 usec, measured over 100000 events =====
+===== DaCapo tail latency, metered 100ms smoothing: 50% 1361 usec, 90% 4503 usec, 99% 14589 usec, 99.9% 97167 usec, 99.99% 107005 usec, max 117282 usec, measured over 100000 events =====
+===== DaCapo tail latency, metered full smoothing: 50% 95203 usec, 90% 259429 usec, 99% 303360 usec, 99.9% 308469 usec, 99.99% 315733 usec, max 323240 usec, measured over 100000 events =====
+Resetting database to initial state.....

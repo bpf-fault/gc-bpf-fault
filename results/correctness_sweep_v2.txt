@@ -30,3 +30,11 @@ PASS sunflow Barrier
 PASS sunflow Bpf
 PASS sunflow Uffd
 PASS sunflow Segv
+PASS xalan Barrier
+PASS xalan Bpf
+PASS xalan Uffd
+PASS xalan Segv
+PASS zxing Barrier
+PASS zxing Bpf
+PASS zxing Uffd
+PASS zxing Segv

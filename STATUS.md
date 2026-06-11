@@ -131,3 +131,20 @@ rescanned (were 0 objects on xalan).
 - Open risks: cycle-2 mremap of a registered VMA (kernel may reject —
   would be a bpf-fault finding); uffd re-register per cycle (EBUSY?);
   last-region mremap if region partially mapped.
+
+## Class B.0 VALIDATED (2026-06-12)
+- fop@128M (many GC cycles), pmd, luindex, avrora all PASS on Compressor
+  with MMTK_COMPACT_FAULTS=Bpf and =Uffd (stock None as control).
+- Repeat-cycle mremap+register of bpf-fault regions works (no kernel issue).
+- Fixed: uffd backend must UFFDIO_UNREGISTER each region after install —
+  with UFFD_FEATURE_SIGBUS, beyond-cursor pages SIGBUS on TLAB zeroing
+  instead of zero-filling (bpf needed no fix: state-0 zero-fills in-kernel).
+- B.0 timings are expected to trail stock (mechanism validation, still STW).
+- Next: B.1 — move install out of the pause: resume mutators after
+  SecondRoots; GC sweep thread installs linearly; mutator faults on staged
+  pages install in-kernel (bpf) / via SIGBUS handler + UFFDIO_COPY (uffd);
+  unprocessed-page faults SIGBUS -> mutator stages the page ART-style.
+  Requires: deferring forwarding.release() + AfterCompact LOS fixup +
+  allocation-into-unmaterialized-regions guard (see docs/class-b-design.md).
+- v2 perf table contaminated by concurrent B.0 builds/tests (my error);
+  clean v3 run queued after v2 completes: results/perf_quick_v3.txt.
