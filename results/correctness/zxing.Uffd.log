@@ -1,0 +1,12 @@
+Using scaled threading model. 32 processors detected, 32 threads used to drive the workload, in a possible range of [1,unlimited]
+Version: zxing 3.5.2 (use -p to print nominal benchmark stats)
+===== DaCapo 23.11-MR2-chopin zxing starting warmup 1 =====
+
+Decoded 963 files out of 1254 successfully (76%)
+
+===== DaCapo 23.11-MR2-chopin zxing completed warmup 1 in 2268 msec =====
+===== DaCapo 23.11-MR2-chopin zxing starting =====
+
+Decoded 963 files out of 1254 successfully (76%)
+
+===== DaCapo 23.11-MR2-chopin zxing PASSED in 954 msec =====

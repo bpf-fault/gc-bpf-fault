@@ -27,3 +27,7 @@ Calibrating tests. Please wait... done.
 
 Running 2 round(s) of the suite at warp factor 20:
 
+* Round 1 done.
+* Round 2 done.
+
+===== DaCapo 23.11-MR2-chopin jython PASSED in 8743 msec =====

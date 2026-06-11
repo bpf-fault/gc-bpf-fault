@@ -14,7 +14,9 @@
   JDK: /mydata/openjdk-mmtk/build/linux-x86_64-server-release/images/jdk
 
 ## Class A: IMPLEMENTED (2026-06-11), validation in progress
-All three backends pass DaCapo lusearch end-to-end with the compiled barrier
+CORRECTNESS VALIDATED: 40/40 sweep runs pass (avrora fop h2 jython luindex
+lusearch pmd sunflow xalan zxing x Barrier|Bpf|Uffd|Segv, -Xmx4G, -n 2).
+All three backends pass DaCapo end-to-end with the compiled barrier
 removed (verified: eBPF struct_ops live in the java process; non-root Bpf run
 panics in shim load, proving the tracker initializes; option parse warns on
 bogus values). Correctness sweep across 10 DaCapo benchmarks x 4 configs in

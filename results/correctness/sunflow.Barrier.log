@@ -1,0 +1,5 @@
+Using scaled threading model. 32 processors detected, 32 threads used to drive the workload, in a possible range of [1,1024]
+===== DaCapo 23.11-MR2-chopin sunflow starting warmup 1 =====
+===== DaCapo 23.11-MR2-chopin sunflow completed warmup 1 in 6340 msec =====
+===== DaCapo 23.11-MR2-chopin sunflow starting =====
+===== DaCapo 23.11-MR2-chopin sunflow PASSED in 4215 msec =====
