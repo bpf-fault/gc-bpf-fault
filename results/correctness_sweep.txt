@@ -1,2 +1,15 @@
 PASS avrora Barrier
 PASS avrora Bpf
+PASS avrora Uffd
+PASS avrora Segv
+PASS fop Barrier
+PASS fop Bpf
+PASS fop Uffd
+PASS fop Segv
+PASS h2 Barrier
+PASS h2 Bpf
+PASS h2 Uffd
+PASS h2 Segv
+PASS jython Barrier
+PASS jython Bpf
+PASS jython Uffd
