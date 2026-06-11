@@ -13,7 +13,40 @@
   (/mydata/dacapo/dacapo-23.11) lusearch on GenImmix.
   JDK: /mydata/openjdk-mmtk/build/linux-x86_64-server-release/images/jdk
 
-## Class A design (in progress)
+## Class A: IMPLEMENTED (2026-06-11), validation in progress
+All three backends pass DaCapo lusearch end-to-end with the compiled barrier
+removed (verified: eBPF struct_ops live in the java process; non-root Bpf run
+panics in shim load, proving the tracker initializes; option parse warns on
+bogus values). Correctness sweep across 10 DaCapo benchmarks x 4 configs in
+results/correctness/. Run with:
+  sudo MMTK_PLAN=GenImmix MMTK_DIRTY_TRACKING={Barrier|Bpf|Uffd|Segv} \
+    $JDK/bin/java -XX:+UseThirdPartyHeap ...
+(JDK build needs MMTK_VO_BIT=1; Bpf backend needs root + shim/libgcbpf.so.)
+Note: no RUST_LOG/info logging visible in the JVM (logger not initialized by
+binding in this config) — use bpftool / behavioral checks instead.
+
+Implementation (committed on gc-bpf-fault branches):
+- mmtk-core: util/dirty_track.rs (tracker + 3 backends), dirty_tracking
+  option, ScanVMDirtyPages packet (VO-bit page scan incl. spanning object),
+  ScanDirtyStash packet, GenImmix prepare/end_of_gc protect/unprotect wiring,
+  NoBarrier mutator gating. LOS/immortal/nonmoving conservatively re-scanned
+  each nursery GC via stash enumerated in prepare BEFORE the LOS treadmill
+  flips (enumerate_objects asserts outside-GC; tracing races otherwise).
+- mmtk-openjdk: api.rs mmtk_active_barrier -> NoBarrier when tracking active.
+- gc-bpf-fault/shim: libgcbpf.so (skeleton load/attach, multi-region
+  register, WP enable/disable, mmaped dirty bitmap), dlopen'ed by mmtk-core.
+
+## Class A remaining
+- Sweep results -> fix any failures.
+- Perf evaluation harness: multiple invocations, heap sizes 1.5-6x min heap,
+  GC-time/mutator-time split (DaCapo callbacks or -Xlog:gc), all 4 configs;
+  PGO builds for the paper-grade numbers (see mmtk-openjdk README).
+- Known v1 simplifications: LOS not WP-tracked (conservative rescan instead;
+  fine for most benchmarks, costly for LOS-heavy ones); per-cycle protect of
+  ALL mature chunks (could protect only previously-dirty ones); VO_BIT=1 in
+  all configs (same alloc cost everywhere, fair).
+
+## Old design notes (Class A)
 GenImmix + runtime option `vm_dirty_tracking=none|bpf|uffd|segv`:
 - api.rs `mmtk_active_barrier()` returns NoBarrier when enabled (no compiled
   barrier in C1/C2/interp); mutator barrier semantics likewise.
