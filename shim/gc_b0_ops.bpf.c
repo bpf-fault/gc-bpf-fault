@@ -71,46 +71,49 @@ struct {
 struct fwd_ctx {
 	unsigned char *page;
 	unsigned long page_refbm;       /* refbm byte addr for slot 0 of page */
-	__u64 refword;                  /* cached 64 reference bits */
 };
 
-/* Forward one 4-byte slot on the page if the reference bitmap marks it. */
-static int fwd_slot(__u32 i, void *vctx)
+#define SLOTS_PER_PAGE (PAGE_SIZE / 4)   /* 1024 */
+#define REFWORDS_PER_PAGE (SLOTS_PER_PAGE / 64) /* 16 */
+
+/* Forward all reference slots in one 64-slot group (one bpf_loop iteration,
+ * so dispatch is 16/page not 1024/page).  The forward is a direct arena
+ * lookup, so the inner 64-bit loop stays simple for the verifier. */
+static int fwd_word(__u32 w, void *vctx)
 {
 	struct fwd_ctx *c = vctx;
-	unsigned int off, idx;
-	__u32 v, nv;
-	unsigned long old;
+	__u32 __arena *table = (__u32 __arena *)arena_base(&fwd_arena);
+	__u64 rw;
+	int b;
 
-	if (i >= PAGE_SIZE / 4)
+	if (w >= REFWORDS_PER_PAGE)
 		return 1;
-	/* barrier so the compiler keeps the mask below (else it proves it
-	 * redundant from the bound above and the verifier loses the bound). */
-	barrier_var(i);
-	idx = i & (PAGE_SIZE / 4 - 1);              /* 0..1023 */
-	/* refill 64 reference bits at each group boundary (8 bytes / 64 slots) */
-	if ((idx & 63) == 0 &&
-	    bpf_probe_read_user(&c->refword, 8, (void *)(c->page_refbm + (idx >> 3))))
+	if (bpf_probe_read_user(&rw, 8, (void *)(c->page_refbm + (w << 3))))
 		return 0;
-	if (!(c->refword & (1ULL << (idx & 63))))
-		return 0;
-	off = idx << 2;                             /* 0..4092, 4-aligned */
-	v = *(__u32 *)(c->page + off);
-	if (v == 0)
-		return 0;
-	/* forward via the GC-built table in the arena (direct access, no
-	 * probe_read): index by word (old_addr - space_base) >> 3. */
-	old = coops_base + ((unsigned long)v << coops_shift);
-	if (old < space_base || old - space_base >= span_len)
-		return 0;                           /* not a compressor-space ref */
-	{
-		__u32 __arena *table = (__u32 __arena *)arena_base(&fwd_arena);
+	if (rw == 0)
+		return 0;                           /* no references in this group */
+	for (b = 0; b < 64; b++) {
+		unsigned int off;
+		__u32 v, nv;
+		unsigned long old;
+
+		if (!(rw & (1ULL << b)))
+			continue;
+		off = ((w << 6) | b) << 2;          /* slot (w*64+b) * 4 */
+		barrier_var(off);
+		off &= (PAGE_SIZE - 4);             /* bound to 0..4092 for verifier */
+		v = *(__u32 *)(c->page + off);
+		if (v == 0)
+			continue;
+		old = coops_base + ((unsigned long)v << coops_shift);
+		if (old < space_base || old - space_base >= span_len)
+			continue;                   /* not a compressor-space ref */
 		nv = table[(old - space_base) >> 3];
+		if (nv == 0)
+			continue;                   /* no live forward: leave as-is */
+		*(__u32 *)(c->page + off) = nv;
+		__sync_fetch_and_add(&b0_refs_forwarded, 1);
 	}
-	if (nv == 0)
-		return 0;                           /* no live forward: leave as-is */
-	*(__u32 *)(c->page + off) = nv;
-	__sync_fetch_and_add(&b0_refs_forwarded, 1);
 	return 0;
 }
 
@@ -141,7 +144,7 @@ int BPF_PROG(handle_page_fault, struct bpf_fault_ops_ctx *ops_ctx,
 			c.page = page;
 			/* byte address of this page's first 4-byte slot's ref bit */
 			c.page_refbm = refbm_base + (((fa - space_base) >> 2) >> 3);
-			bpf_loop(PAGE_SIZE / 4, fwd_slot, &c, 0);
+			bpf_loop(REFWORDS_PER_PAGE, fwd_word, &c, 0);
 		}
 	} else if (st && *st == B0_PENDING) {
 		err = -14; /* -EFAULT: bounce to userspace (SIGBUS steal) */
