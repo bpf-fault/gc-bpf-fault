@@ -1,0 +1,26 @@
+###### h2 heap=512M ######
+=== h2 None heap=512M ===
+@avg_us: 253877
+@gcs: 109
+@max_us: 318116
+=== h2 Bpf heap=512M ===
+@avg_us: 179959
+@gcs: 109
+@max_us: 351285
+=== h2 Uffd heap=512M ===
+@avg_us: 176634
+@gcs: 107
+@max_us: 346142
+###### h2 heap=768M ######
+=== h2 None heap=768M ===
+@avg_us: 355715
+@gcs: 482
+@max_us: 499700
+=== h2 Bpf heap=768M ===
+@avg_us: 254332
+@gcs: 479
+@max_us: 579654
+=== h2 Uffd heap=768M ===
+@avg_us: 254667
+@gcs: 479
+@max_us: 540518

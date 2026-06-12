@@ -283,3 +283,24 @@ heap-size sweeps are the real next steps.
 Kernel items still open (NOT flip-related): munmap-of-arena UAF
 (DerivedPointerTable race, use DONTNEED), fs/userfaultfd.c:803 bpf_fault
 mremap-notification TODO.
+
+## B.1 PAUSE WIN demonstrated on compaction-heavy h2 (2026-06-12 night)
+measure_pauses.sh (uprobe stop/resume), results/classB/h2_pauses.txt:
+            avg pause      max pause
+  512M  None 254ms        318ms
+        Bpf  180ms (-29%) 351ms (+10%)
+        Uffd 177ms (-30%) 346ms
+  768M  None 356ms        500ms
+        Bpf  254ms (-29%) 580ms (+16%)
+        Uffd 255ms (-28%) 540ms
+=> B.1 concurrent compaction cuts AVG STW pause ~29% (the compaction phase
+   moved out of the pause; mark stays STW). The MAX/tail is ~10-16% WORSE:
+   a mutator faulting a still-pending page spins (wait-mode) -> tail latency.
+   This is the steal-mode target. (xalan@1G showed no win: mark-dominated.)
+Bpf vs Uffd pause ~equal (within noise): the pause = mark + flip; ALL fault
+handling is concurrent (in the window), so the pause cannot reflect bpf's
+in-kernel/no-signal advantage. bpf's edge is per-fault latency
+(microbench: bpf 2.8-6.2us vs uffd-SIGBUS 6.6-34us) and shows in stall/
+throughput, not pause. Caveat: bpf lacks UFFDIO_COPY (no page-install cmd),
+so GC-worker bulk install faults each page while uffd does direct
+UFFDIO_COPY -> narrows bpf's edge on the bulk path (kernel gap).
