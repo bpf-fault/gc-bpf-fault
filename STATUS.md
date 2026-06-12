@@ -164,3 +164,46 @@ wins 2.5x. Story: page-WP barrier wins on spatially-clustered writes,
 parity on moderate (lusearch/pmd, where Bpf is the only backend at/below
 Barrier), loses on dense-random-write (h2). Within page-WP backends, Bpf
 is consistently fastest (h2: Bpf +54% vs Segv +72%).
+
+## Class B.1 IMPLEMENTED + measured (2026-06-12 evening)
+Concurrent install window works on both backends (wait-mode v0): xalan,
+pmd, luindex, avrora, fop PASS with MMTK_COMPACT_FAULTS={Bpf|Uffd}
+MMTK_COMPACT_CONCURRENT=true MMTK_NO_REFERENCE_TYPES=true
+MMTK_NO_FINALIZER=true (Compressor plan, b0test JDK conf).
+Bugs fixed en route: cursor preset must use the transducer's final
+position (forward() of a non-object-start address is inexact); uffd
+handler ops must tolerate ENOENT (GC unregisters after installing).
+
+Pause measurement (scripts/measure_pauses.sh, uprobes on
+mmtk_stop_all_mutators/mmtk_resume_mutators; xalan 1G, 18 GCs):
+  stock STW Compressor: avg 17ms max 24ms
+  B.1 Bpf/Uffd:         avg ~69ms max ~86ms  <-- WORSE, all in the flip
+Root cause (measured precisely): 539 regions -> ~110 contiguous-run
+mremaps = 60-66ms, ~0.45us/page = per-PTE page-table moves. Two kernel
+causes: (1) registration splits heap VMAs at 1MiB region granularity,
+permanently defeating 2MiB PMD-table moves (mremap of multi-VMA ranges
+works on 6.17 but per-VMA); (2) armed VMAs (uffd-style ctx) force
+marker-preserving per-PTE moves. Unregister-before-mremap measured: no
+help (fragmentation persists). Arena PMD-phase-alignment done (ready for
+the kernel fix). Stage throughput cost: pmd 3.9s vs stock 2.4s
+(wait-mode spins; steal-mode is the known fix).
+
+## KERNEL WORK NEEDED (the bpf-fault paper deliverables from Class B)
+1. PMD-level page-table moves in mremap for missing-mode bpf-fault VMAs
+   (no WP markers to preserve) + VMA re-merge after register/unregister so
+   2MiB spans survive. Expected: flip 63ms -> ~1-2ms (O(PMDs) not O(pages)),
+   making the B.1 pause ~5x BETTER than stock instead of 4x worse.
+2. BUG: munmap of an mremap-destination VMA that inherited the fault ctx
+   (MREMAP_DONTUNMAP source registered) corrupts subsequent fault handling
+   (mutator crashes); reproduce via arena-slot munmap in finish_region
+   (currently disabled under `if false` in compact_faults.rs).
+3. Earlier list still stands: page-install command (UFFDIO_COPY equiv),
+   sleepable wait-for-staging kfunc, chunked WP ops.
+
+## Next steps
+1. Kernel fix #1 above in /mydata/linux (build + install_kernel.sh +
+   reboot node), re-measure B.1 pauses — the expected headline.
+2. Steal-mode self-staging (mutator compacts the faulted region itself)
+   for window throughput; per-page staging later.
+3. Class A eval hardening (heap sweep, invocations, PGO) + h2 honest-limit
+   analysis writeup; Class B same once kernel fix lands.
