@@ -5,3 +5,6 @@ micro/vmlinux.h
 micro/bench_wp_barrier
 micro/bench_compact
 scratch/
+micro/test_flip_unmap
+micro/test_pmdmove
+micro/test_frag
