@@ -427,3 +427,15 @@ forward) is the residual eBPF cost: the 1024-iter bpf_loop/page + one table
 probe_read/ref + the 4 KiB page-copy probe_read.  Next lever: put the table
 (and ideally the staged page) in a BPF ARENA for direct access (gc_kompress
 showed ~2x over probe_read).
+
+### Clean interleaved best-of-5 A/B (pmd 512M, -n4; low variance)
+| config      | min     | median  | vs baseline |
+|-------------|---------|---------|-------------|
+| bpf-nodefer | 8853 ms | 8918 ms | --          |
+| bpf-defer   | 8757 ms | 8791 ms | -1.4%       |
+| uffd-defer  | 6917 ms | 6965 ms | -22%        |
+Tight clusters (bpf-defer 8757-8864) confirm the signal.  The forward table
+turned the in-kernel forward from a +66% regression into a small WIN over
+baseline (-1.4%).  uffd-defer (native lazy forward) is still ~22% faster --
+the residual in-kernel cost is the 1024-iter bpf_loop/page + per-ref + 4 KiB
+page-copy probe_reads, which a BPF-arena (direct-access) handler would close.
