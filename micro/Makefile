@@ -64,3 +64,9 @@ test_pmdmove: test_pmdmove.c gc_common.h
 
 test_frag: test_frag.c gc_compact_ops.skel.h gc_common.h $(LIBBPF_DIR)/libbpf.a
 	$(CC) $(USER_CFLAGS) -o $@ $< $(USER_LDFLAGS) -static
+
+gc_kfixup_ops.bpf.o: gc_kfixup_ops.bpf.c vmlinux.h $(LIBBPF_DIR)/libbpf.a
+	$(CLANG) $(BPF_CFLAGS) -I$(INCLUDE_DIR) -c $< -o $@
+
+bench_kfixup: bench_kfixup.c gc_kfixup_ops.skel.h gc_common.h $(LIBBPF_DIR)/libbpf.a
+	$(CC) $(USER_CFLAGS) -o $@ $< $(USER_LDFLAGS) -static

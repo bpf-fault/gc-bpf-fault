@@ -8,3 +8,4 @@ scratch/
 micro/test_flip_unmap
 micro/test_pmdmove
 micro/test_frag
+micro/bench_kfixup
