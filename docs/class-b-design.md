@@ -340,3 +340,63 @@ decompress each ref-bit dword (compressed-oops base+shift, passed in) ->
 offset-vector forward (proven in gc_kompress) -> recompress -> write, reading
 refbitmap via `CompactFaults::refbitmap_base`.  No remaining unknowns; the
 uffd path is the executable reference semantics.
+
+## B v2 COMPLETE: in-kernel reference forwarding in the bpf_fault handler (2026-06-13)
+The eBPF missing-fault handler (gc_b0_ops.bpf.c) now forwards references
+IN-KERNEL while materializing each staged page (defer_fwd):
+- reference bitmap (refbm, 1 bit/4-byte slot; 64 bits cached per probe_read)
+  selects reference dwords;
+- each narrow oop is decompressed (coops_base + (v<<coops_shift)), forwarded
+  via the Compressor's offset vector + start/end mark bits read directly from
+  MMTk side metadata (contiguous: base + ((addr>>log_region)>>shift)) with the
+  transducer ported from ForwardingMetadata::forward, and recompressed.
+Params handed to the shim at open_window via gcb0_set_forward; compressed-oops
+base/shift provided by the binding (set_compressed_oops).
+
+Verifier lessons (added to the kernel-side notes):
+- ctx for bpf_loop must hold only the page ptr + a refbm byte-address; a
+  ref-bit array in ctx -> "variable-offset stack read".
+- the in-page write offset needs barrier_var(i) before masking, else the
+  compiler proves the mask redundant from the loop bound and the verifier
+  reports "unbounded memory access".
+
+VALIDATED: B.1 concurrent + bpf-defer, 7/7 DaCapo PASS (luindex lusearch
+avrora xalan h2 fop pmd), output-validated.  In defer mode staging does NO
+forwarding, so the in-kernel handler is the sole forwarder -> correctness
+proves it.
+
+### Preliminary performance (xalan, 512M, -n8; concurrent window faults)
+| config                        | converged | avg window faults |
+|-------------------------------|-----------|-------------------|
+| bpf-nodefer (forward@staging) | 1367 ms   | 40                |
+| bpf-defer  (in-kernel)        | 1443 ms   | 30                |
+| uffd-defer (userspace SIGBUS) | 1408 ms   | 185               |
+Deferring cuts window faults (staging is faster), and the IN-KERNEL handler
+resolves faults ~6x more efficiently than the userspace SIGBUS path
+(30 vs 185) -- the bpf advantage.  xalan is too short for a throughput
+signal; h2 (GC-heavy) measured next.
+
+### Performance (lusearch/avrora/pmd, concurrent; converged DaCapo ms / avg window faults)
+| benchmark | bpf-nodefer (fwd@staging) | bpf-defer (in-kernel) | uffd-defer (userspace) |
+|-----------|-----------|-----------|-----------|
+| lusearch 384M | 6641 / 61  | 7077 / 77  | 6280 / 462 |
+| avrora 256M (GC-light) | 5784 / 2 | 5916 / 1 | 5793 / 29 |
+| pmd 512M  | 5711 / 152 | 9506 / 110 | 4541 / 383 |
+
+FINDINGS (honest, mixed):
+1. DEFERRED/LAZY forwarding is a throughput win: uffd-defer beats baseline
+   (pmd -20%, lusearch -5%) -- only accessed pages are forwarded, so total
+   forward work drops.
+2. The IN-KERNEL eBPF forward is currently too slow: bpf-defer is a throughput
+   LOSS (pmd +66%), erasing the lazy benefit.  Cost = the 1024-iter bpf_loop
+   per page + 2 probe_read_user (offvec+mark) per reference + the 64-iter
+   transducer scan; native userspace forward (uffd) is far cheaper per ref.
+3. The in-kernel handler still resolves faults ~5-6x more efficiently than the
+   userspace SIGBUS path (window faults 30-110 vs 185-462) -- a latency/stall
+   benefit, just outweighed by the per-ref forward overhead on throughput.
+
+CONCLUSION: the lazy-forward IDEA improves GC throughput; eBPF is the wrong
+vehicle for the forward COMPUTATION as written (verifier forces loop-heavy,
+probe_read-heavy code).  Optimisation directions: shrink the per-page loop to
+non-empty 64-bit groups; avoid re-reading offvec/mark per ref; or keep forward
+in userspace (uffd-defer) and use bpf only to eliminate the SIGBUS round-trip.

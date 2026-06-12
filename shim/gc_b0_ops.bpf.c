@@ -94,6 +94,7 @@ static __always_inline unsigned long compressor_forward(unsigned long old)
 struct fwd_ctx {
 	unsigned char *page;
 	unsigned long page_refbm;       /* refbm byte addr for slot 0 of page */
+	__u64 refword;                  /* cached 64 reference bits */
 };
 
 /* Forward one 4-byte slot on the page if the reference bitmap marks it. */
@@ -101,7 +102,6 @@ static int fwd_slot(__u32 i, void *vctx)
 {
 	struct fwd_ctx *c = vctx;
 	unsigned int off, idx;
-	__u8 rb;
 	__u32 v, nv;
 	unsigned long old, new;
 
@@ -111,9 +111,11 @@ static int fwd_slot(__u32 i, void *vctx)
 	 * redundant from the bound above and the verifier loses the bound). */
 	barrier_var(i);
 	idx = i & (PAGE_SIZE / 4 - 1);              /* 0..1023 */
-	if (bpf_probe_read_user(&rb, 1, (void *)(c->page_refbm + (idx >> 3))))
+	/* refill 64 reference bits at each group boundary (8 bytes / 64 slots) */
+	if ((idx & 63) == 0 &&
+	    bpf_probe_read_user(&c->refword, 8, (void *)(c->page_refbm + (idx >> 3))))
 		return 0;
-	if (!(rb & (1u << (idx & 7))))
+	if (!(c->refword & (1ULL << (idx & 63))))
 		return 0;
 	off = idx << 2;                             /* 0..4092, 4-aligned */
 	v = *(__u32 *)(c->page + off);
