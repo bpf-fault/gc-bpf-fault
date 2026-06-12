@@ -70,3 +70,11 @@ gc_kfixup_ops.bpf.o: gc_kfixup_ops.bpf.c vmlinux.h $(LIBBPF_DIR)/libbpf.a
 
 bench_kfixup: bench_kfixup.c gc_kfixup_ops.skel.h gc_common.h $(LIBBPF_DIR)/libbpf.a
 	$(CC) $(USER_CFLAGS) -o $@ $< $(USER_LDFLAGS) -static
+
+# Arena-based in-kernel fixup (needs clang>=19 for native addr_space_cast).
+CLANG20 ?= clang-20
+gc_kfixarena.bpf.o: gc_kfixarena.bpf.c vmlinux.h $(LIBBPF_DIR)/libbpf.a
+	$(CLANG20) -g -O2 -target bpf -mcpu=v3 -D__TARGET_ARCH_x86 -I$(INCLUDE_DIR) -I$(CURDIR) -c $< -o $@
+
+bench_kfixarena: bench_kfixarena.c gc_kfixarena.skel.h gc_common.h $(LIBBPF_DIR)/libbpf.a
+	$(CC) $(USER_CFLAGS) -o $@ $< $(USER_LDFLAGS) -static
