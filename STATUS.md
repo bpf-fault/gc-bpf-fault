@@ -304,3 +304,19 @@ in-kernel/no-signal advantage. bpf's edge is per-fault latency
 throughput, not pause. Caveat: bpf lacks UFFDIO_COPY (no page-install cmd),
 so GC-worker bulk install faults each page while uffd does direct
 UFFDIO_COPY -> narrows bpf's edge on the bulk path (kernel gap).
+
+## B.1 window-stall finding: steal-mode is LOW priority (2026-06-13)
+MMTK_WINDOW_STATS instrumentation (h2@512M, ~108 GCs):
+- MOST windows: 0 mutator faults. Parallel GC-worker staging (Concurrent
+  bucket drained by all ParallelGCThreads) finishes before mutators hit a
+  still-pending page. So wait-mode causes ~no stall in aggregate.
+- avg mutator_faults/window: Bpf 2, Uffd 6 (bpf's faster in-kernel install
+  closes the window sooner -> fewer mutators catch a pending page; a clean
+  bpf-over-uffd signal in the metric that actually exercises the handler).
+- RARE faulting window: a mutator that does hit a pending page spins ~1.8M
+  times (~1.8ms) until the sweep reaches its region. This is the only place
+  steal-mode (mutator self-stages its region) would help: it converts a
+  rare ~1.8ms spin into ~region-compaction work. Low frequency -> low
+  aggregate impact, so steal-mode is deferred, not abandoned.
+Note: h2@512M OOMs at -n>=5 (below h2's ~681M min heap); use -n 4 for GC
+measurement, 768M+ for throughput.
