@@ -123,6 +123,7 @@ static uint64_t b0_space_base;
 static uint64_t b0_arena_base;
 static uint64_t b0_span;
 static uint64_t b0_fwdtable; /* userspace base of the forward-table arena */
+static uint64_t b0_refbits;  /* userspace base of the reference bitmap (in arena) */
 
 /* Returns the arena base address, or 0 on failure. */
 uint64_t gcb0_init(uint64_t space_base, uint64_t span_len)
@@ -166,12 +167,13 @@ uint64_t gcb0_init(uint64_t space_base, uint64_t span_len)
 		fprintf(stderr, "gcb0: set_max_entries failed\n");
 		return 0;
 	}
-	/* Forward-table arena: one u32 per 8-byte word of the span = span/2
-	 * bytes, rounded to pages. */
+	/* BPF arena layout: [ forward table (span/2) | reference bitmap
+	 * (span/32) ], each page-aligned.  Both read directly by the prog. */
+	size_t refbm_off = (span_len / 2 + page - 1) & ~(size_t)(page - 1);
+	size_t refbm_bytes = (span_len / 32 + page - 1) & ~(size_t)(page - 1);
+	size_t arena_bytes = refbm_off + refbm_bytes;
 	{
-		size_t arena_bytes = (span_len / 2 + page - 1) & ~(size_t)(page - 1);
-		size_t arena_pages = arena_bytes / page;
-		if (bpf_map__set_max_entries(b0_skel->maps.fwd_arena, arena_pages)) {
+		if (bpf_map__set_max_entries(b0_skel->maps.fwd_arena, arena_bytes / page)) {
 			fprintf(stderr, "gcb0: arena set_max_entries failed\n");
 			return 0;
 		}
@@ -180,11 +182,12 @@ uint64_t gcb0_init(uint64_t space_base, uint64_t span_len)
 		fprintf(stderr, "gcb0: load failed (root? memlock?)\n");
 		return 0;
 	}
-	/* mmap the arena so the GC can write the forward table; the BPF prog
-	 * reads it directly via arena pointers (no probe_read).  Arenas must be
-	 * mapped at their user_vm_start (= map_extra) with MAP_FIXED. */
+	b0_skel->bss->refbm_off = refbm_off;
+	/* mmap the arena so the GC can write the forward table + reference
+	 * bitmap; the BPF prog reads them directly via arena pointers (no
+	 * probe_read).  Arenas must map at their user_vm_start (= map_extra)
+	 * with MAP_FIXED. */
 	{
-		size_t arena_bytes = (span_len / 2 + page - 1) & ~(size_t)(page - 1);
 		uint64_t va = 1ull << 44; /* must match map_extra in the bpf prog */
 		void *a = mmap((void *)va, arena_bytes, PROT_READ | PROT_WRITE,
 			       MAP_SHARED | MAP_FIXED, bpf_map__fd(b0_skel->maps.fwd_arena), 0);
@@ -193,6 +196,7 @@ uint64_t gcb0_init(uint64_t space_base, uint64_t span_len)
 			return 0;
 		}
 		b0_fwdtable = (uint64_t)a;
+		b0_refbits = (uint64_t)a + refbm_off;
 	}
 
 	map_bytes = (pages * sizeof(uint64_t) + page - 1) & ~(page - 1);
@@ -210,17 +214,14 @@ uint64_t gcb0_init(uint64_t space_base, uint64_t span_len)
 	return b0_arena_base;
 }
 
-/* Class B v2: set in-kernel forward params (compressed-oops base/shift, the
- * MMTk MARK/OFFSET_VECTOR side-metadata bases, and the reference bitmap base).
- * Writable globals, applied after the JVM/metadata are initialized. */
-void gcb0_set_forward(uint64_t fwdtable_base, uint64_t refbm_base,
-		      uint64_t coops_base, unsigned int coops_shift,
+/* Class B v2: set the JVM-dependent forward params (compressed-oops base/shift
+ * and the defer flag).  The arena layout (table at offset 0, refbits at
+ * refbm_off) is set in gcb0_init. */
+void gcb0_set_forward(uint64_t coops_base, unsigned int coops_shift,
 		      unsigned int defer)
 {
 	if (!b0_skel)
 		return;
-	b0_skel->bss->fwdtable_base = fwdtable_base;
-	b0_skel->bss->refbm_base = refbm_base;
 	b0_skel->bss->coops_base = coops_base;
 	b0_skel->bss->coops_shift = coops_shift;
 	b0_skel->bss->defer_fwd = defer;
@@ -231,10 +232,16 @@ uint64_t gcb0_refs_forwarded(void)
 	return b0_skel ? b0_skel->bss->b0_refs_forwarded : 0;
 }
 
-/* Userspace base of the forward-table arena: the GC writes the table here. */
+/* Userspace bases of the arena regions: the GC writes the forward table and
+ * reference bitmap here; the prog reads the same memory in-kernel. */
 uint64_t gcb0_fwdtable_base(void)
 {
 	return b0_fwdtable;
+}
+
+uint64_t gcb0_refbits_base(void)
+{
+	return b0_refbits;
 }
 
 /* Flip a region: move its physical pages into the arena slot and (if

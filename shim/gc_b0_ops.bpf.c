@@ -48,11 +48,11 @@ const volatile unsigned long space_base = 0;
 const volatile unsigned long arena_base = 0;
 const volatile unsigned long span_len = 0;
 
-/* Class B v2 forward params (writable; set after JVM/metadata init). */
-unsigned long fwdtable_base = 0; /* forward table: u32 new-narrow per old slot,
-				  * indexed by (old_addr - space_base) >> shift */
-unsigned long refbm_base = 0;    /* reference bitmap base (1 bit / 4 bytes) */
-unsigned long coops_base = 0;    /* compressed-oops base */
+/* Class B v2 forward params.  The forward table lives at BPF-arena offset 0;
+ * the reference bitmap at arena offset refbm_off (set at init).  Both are read
+ * directly via arena pointers -- no probe_read. */
+unsigned long refbm_off = 0;     /* arena byte offset of the reference bitmap */
+unsigned long coops_base = 0;    /* compressed-oops base (set after JVM init) */
 unsigned int  coops_shift = 0;   /* compressed-oops shift */
 unsigned int  defer_fwd = 0;     /* 1 = forward references in-kernel */
 
@@ -82,14 +82,15 @@ struct fwd_ctx {
 static int fwd_word(__u32 w, void *vctx)
 {
 	struct fwd_ctx *c = vctx;
-	__u32 __arena *table = (__u32 __arena *)arena_base(&fwd_arena);
+	__u8 __arena *arena = (__u8 __arena *)arena_base(&fwd_arena);
+	__u32 __arena *table = (__u32 __arena *)arena;
 	__u64 rw;
 	int b;
 
 	if (w >= REFWORDS_PER_PAGE)
 		return 1;
-	if (bpf_probe_read_user(&rw, 8, (void *)(c->page_refbm + (w << 3))))
-		return 0;
+	/* reference bits, read directly from the arena (no probe_read) */
+	rw = *(__u64 __arena *)(arena + c->page_refbm + (w << 3));
 	if (rw == 0)
 		return 0;                           /* no references in this group */
 	for (b = 0; b < 64; b++) {
@@ -142,8 +143,8 @@ int BPF_PROG(handle_page_fault, struct bpf_fault_ops_ctx *ops_ctx,
 				ops_ctx->address & ~(unsigned long)(PAGE_SIZE - 1);
 
 			c.page = page;
-			/* byte address of this page's first 4-byte slot's ref bit */
-			c.page_refbm = refbm_base + (((fa - space_base) >> 2) >> 3);
+			/* arena byte offset of this page's first slot's ref bit */
+			c.page_refbm = refbm_off + (((fa - space_base) >> 2) >> 3);
 			bpf_loop(REFWORDS_PER_PAGE, fwd_word, &c, 0);
 		}
 	} else if (st && *st == B0_PENDING) {
