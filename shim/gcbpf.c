@@ -122,6 +122,7 @@ static uint64_t *b0_state;
 static uint64_t b0_space_base;
 static uint64_t b0_arena_base;
 static uint64_t b0_span;
+static uint64_t b0_fwdtable; /* userspace base of the forward-table arena */
 
 /* Returns the arena base address, or 0 on failure. */
 uint64_t gcb0_init(uint64_t space_base, uint64_t span_len)
@@ -165,9 +166,33 @@ uint64_t gcb0_init(uint64_t space_base, uint64_t span_len)
 		fprintf(stderr, "gcb0: set_max_entries failed\n");
 		return 0;
 	}
+	/* Forward-table arena: one u32 per 8-byte word of the span = span/2
+	 * bytes, rounded to pages. */
+	{
+		size_t arena_bytes = (span_len / 2 + page - 1) & ~(size_t)(page - 1);
+		size_t arena_pages = arena_bytes / page;
+		if (bpf_map__set_max_entries(b0_skel->maps.fwd_arena, arena_pages)) {
+			fprintf(stderr, "gcb0: arena set_max_entries failed\n");
+			return 0;
+		}
+	}
 	if (gc_b0_ops_bpf__load(b0_skel)) {
 		fprintf(stderr, "gcb0: load failed (root? memlock?)\n");
 		return 0;
+	}
+	/* mmap the arena so the GC can write the forward table; the BPF prog
+	 * reads it directly via arena pointers (no probe_read).  Arenas must be
+	 * mapped at their user_vm_start (= map_extra) with MAP_FIXED. */
+	{
+		size_t arena_bytes = (span_len / 2 + page - 1) & ~(size_t)(page - 1);
+		uint64_t va = 1ull << 44; /* must match map_extra in the bpf prog */
+		void *a = mmap((void *)va, arena_bytes, PROT_READ | PROT_WRITE,
+			       MAP_SHARED | MAP_FIXED, bpf_map__fd(b0_skel->maps.fwd_arena), 0);
+		if (a == MAP_FAILED) {
+			perror("gcb0: mmap fwd_arena");
+			return 0;
+		}
+		b0_fwdtable = (uint64_t)a;
 	}
 
 	map_bytes = (pages * sizeof(uint64_t) + page - 1) & ~(page - 1);
@@ -204,6 +229,12 @@ void gcb0_set_forward(uint64_t fwdtable_base, uint64_t refbm_base,
 uint64_t gcb0_refs_forwarded(void)
 {
 	return b0_skel ? b0_skel->bss->b0_refs_forwarded : 0;
+}
+
+/* Userspace base of the forward-table arena: the GC writes the table here. */
+uint64_t gcb0_fwdtable_base(void)
+{
+	return b0_fwdtable;
 }
 
 /* Flip a region: move its physical pages into the arena slot and (if

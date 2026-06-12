@@ -34,7 +34,7 @@ gc_wp_ops.bpf.o: ../micro/gc_wp_ops.bpf.c vmlinux.h $(LIBBPF_DIR)/libbpf.a
 	$(CLANG) $(BPF_CFLAGS) -I$(INCLUDE_DIR) -I$(CURDIR) -c $< -o $@
 
 gc_b0_ops.bpf.o: gc_b0_ops.bpf.c vmlinux.h $(LIBBPF_DIR)/libbpf.a
-	$(CLANG) $(BPF_CFLAGS) -I$(INCLUDE_DIR) -I$(CURDIR) -c $< -o $@
+	clang-20 $(BPF_CFLAGS) -mcpu=v3 -I$(INCLUDE_DIR) -I$(CURDIR) -c $< -o $@
 
 %.skel.h: %.bpf.o $(BPFTOOL)
 	$(BPFTOOL) gen skeleton $< > $@

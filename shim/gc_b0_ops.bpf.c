@@ -24,8 +24,21 @@
 
 char _license[] SEC("license") = "GPL";
 
+#define __arena __attribute__((address_space(1)))
+#define arena_base(map) ((void __arena *)((struct bpf_arena *)(map))->user_vm_start)
+
 #define PAGE_SIZE 4096
 #define PAGE_SHIFT 12
+
+/* BPF arena holding the forward table for DIRECT access (no probe_read).
+ * Sized at load to cover span/2 bytes; userspace (the GC) writes the table
+ * via the arena's mmap; this prog reads it via arena pointers. */
+struct {
+	__uint(type, BPF_MAP_TYPE_ARENA);
+	__uint(map_flags, BPF_F_MMAPABLE);
+	__uint(max_entries, 1); /* resized to (span/2)/4096 before load */
+	__ulong(map_extra, 1ull << 44);
+} fwd_arena SEC(".maps");
 
 #define B0_ZERO_FILL 0
 #define B0_STAGED 1
@@ -85,14 +98,15 @@ static int fwd_slot(__u32 i, void *vctx)
 	v = *(__u32 *)(c->page + off);
 	if (v == 0)
 		return 0;
-	/* forward via the GC-built table: index by word (old_addr-space_base)>>3 */
+	/* forward via the GC-built table in the arena (direct access, no
+	 * probe_read): index by word (old_addr - space_base) >> 3. */
 	old = coops_base + ((unsigned long)v << coops_shift);
 	if (old < space_base || old - space_base >= span_len)
 		return 0;                           /* not a compressor-space ref */
-	if (bpf_probe_read_user(&nv, sizeof(nv),
-				(void *)(fwdtable_base +
-					 (((old - space_base) >> 3) << 2))))
-		return 0;
+	{
+		__u32 __arena *table = (__u32 __arena *)arena_base(&fwd_arena);
+		nv = table[(old - space_base) >> 3];
+	}
 	if (nv == 0)
 		return 0;                           /* no live forward: leave as-is */
 	*(__u32 *)(c->page + off) = nv;
