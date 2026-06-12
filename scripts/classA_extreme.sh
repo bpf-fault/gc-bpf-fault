@@ -1,16 +1,11 @@
 #!/bin/bash
-# Class A heap-size crossover: page-WP barriers (Bpf/Uffd) vs the compiled
-# ObjectBarrier, swept across heap sizes (multiples of per-benchmark DaCapo
-# G1 min heap). Best-of-2 invocations, steady-state (-n 6) last iteration.
 set -u
 JH=/mydata/openjdk-mmtk/build/b0test/images/jdk
 D=/mydata/dacapo/dacapo-23.11/dacapo-23.11-MR2-chopin.jar
 cd /mydata/dacapo/dacapo-23.11
-declare -A MIN=([lusearch]=19 [xalan]=13 [h2]=681)
-declare -A MULTS=([lusearch]="2 4 8 16 32 64" [xalan]="2 4 8 16 32 64" [h2]="2 3 4")
-for b in lusearch xalan h2; do
-  for m in ${MULTS[$b]}; do
-    heap=$(( MIN[$b] * m ))M
+declare -A MIN=([lusearch]=19 [xalan]=13)
+for b in lusearch xalan; do
+  for heap in $(( MIN[$b]*128 ))M $(( MIN[$b]*256 ))M 4096M; do
     for cfg in Barrier Bpf Uffd; do
       best=999999
       for inv in 1 2; do
@@ -19,7 +14,7 @@ for b in lusearch xalan h2; do
           -jar "$D" "$b" -n 6 2>&1 | grep -oP "PASSED in \K[0-9]+")
         [ -n "$ms" ] && [ "$ms" -lt "$best" ] && best=$ms
       done
-      echo "CROSS bench=$b mult=${m}x heap=$heap cfg=$cfg ms=$best"
+      echo "XCROSS bench=$b heap=$heap cfg=$cfg ms=$best"
     done
   done
 done

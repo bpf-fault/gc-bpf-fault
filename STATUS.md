@@ -421,3 +421,26 @@ operation is cheap. bpf-fault's BPF_LINK_FAULT_OPS_CMD writeprotect is
 would amortize the fixed overhead and could flip the tight-heap result.
 (Same family as the snapshot-finalize chunked-WP lesson.) This is the key
 bpf-fault change Class A motivates.
+
+## Class A heap-size CROSSOVER — complete (2026-06-13)
+Full sweep (best-of-2, -n6 steady iter): results/classA/crossover.txt +
+extreme.txt. Bpf (page-WP) vs Barrier (compiled ObjectBarrier):
+  xalan (array-heavy, clustered writes):
+    2x +63% | 64x +43% | 128x +4% | 256x -32% | 4GB -58%   <- CROSSES, WINS
+  lusearch (scattered writes, high alloc, worst case):
+    2x +106% | 64x +49% | 256x +6%                          <- only reaches parity
+  h2: 2x +82%, 3x +77% (large min heap, stayed in losing regime)
+TWO-DIMENSIONAL result:
+  (1) Heap size: page-WP overhead falls monotonically as heap grows (fewer
+      GCs -> less per-GC re-arming; the ~5us-WP-call bottleneck amortizes).
+  (2) Write pattern: page-grain remset BEATS object-grain modbuf only with
+      WRITE LOCALITY. xalan writes large arrays (clustered) -> page-grain
+      wins once GC is rare; the compiled barrier pays per-store + rescans
+      whole arrays. lusearch scatters writes -> page-grain ~= object-grain,
+      reaches only parity.
+=> The earlier -58% (xalan @4GB) is real and REPRODUCES on the current
+   build. Bpf < Uffd < Segv throughout (mechanism ordering holds). The
+   honest Class A claim: bpf_fault page-WP barriers win for write-clustered
+   workloads at large heaps, reach parity for scattered-write workloads at
+   large heaps, and lose at tight heaps (frequent GC) where per-GC WP
+   re-arming dominates -- which a batched WP command would mitigate.
