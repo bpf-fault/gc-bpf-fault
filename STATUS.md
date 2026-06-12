@@ -207,3 +207,18 @@ the kernel fix). Stage throughput cost: pmd 3.9s vs stock 2.4s
    for window throughput; per-page staging later.
 3. Class A eval hardening (heap sweep, invocations, PGO) + h2 honest-limit
    analysis writeup; Class B same once kernel fix lands.
+
+## B.1 pause RESOLVED to near-parity (2026-06-12 late)
+Root cause of the 63ms flip found by kprobe+stack profiling: NOT PTE moves
+(move_page_tables = 4.5ms total) but mremap(MREMAP_FIXED)'s implicit dest
+unmap tearing down last cycle's from-space pages in the pause. FIX
+(userspace, committed): MADV_DONTNEED the arena slot in finish_region
+(concurrent). xalan@1G: pause avg 69ms -> 24ms / max 46ms vs stock STW
+20.6ms / 24ms. pmd throughput 5.3 -> 3.1s (stock 2.4s, wait-mode).
+Remaining gap + going BELOW stock needs the kernel change:
+move_normal_pmd (mm/mremap.c:382) bails on !pmd_none(*new_pmd); after
+DONTNEED the dest has empty-but-present page tables. Fix = detect empty
+dest table, free it under the ptls, proceed with PMD move (the in-tree
+comment literally suggests this). Alternative: reclaim empty PTs in
+MADV_DONTNEED. Also still open: munmap-of-arena crash (timing/kernel?),
+fs/userfaultfd.c:803 TODO (bpf_fault mremap notification).
