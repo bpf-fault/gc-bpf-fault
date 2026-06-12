@@ -58,3 +58,9 @@ test_flip: test_flip.c gc_compact_ops.skel.h gc_common.h $(LIBBPF_DIR)/libbpf.a
 
 test_flip_unmap: test_flip_unmap.c gc_compact_ops.skel.h gc_common.h $(LIBBPF_DIR)/libbpf.a
 	$(CC) $(USER_CFLAGS) -o $@ $< $(USER_LDFLAGS) -static
+
+test_pmdmove: test_pmdmove.c gc_common.h
+	$(CC) $(USER_CFLAGS) -o $@ $< -static
+
+test_frag: test_frag.c gc_compact_ops.skel.h gc_common.h $(LIBBPF_DIR)/libbpf.a
+	$(CC) $(USER_CFLAGS) -o $@ $< $(USER_LDFLAGS) -static

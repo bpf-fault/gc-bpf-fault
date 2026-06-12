@@ -252,3 +252,34 @@ virtme-ng harness (no host reboot for kernel iteration):
   stdout sentinels.
 - This is the loop for the move_normal_pmd kernel fix: edit mm/mremap.c,
   make bzImage, vng_test.sh to measure flip cost, no node reboot.
+
+## CORRECTION: no kernel change needed for the flip (2026-06-12 late night)
+The earlier "63ms flip -> needs a move_normal_pmd kernel fix" was a
+MISATTRIBUTION. Isolation experiments (micro/test_pmdmove.c,
+micro/test_frag.c) + per-op timing in the real JVM disprove all three
+suspected blockers:
+- move_normal_pmd `!pmd_none(*new_pmd)` guard (CORE mm): does NOT fire.
+  A full-range MADV_DONTNEED frees the dest's empty PTE tables, so
+  pmd_none holds and PMD moves succeed. test_pmdmove: fresh dest 1.5ns/pg
+  == DONTNEED'd dest 1.4ns/pg.
+- VMA fragmentation from registration (bpf-fault-specific): does NOT
+  happen. bpf_fault registration in 1MiB chunks leaves ONE VMA
+  (test_frag: single vs chunked both vmas=1, 1.4-1.7ns/pg).
+- uffd-wp per-PTE forcing (uffd_supports_page_table_move): already
+  EXEMPTS VM_BPF_FAULT (userfaultfd_k.h:342).
+Real JVM flip, instrumented separately: mremap=1.3ms + register=0.13ms =
+~1.4ms for ~540MB live (xalan@1G, 541 regions / 113 runs). The earlier
+~60ms was mremap(MREMAP_FIXED) synchronously tearing down the PREVIOUS
+cycle's arena pages — already fixed (userspace) by releasing the arena
+concurrently via MADV_DONTNEED in finish_region.
+=> The move_normal_pmd guard IS core-mm-wide IF it were the issue, but it
+   is NOT the issue. No kernel change required for the flip pause.
+Remaining B.1 perf note: xalan pause 24ms vs stock 20ms is dominated by
+the STW MARK phase (both plans), not compaction; the flip adds ~1.4ms.
+The pause WIN shows up where the compact phase is a large fraction of GC
+(big heaps / compaction-heavy workloads) — needs the right workload to
+demonstrate, not a kernel change. Steal-mode (window throughput) and
+heap-size sweeps are the real next steps.
+Kernel items still open (NOT flip-related): munmap-of-arena UAF
+(DerivedPointerTable race, use DONTNEED), fs/userfaultfd.c:803 bpf_fault
+mremap-notification TODO.
