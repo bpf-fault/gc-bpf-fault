@@ -20,7 +20,7 @@ USER_LDFLAGS = $(LIBBPF_DIR)/libbpf.a -lelf -lz -lzstd -lpthread
 
 VMLINUX_BTF ?= /sys/kernel/btf/vmlinux
 
-all: bench_wp_barrier bench_compact test_flip
+all: bench_wp_barrier bench_compact test_flip test_flip_unmap
 
 $(LIBBPF_DIR)/libbpf.a: $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(LIBBPF_DIR)
 	$(MAKE) -C $(LIBBPF_SRC) BUILD_STATIC_ONLY=1 \
@@ -54,4 +54,7 @@ clean:
 .PHONY: all clean
 
 test_flip: test_flip.c gc_compact_ops.skel.h gc_common.h $(LIBBPF_DIR)/libbpf.a
+	$(CC) $(USER_CFLAGS) -o $@ $< $(USER_LDFLAGS) -static
+
+test_flip_unmap: test_flip_unmap.c gc_compact_ops.skel.h gc_common.h $(LIBBPF_DIR)/libbpf.a
 	$(CC) $(USER_CFLAGS) -o $@ $< $(USER_LDFLAGS) -static
