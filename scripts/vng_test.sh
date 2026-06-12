@@ -11,10 +11,11 @@ set -u
 KDIR=${KDIR:-/mydata/linux}
 BZ=${BZ:-$KDIR/arch/x86/boot/bzImage}
 TIMEOUT=${TIMEOUT:-180}
+MEM=${MEM:-8G}
 CMD=${1:-"echo no-command"}
 
 cd "$KDIR"
-timeout "$TIMEOUT" vng -r "$BZ" --user root -- bash -c "
+timeout "$TIMEOUT" vng -r "$BZ" -m "$MEM" --user root -- bash -c "
   mount -t bpf bpf /sys/fs/bpf 2>/dev/null
   $CMD
 " 2>&1
