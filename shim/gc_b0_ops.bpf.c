@@ -21,6 +21,7 @@ char _license[] SEC("license") = "GPL";
 
 #define B0_ZERO_FILL 0
 #define B0_STAGED 1
+#define B0_PENDING 2
 
 const volatile unsigned long space_base = 0;
 const volatile unsigned long arena_base = 0;
@@ -56,6 +57,12 @@ int BPF_PROG(handle_page_fault, struct bpf_fault_ops_ctx *ops_ctx,
 		err = bpf_probe_read_user(page, PAGE_SIZE,
 					  (void *)(arena_base + off));
 		__sync_fetch_and_add(&b0_staged_installs, 1);
+	} else if (st && *st == B0_PENDING) {
+		/* Not yet compacted by the GC: bounce to userspace via
+		 * SIGBUS; the mutator's signal handler waits for staging
+		 * (or stages the region itself), then the retried fault
+		 * installs in-kernel. */
+		err = -14; /* -EFAULT */
 	}
 	return err;
 }

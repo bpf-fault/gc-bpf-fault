@@ -133,11 +133,24 @@ uint64_t gcb0_init(uint64_t space_base, uint64_t span_len)
 
 	libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
 
-	arena = mmap(NULL, span_len, PROT_NONE,
-		     MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE, -1, 0);
-	if (arena == MAP_FAILED) {
-		perror("gcb0: arena mmap");
-		return 0;
+	/* Over-reserve and align the arena to the heap's 2 MiB phase so
+	 * mremap can move whole PMD tables (move_normal_pmd) instead of
+	 * individual PTEs — this is the difference between a ~60 ms and a
+	 * sub-ms flip for a ~500 MB live heap. */
+	{
+		size_t pmd = 2UL << 20;
+		void *raw = mmap(NULL, span_len + pmd, PROT_NONE,
+				 MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE,
+				 -1, 0);
+		if (raw == MAP_FAILED) {
+			perror("gcb0: arena mmap");
+			return 0;
+		}
+		uint64_t aligned = (((uint64_t)raw + pmd - 1) & ~(pmd - 1)) |
+				   (space_base & (pmd - 1));
+		if (aligned < (uint64_t)raw)
+			aligned += pmd;
+		arena = (void *)aligned;
 	}
 
 	b0_skel = gc_b0_ops_bpf__open();
@@ -172,9 +185,12 @@ uint64_t gcb0_init(uint64_t space_base, uint64_t span_len)
 	return b0_arena_base;
 }
 
-/* Flip a region: move its physical pages into the arena slot and register
- * the (now empty) original range for missing-fault handling. */
-int gcb0_flip(uint64_t start, uint64_t len)
+/* Flip a region: move its physical pages into the arena slot and (if
+ * do_register) register the original range for missing-fault handling.
+ * Registration persists across cycles (mremap MREMAP_DONTUNMAP keeps the
+ * source VMA and its fault context), so callers skip it after the first
+ * cycle. */
+int gcb0_flip(uint64_t start, uint64_t len, int do_register)
 {
 	void *dst = (void *)(b0_arena_base + (start - b0_space_base));
 	void *r;
@@ -187,6 +203,8 @@ int gcb0_flip(uint64_t start, uint64_t len)
 		perror("gcb0: mremap flip");
 		return -1;
 	}
+	if (!do_register)
+		return 0;
 	if (!b0_link) {
 		b0_link = bpf_map__attach_fault_ops(b0_skel->maps.gc_b0_ops,
 						    (void *)start, len, 0);
@@ -204,6 +222,41 @@ int gcb0_flip(uint64_t start, uint64_t len)
 		}
 	}
 	return 0;
+}
+
+int gcb0_unregister(uint64_t start, uint64_t len)
+{
+	if (!b0_link)
+		return 0;
+	return bpf_link__fault_unregister(bpf_link__fd(b0_link), start, len);
+}
+
+/* Register a range with the b0 link (first call attaches). */
+int gcb0_register(uint64_t start, uint64_t len)
+{
+	if (!b0_skel)
+		return -1;
+	if (!b0_link) {
+		b0_link = bpf_map__attach_fault_ops(b0_skel->maps.gc_b0_ops,
+						    (void *)start, len, 0);
+		return b0_link ? 0 : -1;
+	}
+	if (bpf_link__fault_register(bpf_link__fd(b0_link), start, len)) {
+		if (errno != EBUSY && errno != EEXIST) {
+			perror("gcb0: fault_register");
+			return -1;
+		}
+	}
+	return 0;
+}
+
+/* Unmap a region's arena slot once all its pages are installed, keeping the
+ * VMA count flat across GC cycles. */
+int gcb0_unmap_arena(uint64_t start, uint64_t len)
+{
+	void *slot = (void *)(b0_arena_base + (start - b0_space_base));
+
+	return munmap(slot, len);
 }
 
 uint64_t *gcb0_state(void)
