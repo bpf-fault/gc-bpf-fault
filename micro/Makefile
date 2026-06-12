@@ -78,3 +78,9 @@ gc_kfixarena.bpf.o: gc_kfixarena.bpf.c vmlinux.h $(LIBBPF_DIR)/libbpf.a
 
 bench_kfixarena: bench_kfixarena.c gc_kfixarena.skel.h gc_common.h $(LIBBPF_DIR)/libbpf.a
 	$(CC) $(USER_CFLAGS) -o $@ $< $(USER_LDFLAGS) -static
+
+gc_kompress.bpf.o: gc_kompress.bpf.c vmlinux.h $(LIBBPF_DIR)/libbpf.a
+	$(CLANG20) -g -O2 -target bpf -mcpu=v3 -D__TARGET_ARCH_x86 -I$(INCLUDE_DIR) -I$(CURDIR) -c $< -o $@
+
+bench_kompress: bench_kompress.c gc_kompress.skel.h gc_common.h $(LIBBPF_DIR)/libbpf.a
+	$(CC) $(USER_CFLAGS) -o $@ $< $(USER_LDFLAGS) -static

@@ -10,3 +10,4 @@ micro/test_pmdmove
 micro/test_frag
 micro/bench_kfixup
 micro/bench_kfixarena
+micro/bench_kompress
