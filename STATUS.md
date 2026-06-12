@@ -336,3 +336,19 @@ Plan: per-region atomic state (Unstaged/Staging/Done); mutator faulting K
 CASes K Unstaged->Staging and stages it itself (or waits Done if another
 stager is mid-K, bounded by one region not the whole sweep). VM-agnostic
 SIGBUS handler calls a plan-registered steal callback.
+
+## B.1 steal-mode WORKS — clean concurrent-GC tradeoff (2026-06-13)
+Steal-mode (mutator stages its own faulted region in the SIGBUS handler)
+recovers the wait-mode throughput regression:
+  h2 768M -n4 last-iter:  stock 30.3s | Bpf 33.4s (+10%) | Uffd 33.5s (+11%)
+  (wait-mode was Bpf +45%, Uffd +43%.)
+The residual +10% is the inherent concurrent-compaction tax (staging
+~500MB/GC contends with mutators for CPU/bandwidth) — expected, acceptable.
+fop both backends PASS.
+Livelock during bring-up was a one-line bug: the flip's
+reset_region_staging + mark_region_live calls had silently failed to apply
+(Python edit aborted on an assertion before writing), so no region was
+ever claimable -> nothing staged -> mutators waited forever. Fixed.
+=> B.1 net: ~29% STW pause reduction (h2) for ~10% throughput cost. A clean
+   latency/throughput tradeoff, the classic concurrent-GC win, with
+   bpf_fault providing the in-kernel fault path.
