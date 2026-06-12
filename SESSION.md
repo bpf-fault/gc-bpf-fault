@@ -184,3 +184,16 @@ Earlier at -Xmx4G (~200x min, rare GC): xalan Bpf -58%, lusearch parity.
   on master. b0test JDK is the current build (GenImmix dirty-tracking + all
   Compressor B.1/steal-mode). Main JDK (linux-x86_64-server-release) is older.
 - No background tasks running; machine idle.
+
+## Class A crossover RESOLVED (2026-06-13, session 2 cont.)
+The heap-sweep eval is complete. Page-WP barrier is two-dimensional:
+- xalan (array-heavy): +63% @2x -> +4% @128x -> -58% @4GB (WINS at large heap)
+- lusearch (scattered): +106% @2x -> +6% @256x (only parity)
+- h2: +77-82% @2-3x (stayed in losing regime)
+Root cause of tight-heap loss = per-GC WP re-arming (~5us/bpf WP call x
+thousands of GCs). Tried promotion-block incremental opt -> WORSE (syscall
+overhead); reverted; chunk-granular is best. bpf-fault fix that would help:
+batched/vectored WP command. bpf<uffd<segv throughout. Data:
+results/classA/{crossover,extreme}.txt. The earlier xalan-4GB -58% REPRODUCES.
+mmtk-core reverted to committed chunk-granular (clean). ALL THREE CLASSES
+(A barrier, B.0/B.1 concurrent compaction + steal-mode) complete + committed.
