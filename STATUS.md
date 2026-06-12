@@ -320,3 +320,19 @@ MMTK_WINDOW_STATS instrumentation (h2@512M, ~108 GCs):
   aggregate impact, so steal-mode is deferred, not abandoned.
 Note: h2@512M OOMs at -n>=5 (below h2's ~681M min heap); use -n 4 for GC
 measurement, 768M+ for throughput.
+
+## B.1 throughput: wait-mode is intrinsically costly, steal-mode REQUIRED (2026-06-13)
+h2@768M -n4 throughput (last iter): stock 29.9s | Bpf 43.5s (+45%) |
+Uffd 42.8s (+43%). At sustained load 237/479 windows have mutator faults
+(NOT negligible — the 512M "0 faults" was a small-heap artifact).
+Total spin = 79e9 spins ~= 237 CPU-seconds.
+sched_yield (instead of busy spin_loop) did NOT help (Bpf 46s): rules out
+CPU-starvation. The cost is intrinsic STALL LATENCY — a mutator faulting
+region K is blocked until the address-ordered sweep REACHES K. Only fix =
+steal-mode (mutator stages its own region immediately).
+Feasibility CONFIRMED: HotSpot scan_object ignores the worker tls (_tls
+unused), so stage_region can run on a mutator thread with a borrowed tls.
+Plan: per-region atomic state (Unstaged/Staging/Done); mutator faulting K
+CASes K Unstaged->Staging and stages it itself (or waits Done if another
+stager is mid-K, bounded by one region not the whole sweep). VM-agnostic
+SIGBUS handler calls a plan-registered steal callback.
