@@ -138,3 +138,37 @@ Window (mutators running):
 Metrics vs stock Compressor: compact-phase pause (stock: full copy; B.1:
 flip-all + cursor preset only), window duration, mutator SIGBUS wait time
 histogram, end-to-end benchmark time.
+
+## B v2: in-kernel compaction + fixup — PROOF OF CONCEPT (2026-06-13)
+micro/bench_kfixup + shim... micro/gc_kfixup_ops.bpf.c PROVE the kernel
+mechanism: the missing-fault handler materializes each to-space page
+entirely in eBPF — copies live objects from from-space AND rewrites their
+reference fields to post-compaction addresses (forward() via GC-provided
+old<->new maps). No userspace staging, no signal, no arena double-copy.
+PASS across 8-168MB, 50-90% live; ~9.7us/page (64 objs + 128 refs/page);
+168MB = 2.77M objs + 5.5M refs forwarded in-kernel. This is the GC analogue
+of the paper's fault-time dynamic-linker relocation.
+
+### What the microbench abstracts vs full MMTk integration
+The microbench uses FIXED-SIZE objects + a flat old<->new forward table.
+Full Compressor integration needs three harder pieces:
+1. Variable-size objects: the handler must find object boundaries on the
+   faulted page. Compressor's mark bitmap (object start/end bits) + offset
+   vector give this; the handler scans the mark bitmap (bounded loop) like
+   it scans the flat table now.
+2. Real forward(): instead of a flat table, compute forward(addr) from the
+   offset vector (cumulative live bytes/block) + mark bitmap — the same
+   arithmetic the in-tree Compressor forward() and the paper's dynamic
+   linker do. Implementable in eBPF (flat side-metadata reads + bounded
+   mark-bit scan); the genuinely novel kernel piece.
+3. Reference identification (the real blocker): which words on a page are
+   pointers?  In HotSpot this needs the object's class -> oop map, which is
+   impractical to traverse in eBPF.  SOLUTION: a REFERENCE BITMAP side
+   metadata (1 bit/word = is-reference), set by the GC during marking (it
+   already scans every object/slot).  ~heap/64 bytes overhead (16MB for a
+   1GB heap).  The eBPF handler reads it per word — no HotSpot layout
+   traversal needed.
+=> Full integration is a substantial but well-scoped effort: add a
+   reference bitmap to Compressor marking, port forward() + mark-bitmap
+   object scan into the eBPF handler, drop the userspace staging path.
+   The kernel mechanism (in-kernel copy + per-reference forward) is proven.
