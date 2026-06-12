@@ -365,3 +365,28 @@ tradeoff on the Compressor plan, bpf_fault providing the in-kernel
 page-materialization path. bpf vs uffd ~equal on pause (mark+flip
 dominated); bpf's in-kernel edge shows in fewer window faults and
 per-fault latency.
+
+## Class A heap-sweep: the per-GC re-arming cost (2026-06-13 resume)
+Heap sweep (heap = multiples of DaCapo G1 min heap; GenImmix copies so 2x
+G1-min is ~1x GenImmix-min, GC-heavy) REVEALS strong heap-size sensitivity
+that the earlier -Xmx4G numbers hid:
+  lusearch 2x(38M): Barrier 6.2s | Bpf 13s | Uffd 24s | Segv 33s
+  4G (verify): Barrier 2.3s | Bpf 2.7s (+17%, competitive)
+ROOT CAUSE (measured, PROTECTSTATS instrumentation): at 38M lusearch does
+10,888 nursery GCs; the protect/unprotect of the whole mature space each GC
+= 11.1s of 13.1s total (DOMINANT; faults are 4.67M but cheap/absorbed in
+mutator time). This is the fundamental O(mature-space)-per-GC re-arming
+cost of page-granularity barriers (Cracauer/literature: good only when GC
+is infrequent relative to mutation).
+Optimization attempts:
+- Remove prepare unprotect-all -> total 14.2s (WORSE): trades unprotect for
+  O(promoted) GC-time promotion faults (~6s; recycled immix blocks fault).
+- => no clean userspace win. The correct fix is to unprotect only the copy
+  allocator's PROMOTION blocks (~1 block/GC) via an immix copy-allocator
+  hook (cost O(promoted+dirty) not O(mature)). Substantial integration;
+  documented as the key Class A optimization. NOT done.
+HONEST Class A story: page-WP barrier is competitive/winning at LARGE heaps
+(rare GC) for locality-friendly/array-heavy workloads (xalan -58% @4G), but
+loses at TIGHT heaps (frequent GC) due to per-GC re-arming, and on
+scattered-write workloads (lusearch). bpf<uffd<segv throughout. The
+heap-size crossover is the result.
