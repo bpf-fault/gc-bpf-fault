@@ -390,3 +390,34 @@ HONEST Class A story: page-WP barrier is competitive/winning at LARGE heaps
 loses at TIGHT heaps (frequent GC) due to per-GC re-arming, and on
 scattered-write workloads (lusearch). bpf<uffd<segv throughout. The
 heap-size crossover is the result.
+
+## Class A: incremental optimization TRIED, measured WORSE — root cause nailed (2026-06-13)
+Implemented the promotion-block-granular optimization (unprotect only the
+immix copy allocator's promotion blocks via an acquire-block hook, not the
+whole mature space). Debugged to correctness (the gotcha: GenImmix's
+promotion ImmixAllocator has the `copy` flag FALSE — that flag marks
+*defrag*, not copy-context — so gating the hook on `self.copy` silently
+skipped all promotion; dirty tracking is GenImmix-only where every
+ImmixAllocator is a copy context, so the gate must just be "tracker
+active"). Verified zero live-page misses + DaCapo passes.
+RESULT: lusearch 38M Bpf 15.3s (vs chunk-granular 13.1s, Barrier 6.3s) —
+WORSE. Reverted.
+ROOT CAUSE (measured, bpftrace on bpf_fault_ops_link_writeprotect):
+the WP syscall costs ~5-6us median (mode 4-8us), fat tail 32-128us for
+4MB ranges. Finer granularity multiplies the WP CALL COUNT, and at 10,888
+GCs/run that syscall overhead swamps the page-table-walk savings.
+=> Three approaches all measured: chunk-granular (unprotect-all+protect-all,
+   page-op bound) 13.1s = BEST; promotion-fault (no unprotect, on-demand)
+   14.2s; promotion-block incremental (syscall bound) 15.3s. All ~2x
+   Barrier at this GC frequency. The per-GC re-arming cost is fundamental;
+   no granularity wins because either page-ops (O(mature)) or WP syscalls
+   (O(promoted+dirty)) scale with GC frequency, which the compiled barrier
+   avoids entirely.
+
+## bpf-fault improvement opportunity (Class A paper finding)
+Page-WP write barriers become viable at high GC frequency ONLY if the WP
+operation is cheap. bpf-fault's BPF_LINK_FAULT_OPS_CMD writeprotect is
+~5-6us/call. A BATCHED/VECTORED WP command (protect N ranges per syscall)
+would amortize the fixed overhead and could flip the tight-heap result.
+(Same family as the snapshot-finalize chunked-WP lesson.) This is the key
+bpf-fault change Class A motivates.
