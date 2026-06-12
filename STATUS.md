@@ -222,3 +222,33 @@ dest table, free it under the ptls, proceed with PMD move (the in-tree
 comment literally suggests this). Alternative: reclaim empty PTs in
 MADV_DONTNEED. Also still open: munmap-of-arena crash (timing/kernel?),
 fs/userfaultfd.c:803 TODO (bpf_fault mremap notification).
+
+## Crash investigation COMPLETE + virtme-ng harness (2026-06-12 night)
+Two distinct B.1 crashes, both root-caused with a minimal no-JVM
+reproducer (micro/test_flip_unmap.c):
+1. SIGBUS (in-kernel): an armed missing-fault region whose from-space
+   arena was released delivers SIGBUS — the handler's bpf_probe_read_user
+   from the freed arena returns -EFAULT. PROVEN: armed+released=SIGBUS,
+   unregister-first=PASS (single cycle). FIX committed: finish_region
+   unregisters the region (bpf) before releasing the arena (uffd already
+   did). Now matches the design's idempotency note.
+2. UAF SIGSEGV (HotSpot interaction): munmap (vs MADV_DONTNEED) of the
+   arena slot crashes DerivedPointerTable::update_pointers() at
+   mmtk_resume_mutators — HotSpot transiently holds the arena address;
+   munmap frees the VMA under it (SEGV_MAPERR at the arena range). KEPT
+   MADV_DONTNEED (VMA persists). munmap (for full page-table teardown)
+   needs deferral to a safe point — future work.
+Final B.1: unregister-first + MADV_DONTNEED, xalan stable x3.
+
+virtme-ng harness (no host reboot for kernel iteration):
+- Installed via apt (vng, virtme-ng). Kernel rebuilt with 9p+virtiofs:
+  scripts/config --enable CONFIG_NET_9P CONFIG_NET_9P_VIRTIO CONFIG_9P_FS
+  CONFIG_VIRTIO_FS CONFIG_FUSE_FS CONFIG_VIRTIO_CONSOLE; make olddefconfig;
+  make LLVM=1 CC=clang -j bzImage. (BPF_FAULT preserved; backup at
+  /tmp/config.bpffault.bak.)
+- scripts/vng_test.sh "<cmd>" boots /mydata/linux/arch/x86/boot/bzImage,
+  shares /mydata, runs cmd. scripts/vng_crash_check.sh confirms the crash
+  + fix inside the VM (boots in ~5s). vng exit codes unreliable -> grep
+  stdout sentinels.
+- This is the loop for the move_normal_pmd kernel fix: edit mm/mremap.c,
+  make bzImage, vng_test.sh to measure flip cost, no node reboot.
