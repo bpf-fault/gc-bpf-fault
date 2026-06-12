@@ -1,0 +1,80 @@
+RESULT bench=lusearch mult=2 heap=38M cfg=Barrier inv=1 last_iter_ms=6221 metered99_999=3756/7713/12219/
+RESULT bench=lusearch mult=2 heap=38M cfg=Barrier inv=2 last_iter_ms=6209 metered99_999=3712/7646/11936/
+RESULT bench=lusearch mult=2 heap=38M cfg=Barrier inv=3 last_iter_ms=6249 metered99_999=3813/7704/12139/
+RESULT bench=lusearch mult=2 heap=38M cfg=Bpf inv=1 last_iter_ms=13256 metered99_999=5744/15812/26107/
+RESULT bench=lusearch mult=2 heap=38M cfg=Bpf inv=2 last_iter_ms=13055 metered99_999=5713/15649/22692/
+RESULT bench=lusearch mult=2 heap=38M cfg=Bpf inv=3 last_iter_ms=13257 metered99_999=5706/15831/25380/
+RESULT bench=lusearch mult=2 heap=38M cfg=Uffd inv=1 last_iter_ms=24467 metered99_999=11231/15427/20086/
+RESULT bench=lusearch mult=2 heap=38M cfg=Uffd inv=2 last_iter_ms=24498 metered99_999=11280/15834/20131/
+RESULT bench=lusearch mult=2 heap=38M cfg=Uffd inv=3 last_iter_ms=24404 metered99_999=11265/16099/20332/
+RESULT bench=lusearch mult=2 heap=38M cfg=Segv inv=1 last_iter_ms=32997 metered99_999=35469/69825/104982/
+RESULT bench=lusearch mult=2 heap=38M cfg=Segv inv=2 last_iter_ms=32914 metered99_999=35833/69267/99383/
+RESULT bench=lusearch mult=2 heap=38M cfg=Segv inv=3 last_iter_ms=31939 metered99_999=36162/69851/104040/
+RESULT bench=lusearch mult=3 heap=57M cfg=Barrier inv=1 last_iter_ms=4459 metered99_999=3137/6900/10978/
+RESULT bench=lusearch mult=3 heap=57M cfg=Barrier inv=2 last_iter_ms=4407 metered99_999=3151/6374/10705/
+RESULT bench=lusearch mult=3 heap=57M cfg=Barrier inv=3 last_iter_ms=4415 metered99_999=3359/6500/10882/
+RESULT bench=lusearch mult=3 heap=57M cfg=Bpf inv=1 last_iter_ms=9676 metered99_999=5923/12645/24552/
+RESULT bench=lusearch mult=3 heap=57M cfg=Bpf inv=2 last_iter_ms=9748 metered99_999=5920/13256/24871/
+RESULT bench=lusearch mult=3 heap=57M cfg=Bpf inv=3 last_iter_ms=9625 metered99_999=5913/12484/24310/
+RESULT bench=lusearch mult=3 heap=57M cfg=Uffd inv=1 last_iter_ms=17253 metered99_999=10209/15247/19783/
+RESULT bench=lusearch mult=3 heap=57M cfg=Uffd inv=2 last_iter_ms=17626 metered99_999=10251/15302/19091/
+RESULT bench=lusearch mult=3 heap=57M cfg=Uffd inv=3 last_iter_ms=17548 metered99_999=10262/15234/19360/
+RESULT bench=lusearch mult=3 heap=57M cfg=Segv inv=1 last_iter_ms=24906 metered99_999=29677/59334/93158/
+RESULT bench=lusearch mult=3 heap=57M cfg=Segv inv=2 last_iter_ms=23785 metered99_999=29834/60360/93702/
+RESULT bench=lusearch mult=3 heap=57M cfg=Segv inv=3 last_iter_ms=23401 metered99_999=30281/60504/93248/
+RESULT bench=lusearch mult=4 heap=76M cfg=Barrier inv=1 last_iter_ms=3643 metered99_999=3602/6264/10522/
+RESULT bench=lusearch mult=4 heap=76M cfg=Barrier inv=2 last_iter_ms=3690 metered99_999=3106/6101/11424/
+RESULT bench=lusearch mult=4 heap=76M cfg=Barrier inv=3 last_iter_ms=3679 metered99_999=3343/6031/11387/
+RESULT bench=lusearch mult=4 heap=76M cfg=Bpf inv=1 last_iter_ms=7889 metered99_999=6484/13725/21897/
+RESULT bench=lusearch mult=4 heap=76M cfg=Bpf inv=2 last_iter_ms=7985 metered99_999=6546/13835/21939/
+RESULT bench=lusearch mult=4 heap=76M cfg=Bpf inv=3 last_iter_ms=7929 metered99_999=6549/13945/22233/
+RESULT bench=lusearch mult=4 heap=76M cfg=Uffd inv=1 last_iter_ms=13140 metered99_999=10204/12765/17777/
+RESULT bench=lusearch mult=4 heap=76M cfg=Uffd inv=2 last_iter_ms=13134 metered99_999=10374/12990/18192/
+RESULT bench=lusearch mult=4 heap=76M cfg=Uffd inv=3 last_iter_ms=13202 metered99_999=10315/12670/18078/
+RESULT bench=lusearch mult=4 heap=76M cfg=Segv inv=1 last_iter_ms=19287 metered99_999=24579/51963/80976/
+RESULT bench=lusearch mult=4 heap=76M cfg=Segv inv=2 last_iter_ms=18921 metered99_999=24116/50251/78407/
+RESULT bench=lusearch mult=4 heap=76M cfg=Segv inv=3 last_iter_ms=18233 metered99_999=24467/52509/81703/
+RESULT bench=xalan mult=2 heap=26M cfg=Barrier inv=1 last_iter_ms=3781 metered99_999=
+RESULT bench=xalan mult=2 heap=26M cfg=Barrier inv=2 last_iter_ms=3759 metered99_999=
+RESULT bench=xalan mult=2 heap=26M cfg=Barrier inv=3 last_iter_ms=3593 metered99_999=
+RESULT bench=xalan mult=2 heap=26M cfg=Bpf inv=1 last_iter_ms=6015 metered99_999=
+RESULT bench=xalan mult=2 heap=26M cfg=Bpf inv=2 last_iter_ms=6115 metered99_999=
+RESULT bench=xalan mult=2 heap=26M cfg=Bpf inv=3 last_iter_ms=6552 metered99_999=
+RESULT bench=xalan mult=2 heap=26M cfg=Uffd inv=1 last_iter_ms=9396 metered99_999=
+RESULT bench=xalan mult=2 heap=26M cfg=Uffd inv=2 last_iter_ms=9381 metered99_999=
+RESULT bench=xalan mult=2 heap=26M cfg=Uffd inv=3 last_iter_ms=9266 metered99_999=
+RESULT bench=xalan mult=2 heap=26M cfg=Segv inv=1 last_iter_ms=15475 metered99_999=
+RESULT bench=xalan mult=2 heap=26M cfg=Segv inv=2 last_iter_ms=15119 metered99_999=
+RESULT bench=xalan mult=2 heap=26M cfg=Segv inv=3 last_iter_ms=15316 metered99_999=
+RESULT bench=xalan mult=3 heap=39M cfg=Barrier inv=1 last_iter_ms=2134 metered99_999=
+RESULT bench=xalan mult=3 heap=39M cfg=Barrier inv=2 last_iter_ms=2185 metered99_999=
+RESULT bench=xalan mult=3 heap=39M cfg=Barrier inv=3 last_iter_ms=2238 metered99_999=
+RESULT bench=xalan mult=3 heap=39M cfg=Bpf inv=1 last_iter_ms=4932 metered99_999=
+RESULT bench=xalan mult=3 heap=39M cfg=Bpf inv=2 last_iter_ms=4876 metered99_999=
+RESULT bench=xalan mult=3 heap=39M cfg=Bpf inv=3 last_iter_ms=5077 metered99_999=
+RESULT bench=xalan mult=3 heap=39M cfg=Uffd inv=1 last_iter_ms=7165 metered99_999=
+RESULT bench=xalan mult=3 heap=39M cfg=Uffd inv=2 last_iter_ms=7106 metered99_999=
+RESULT bench=xalan mult=3 heap=39M cfg=Uffd inv=3 last_iter_ms=7116 metered99_999=
+RESULT bench=xalan mult=3 heap=39M cfg=Segv inv=1 last_iter_ms=10596 metered99_999=
+RESULT bench=xalan mult=3 heap=39M cfg=Segv inv=2 last_iter_ms=10729 metered99_999=
+RESULT bench=xalan mult=3 heap=39M cfg=Segv inv=3 last_iter_ms=11109 metered99_999=
+RESULT bench=xalan mult=4 heap=52M cfg=Barrier inv=1 last_iter_ms=2017 metered99_999=
+RESULT bench=xalan mult=4 heap=52M cfg=Barrier inv=2 last_iter_ms=1907 metered99_999=
+RESULT bench=xalan mult=4 heap=52M cfg=Barrier inv=3 last_iter_ms=1813 metered99_999=
+RESULT bench=xalan mult=4 heap=52M cfg=Bpf inv=1 last_iter_ms=4268 metered99_999=
+RESULT bench=xalan mult=4 heap=52M cfg=Bpf inv=2 last_iter_ms=4189 metered99_999=
+RESULT bench=xalan mult=4 heap=52M cfg=Bpf inv=3 last_iter_ms=4145 metered99_999=
+RESULT bench=xalan mult=4 heap=52M cfg=Uffd inv=1 last_iter_ms=5816 metered99_999=
+RESULT bench=xalan mult=4 heap=52M cfg=Uffd inv=2 last_iter_ms=5765 metered99_999=
+RESULT bench=xalan mult=4 heap=52M cfg=Uffd inv=3 last_iter_ms=5860 metered99_999=
+RESULT bench=xalan mult=4 heap=52M cfg=Segv inv=1 last_iter_ms=8536 metered99_999=
+RESULT bench=xalan mult=4 heap=52M cfg=Segv inv=2 last_iter_ms=8549 metered99_999=
+RESULT bench=xalan mult=4 heap=52M cfg=Segv inv=3 last_iter_ms=8128 metered99_999=
+RESULT bench=pmd mult=2 heap=382M cfg=Barrier inv=1 last_iter_ms=2485 
+RESULT bench=pmd mult=2 heap=382M cfg=Barrier inv=2 last_iter_ms=2536 
+RESULT bench=pmd mult=2 heap=382M cfg=Barrier inv=3 last_iter_ms=2574 
+RESULT bench=pmd mult=2 heap=382M cfg=Bpf inv=1 last_iter_ms=4143 
+RESULT bench=pmd mult=2 heap=382M cfg=Bpf inv=2 last_iter_ms=4071 
+RESULT bench=pmd mult=2 heap=382M cfg=Bpf inv=3 last_iter_ms=4143 
+RESULT bench=pmd mult=2 heap=382M cfg=Uffd inv=1 last_iter_ms=5735 
+RESULT bench=pmd mult=2 heap=382M cfg=Uffd inv=2 last_iter_ms=5694 

@@ -1,0 +1,20 @@
+Using scaled threading model. 32 processors detected, 32 threads used to drive the workload, in a possible range of [1,2048]
+Version: xalan 2_7_2 (use -p to print nominal benchmark stats)
+===== DaCapo 23.11-MR2-chopin xalan starting warmup 1 =====
+Processing: 5%Processing: 10%Processing: 15%Processing: 20%Processing: 25%Processing: 30%Processing: 35%Processing: 40%Processing: 45%Processing: 50%Processing: 55%Processing: 60%Processing: 65%Processing: 70%Processing: 75%Processing: 80%Processing: 85%Processing: 90%Processing: 95%Normal completion.
+===== DaCapo 23.11-MR2-chopin xalan completed warmup 1 in 10568 msec =====
+===== DaCapo 23.11-MR2-chopin xalan starting warmup 2 =====
+Processing: 5%Processing: 10%Processing: 15%Processing: 20%Processing: 25%Processing: 30%Processing: 35%Processing: 40%Processing: 45%Processing: 50%Processing: 55%Processing: 60%Processing: 65%Processing: 70%Processing: 75%Processing: 80%Processing: 85%Processing: 90%Processing: 95%Normal completion.
+===== DaCapo 23.11-MR2-chopin xalan completed warmup 2 in 10650 msec =====
+===== DaCapo 23.11-MR2-chopin xalan starting warmup 3 =====
+Processing: 5%Processing: 10%Processing: 15%Processing: 20%Processing: 25%Processing: 30%Processing: 35%Processing: 40%Processing: 45%Processing: 50%Processing: 55%Processing: 60%Processing: 65%Processing: 70%Processing: 75%Processing: 80%Processing: 85%Processing: 90%Processing: 95%Normal completion.
+===== DaCapo 23.11-MR2-chopin xalan completed warmup 3 in 10817 msec =====
+===== DaCapo 23.11-MR2-chopin xalan starting warmup 4 =====
+Processing: 5%Processing: 10%Processing: 15%Processing: 20%Processing: 25%Processing: 30%Processing: 35%Processing: 40%Processing: 45%Processing: 50%Processing: 55%Processing: 60%Processing: 65%Processing: 70%Processing: 75%Processing: 80%Processing: 85%Processing: 90%Processing: 95%Normal completion.
+===== DaCapo 23.11-MR2-chopin xalan completed warmup 4 in 10774 msec =====
+===== DaCapo 23.11-MR2-chopin xalan starting warmup 5 =====
+Processing: 5%Processing: 10%Processing: 15%Processing: 20%Processing: 25%Processing: 30%Processing: 35%Processing: 40%Processing: 45%Processing: 50%Processing: 55%Processing: 60%Processing: 65%Processing: 70%Processing: 75%Processing: 80%Processing: 85%Processing: 90%Processing: 95%Normal completion.
+===== DaCapo 23.11-MR2-chopin xalan completed warmup 5 in 10888 msec =====
+===== DaCapo 23.11-MR2-chopin xalan starting =====
+Processing: 5%Processing: 10%Processing: 15%Processing: 20%Processing: 25%Processing: 30%Processing: 35%Processing: 40%Processing: 45%Processing: 50%Processing: 55%Processing: 60%Processing: 65%Processing: 70%Processing: 75%Processing: 80%Processing: 85%Processing: 90%Processing: 95%Normal completion.
+===== DaCapo 23.11-MR2-chopin xalan PASSED in 10729 msec =====
