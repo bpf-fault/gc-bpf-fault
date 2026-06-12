@@ -307,3 +307,36 @@ slots `update_references` forwards, at their post-compaction positions.
 - Bpf: the true in-kernel path — port the forward into the shim eBPF handler
   (compressed-oop decode base+shift -> offset-vector forward [proven in
   gc_kompress] -> encode), reading the refbitmap (passed via refbitmap_base).
+
+## B v2 task #10 (userspace): deferred bitmap-driven forward VALIDATED (2026-06-13)
+Reference forwarding is now MOVED OFF the staging path and driven entirely by
+the Class B v2 reference bitmap, validated end-to-end in real MMTk:
+
+- `MMTK_COMPACT_DEFER_FORWARD=1`: `update_references_staged` no longer
+  forwards (leaves the old compressed oop in the arena); it only records the
+  reference bitmap.
+- At install time, `install_page_uffd` copies the staged arena page into a
+  private scratch buffer, calls `CompressorSpace::forward_buf` (rewrites each
+  ref-bit slot: VMSlot::from_address -> load [decompress] -> forward() ->
+  store [recompress]), then `UFFDIO_COPY`s the forwarded buffer to to-space.
+- IDEMPOTENT by construction: the arena stays un-forwarded (the source of
+  truth), each fault forwards its own copy -> race-free. (The first attempt
+  forwarded the arena in place and double-forwarded under concurrency,
+  crashing B.1; the scratch buffer fixed it.)
+- New plumbing: `Slot::from_address`, `StealHandler::forward_buf`,
+  `defer_forward()`, `CompactFaults::install_page_uffd`.
+
+VALIDATED (DaCapo, Compressor + compact_faults=Uffd + defer):
+- B.0 (STW install): luindex, fop, lusearch, avrora PASS.
+- B.1 (concurrent, forward runs in SIGNAL CONTEXT): luindex, lusearch,
+  avrora, xalan, h2, jython, pmd PASS — 7/7, output-validated.
+This proves the reference bitmap is correct + complete and that the in-kernel
+handler's job (forward each bitmap-marked slot during page materialization)
+produces correct results in a real GC, concurrently.
+
+### Remaining: port forward_buf into the BPF eBPF handler (true in-kernel)
+All components now de-risked. The shim handler must, per staged page:
+decompress each ref-bit dword (compressed-oops base+shift, passed in) ->
+offset-vector forward (proven in gc_kompress) -> recompress -> write, reading
+refbitmap via `CompactFaults::refbitmap_base`.  No remaining unknowns; the
+uffd path is the executable reference semantics.
