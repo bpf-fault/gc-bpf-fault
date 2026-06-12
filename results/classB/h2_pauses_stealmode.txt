@@ -1,0 +1,12 @@
+=== h2 None heap=512M ===
+@avg_us: 259096
+@gcs: 110
+@max_us: 321365
+=== h2 Bpf heap=512M ===
+@avg_us: 184546
+@gcs: 107
+@max_us: 359785
+=== h2 Uffd heap=512M ===
+@avg_us: 183670
+@gcs: 108
+@max_us: 350271

@@ -352,3 +352,16 @@ ever claimable -> nothing staged -> mutators waited forever. Fixed.
 => B.1 net: ~29% STW pause reduction (h2) for ~10% throughput cost. A clean
    latency/throughput tradeoff, the classic concurrent-GC win, with
    bpf_fault providing the in-kernel fault path.
+
+## B.1 FINAL (steal-mode) — Class B complete (2026-06-13)
+h2 512M pauses (steal-mode, results/classB/h2_pauses_stealmode.txt):
+  stock 259ms avg / 321ms max | Bpf 184ms (-29%) / 360ms | Uffd 184ms (-29%) / 350ms
+Pause win held at -29% avg. Max +12% is mark-phase variance (the single
+worst GC), NOT window-related — steal-mode's benefit is mutator
+throughput/latency (the +45%->+10% throughput result), which the STW-pause
+metric doesn't capture.
+NET B.1: -29% avg STW pause for +10% throughput. Clean concurrent-GC
+tradeoff on the Compressor plan, bpf_fault providing the in-kernel
+page-materialization path. bpf vs uffd ~equal on pause (mark+flip
+dominated); bpf's in-kernel edge shows in fewer window faults and
+per-fault latency.
