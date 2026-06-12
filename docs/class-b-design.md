@@ -234,3 +234,42 @@ copy.  No further kernel-mechanism unknowns.
   as a write offset.
 - forward()'s block loop with an unbounded base (oldw from a ref value):
   bound oldw (< total_words) and use a fixed 0..63 iteration count.
+
+## B v2 MMTk wiring attempt — architectural findings (2026-06-13)
+Started the live Compressor wiring (reference bitmap). Added inert
+infrastructure that builds + passes DaCapo (luindex, standard + B.1):
+- `COMPRESSOR_REFBITS` side-metadata spec (spec_defs.rs) + `REFBITS_SPEC`
+  + `mark_reference_slot` (forwarding.rs).
+- `Slot::slot_address()` provided trait method (vm/slot.rs), overridden for
+  `SimpleSlot` and `OpenJDKSlot` (returns the field address, tag stripped).
+
+Three concrete blockers found (these reshape tasks #8-#10):
+1. **B.1 runs only with COMPRESSED oops.** Uncompressed -> the Compressor
+   space spans >64 GiB -> `compact_faults::init` asserts (compact_faults.rs:84,
+   the staging arena is sized to the span). So references are 4-byte
+   compressed oops; the in-kernel handler must decompress -> forward ->
+   compress, and the bitmap wants 4-byte granularity.
+2. **Staging uses an ALIAS arena.** `stage_region_idx` (compressorspace.rs:319)
+   copies each marked object to `alias_new = obj + delta` and calls
+   `update_references` on the *aliased* object. So slot addresses there are in
+   the staging arena, OUTSIDE the compressor-space side-metadata range ->
+   storing the bitmap via `REFBITS_SPEC` SIGSEGVs. (Confirmed: a side-metadata
+   write at alias addresses crashed the JVM.)
+3. Therefore the reference bitmap for B.1 cannot be MMTk side metadata. It
+   must live **in the staging arena**, populated at staged positions during
+   `stage_region_idx`, and travel with the staged page to the handler.
+
+### Revised in-kernel-forwarding design for B.1 (well-specified now)
+- `stage_region_idx`: copy objects to the alias arena (as today) but DO NOT
+  forward; instead, while scanning each object's slots, set a ref bit in an
+  arena-resident bitmap at the staged slot position and leave the compressed
+  old oop in place.
+- shim eBPF handler (install path): for each ref-bit dword on the staged
+  page, decompress the 32-bit oop (base+shift), forward old->new (offset
+  vector or a forward map shared in the arena), recompress, write.
+- This moves the per-slot forward work off the staging thread into the
+  fault-time handler, overlapped with mutator resume — the B v2 win — while
+  the variable-size compaction stays in userspace (already correct in B.1).
+- The CAPSTONE microbench (gc_kompress) already proves the kernel-side
+  offset-vector forward + bitmap + page materialization; the remaining work
+  is the compressed-oop encode/decode and the arena-resident bitmap plumbing.
