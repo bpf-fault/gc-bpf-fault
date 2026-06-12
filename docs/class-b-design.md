@@ -172,3 +172,30 @@ Full Compressor integration needs three harder pieces:
    reference bitmap to Compressor marking, port forward() + mark-bitmap
    object scan into the eBPF handler, drop the userspace staging path.
    The kernel mechanism (in-kernel copy + per-reference forward) is proven.
+
+## B v2 UPDATE: arena edition + arbitrary-layout reference bitmap (2026-06-13)
+micro/bench_kfixarena + gc_kfixarena.bpf.c (clang-20, native
+addr_space_cast) strengthen the PoC on two axes:
+1. REFERENCE IDENTIFICATION solved + demonstrated: references sit at
+   object-specific word positions, found via a GC-provided REFERENCE BITMAP
+   (1 bit/to-space word).  The handler forwards exactly the marked words --
+   no fixed field offsets, no HotSpot oop-map traversal.  This is the real
+   MMTk-integration blocker, now de-risked.
+2. BPF ARENA for all shared state (from-space objects + forward tables +
+   reference bitmap): direct pointer access, no probe_read, no per-element
+   map lookup.  2.2x faster than the map PoC (4.4us vs 9.7us/page).
+   Userspace populates via skel->arena->{from_space,new2old,old2new,refbits}.
+PASS across 8-42MB; 660k objects + 1.3M refs forwarded in-kernel/run.
+
+Remaining for full Compressor integration (all now well-scoped):
+- Variable-size objects: replace fixed OBJ_SIZE with a mark-bitmap object
+  scan to find boundaries on the page (bounded loop, same as scanning the
+  flat new2old now).
+- Real forward(): offset-vector computation instead of the flat old2new
+  table (the paper's dynamic linker already proves table-driven fault-time
+  computation in eBPF; same shape).
+- GC side: set the reference bitmap during Compressor marking (it scans
+  every slot already); share the forwarding metadata + reference bitmap +
+  from-space with the handler via an arena; drop the userspace staging path.
+The kernel mechanism (in-kernel copy + arbitrary-layout reference forward,
+arena-backed) is fully proven.
