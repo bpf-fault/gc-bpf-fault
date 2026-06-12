@@ -199,3 +199,38 @@ Remaining for full Compressor integration (all now well-scoped):
   from-space with the handler via an arena; drop the userspace staging path.
 The kernel mechanism (in-kernel copy + arbitrary-layout reference forward,
 arena-backed) is fully proven.
+
+## B v2 CAPSTONE: full Compressor-style in-kernel materialization (2026-06-13)
+micro/bench_kompress + gc_kompress.bpf.c materialize each to-space page
+entirely in-kernel from UN-SLID from-space, proving the pieces the
+fixed-size PoC abstracted away: VARIABLE-SIZE objects (mark-bitmap word
+runs), offset-vector forward() (per-block cumulative live + popcount, the
+Compressor's real forwarding -- not a flat table), a per-page first-source
+index, and a reference bitmap.  Arena-backed, clang-20.  PASS 1-128MB,
+~18us/page; 128MB = 2M objs / 11M live words / 1.4M refs forwarded.
+
+### Integration recipe (the handler needs five arrays; 3 already exist)
+| handler array | Compressor source | status |
+|---|---|---|
+| from_space  | mremap'd from-space heap (B.1 flip)        | EXISTS |
+| livebits    | COMPRESSOR_MARK side metadata              | EXISTS (re-encode start/end -> live-word, or adapt handler) |
+| offvec      | COMPRESSOR_OFFSET_VECTOR side metadata     | EXISTS (calculate_offset_vector) |
+| refbits     | NEW: set during marking (scans every slot) | TODO  |
+| first_src   | NEW: derive in the offset-vector pass      | TODO (cheap) |
+
+So live wiring = (1) add a reference bitmap set during Compressor marking;
+(2) emit first_src during the offset-vector pass; (3) expose these four
+side-metadata regions + from-space to the handler (arena, or probe_read of
+MMTk side metadata); (4) adapt the handler to the Compressor's start/end
+mark encoding and offset-vector format; (5) drop the userspace stage_region
+copy.  No further kernel-mechanism unknowns.
+
+### Verifier lessons (for the kernel-side write-up)
+- nested outer(4096)xinner(64) loop -> "sequence of jumps too complex"
+  (reported as -EFAULT): use bpf_loop() for the page scan so the callback
+  is verified once.
+- a loop counter spilled to the bpf_loop ctx loses its bound across an
+  arena store: mask it to the page-word range (outw &= 511) before using it
+  as a write offset.
+- forward()'s block loop with an unbounded base (oldw from a ref value):
+  bound oldw (< total_words) and use a fixed 0..63 iteration count.
