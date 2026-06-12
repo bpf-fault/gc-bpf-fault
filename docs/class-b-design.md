@@ -273,3 +273,37 @@ Three concrete blockers found (these reshape tasks #8-#10):
 - The CAPSTONE microbench (gc_kompress) already proves the kernel-side
   offset-vector forward + bitmap + page materialization; the remaining work
   is the compressed-oop encode/decode and the arena-resident bitmap plumbing.
+
+## B v2 task #9 DONE: arena-resident reference bitmap populated during staging (2026-06-13)
+The reference bitmap now lives in its own mapping (compact_faults.rs:
+`refbitmap`, 1 bit / 4-byte compressed-oop slot = span/32 bytes, lazy), NOT
+MMTk side metadata — resolving the alias-arena addressing blocker.
+
+- `CompactFaults::{set_ref_bit, ref_bit, clear_ref_bits, refbitmap_base}`
+  index by `(to_space_addr - space_base) >> 2`.
+- `CompressorSpace::update_references_staged` (new): during `stage_region_idx`,
+  while sliding each object into the alias arena and forwarding its slots, it
+  also records each non-null reference slot's *to-space* address
+  (`alias_slot - delta`) in the bitmap.  `clear_ref_bits` wipes the region's
+  bits each cycle first.
+- `Slot::slot_address()` now returns the field address for compressed slots
+  too (the earlier COMPRESSED->None guard suppressed everything).
+
+VALIDATED: DaCapo luindex (Compressor + compact_faults=Uffd) PASSES with
+~110k reference slots recorded per cycle; no out-of-range writes (positions
+within the mapped bitmap = within the span). The bitmap marks exactly the
+slots `update_references` forwards, at their post-compaction positions.
+
+### Remaining (task #10): forward via the bitmap at install time
+- Flip `update_references_staged` to NOT forward (leave the old compressed
+  oop), and forward at install instead.
+- Uffd: in `handle_window_fault`/`install`, before `uffd_copy(page, alias)`,
+  forward the arena page — for each set ref bit in [page,page+4KB), make a
+  VMSlot at the arena alias address, `load()` (decompresses) -> `forward()` ->
+  `store()` (recompresses).  Needs a VM callback (compact_faults is VM-
+  agnostic) and runs in SIGNAL CONTEXT (forward() = side-metadata reads, slot
+  load/store = plain mem; lock-free, so feasible but must stay async-signal-
+  safe).
+- Bpf: the true in-kernel path — port the forward into the shim eBPF handler
+  (compressed-oop decode base+shift -> offset-vector forward [proven in
+  gc_kompress] -> encode), reading the refbitmap (passed via refbitmap_base).
