@@ -439,3 +439,33 @@ turned the in-kernel forward from a +66% regression into a small WIN over
 baseline (-1.4%).  uffd-defer (native lazy forward) is still ~22% faster --
 the residual in-kernel cost is the 1024-iter bpf_loop/page + per-ref + 4 KiB
 page-copy probe_reads, which a BPF-arena (direct-access) handler would close.
+
+## B v2 ARENA OPTIMIZATION — in-kernel forward now matches/beats userspace (2026-06-13)
+Moved the in-kernel forward off probe_read onto direct BPF-arena access, in
+three steps.  Clean interleaved best-of-5 A/B (pmd 512M, low variance):
+
+| stage                         | bpf-defer | vs baseline |
+|-------------------------------|-----------|-------------|
+| transducer scan (original)    | --        | +66%        |
+| forward table (probe_read)    | 8791 ms   | -1.4%       |
+| forward table in BPF arena    | 7605 ms   | -14%        |
+| bpf_loop 1024 -> 16 / page    | 7025 ms   | -21%        |
+| reference bitmap in arena     | 6921 ms   | -23%        |
+| (uffd-defer, native userspace)| 6930 ms   | -23%        |
+
+So the in-kernel handler went from a +66% regression to -23%, matching/just
+beating native userspace (and faster than uffd on lusearch).  Changes:
+1. Forward table in a BPF arena (clang-20, -mcpu=v3): handler reads it via
+   arena pointers (arena_base(&fwd_arena)[idx]) -- gc_kompress's ~2x direct-vs-
+   probe_read win.  Arena layout [ table (span/2) | refbits (span/32) ], mapped
+   at map_extra=1<<44 with MAP_FIXED; the GC writes both regions straight into
+   the arena's shared mapping.
+2. bpf_loop collapsed to 16 reference-words/page (forward is now an O(1) arena
+   lookup, so the inner 64-bit loop stays verifier-simple); empty groups skip.
+3. Reference bitmap moved into the arena too -- removes the last 16
+   probe_reads/page.
+The only remaining probe_read is the single 4 KiB staged-page copy (bulk, ~0.5
+us/page, overhead-amortized) -- same cost uffd's native memcpy pays, so no edge
+to chase there.  KEY WIN: bpf-defer keeps the in-kernel fault-resolution
+advantage (no SIGBUS round-trip, ~5-6x fewer window faults than uffd) AND now
+matches userspace throughput -> it is the better configuration overall.
