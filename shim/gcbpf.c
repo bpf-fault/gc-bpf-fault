@@ -188,14 +188,13 @@ uint64_t gcb0_init(uint64_t space_base, uint64_t span_len)
 /* Class B v2: set in-kernel forward params (compressed-oops base/shift, the
  * MMTk MARK/OFFSET_VECTOR side-metadata bases, and the reference bitmap base).
  * Writable globals, applied after the JVM/metadata are initialized. */
-void gcb0_set_forward(uint64_t mark_base, uint64_t offvec_base,
-		      uint64_t refbm_base, uint64_t coops_base,
-		      unsigned int coops_shift, unsigned int defer)
+void gcb0_set_forward(uint64_t fwdtable_base, uint64_t refbm_base,
+		      uint64_t coops_base, unsigned int coops_shift,
+		      unsigned int defer)
 {
 	if (!b0_skel)
 		return;
-	b0_skel->bss->mark_base = mark_base;
-	b0_skel->bss->offvec_base = offvec_base;
+	b0_skel->bss->fwdtable_base = fwdtable_base;
 	b0_skel->bss->refbm_base = refbm_base;
 	b0_skel->bss->coops_base = coops_base;
 	b0_skel->bss->coops_shift = coops_shift;

@@ -400,3 +400,30 @@ vehicle for the forward COMPUTATION as written (verifier forces loop-heavy,
 probe_read-heavy code).  Optimisation directions: shrink the per-page loop to
 non-empty 64-bit groups; avoid re-reading offvec/mark per ref; or keep forward
 in userspace (uffd-defer) and use bpf only to eliminate the SIGBUS round-trip.
+
+## B v2 OPTIMIZATION: forward table replaces the in-kernel transducer scan (2026-06-13)
+The first in-kernel forward computed each reference's new address with an
+offset-vector TRANSDUCER SCAN (2 probe_read_user of MMTk side metadata
+[offvec+mark] + a 64-iter loop, per reference).  That eBPF overhead made
+bpf-defer a throughput loss (pmd +66% vs baseline).
+
+Replaced with a FORWARD TABLE (gc_kompress-style, but for variable objects):
+- compact_faults.rs holds a u32-per-word table (span/2 bytes, lazy), indexed
+  by (old_addr - space_base) >> 3 (objects are 8-byte aligned, so word-indexed
+  is dense regardless of the compressed-oops shift -- which is 0 for <=4 GiB
+  heaps, the bug that first crashed it).
+- The GC fills it for FREE during calculate_offset_vector: at each object's
+  start mark bit the transducer's `to` is the object's post-compact address,
+  so cf.set_fwd(old, new) records it with no extra scan.  Filled in the
+  CalculateForwarding bucket -> complete before any install.
+- The handler now does ONE table probe_read per reference (no offvec/mark
+  reads, no 64-iter scan): old=base+(v<<shift); idx=(old-space_base)>>3;
+  nv=fwdtable[idx]; write nv.
+
+Result: bpf-defer goes from +66% over baseline to ~par / slightly faster
+(lusearch 6863 vs 7084 nodefer; pmd 9000 vs 8857 -- within noise).  Correct
+on luindex/xalan/lusearch/avrora.  Remaining gap to uffd-defer (native lazy
+forward) is the residual eBPF cost: the 1024-iter bpf_loop/page + one table
+probe_read/ref + the 4 KiB page-copy probe_read.  Next lever: put the table
+(and ideally the staged page) in a BPF ARENA for direct access (gc_kompress
+showed ~2x over probe_read).

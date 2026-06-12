@@ -36,8 +36,8 @@ const volatile unsigned long arena_base = 0;
 const volatile unsigned long span_len = 0;
 
 /* Class B v2 forward params (writable; set after JVM/metadata init). */
-unsigned long mark_base = 0;     /* MMTk MARK_SPEC contiguous metadata base */
-unsigned long offvec_base = 0;   /* MMTk OFFSET_VECTOR_SPEC metadata base */
+unsigned long fwdtable_base = 0; /* forward table: u32 new-narrow per old slot,
+				  * indexed by (old_addr - space_base) >> shift */
 unsigned long refbm_base = 0;    /* reference bitmap base (1 bit / 4 bytes) */
 unsigned long coops_base = 0;    /* compressed-oops base */
 unsigned int  coops_shift = 0;   /* compressed-oops shift */
@@ -55,42 +55,6 @@ struct {
 	__uint(max_entries, 1); /* resized to span_len/4096 before load */
 } page_state SEC(".maps");
 
-/* Compressor forward(old_addr) -> new (to-space) address, via the offset
- * vector (one encoded transducer state per 512-byte block) and a scan of the
- * block's start/end mark bits.  Mirrors ForwardingMetadata::forward. */
-static __always_inline unsigned long compressor_forward(unsigned long old)
-{
-	unsigned long block_start = old & ~511UL;
-	__u64 offval = 0, markbits = 0;
-	unsigned long to;
-	unsigned int in_object, limit, last = 0, i;
-
-	/* offset vector: 8-byte value at offvec_base + ((old>>9)<<3) */
-	if (bpf_probe_read_user(&offval, sizeof(offval),
-				(void *)(offvec_base + ((old >> 9) << 3))))
-		return old;
-	to = offval & ~1ULL;
-	in_object = (unsigned int)(offval & 1ULL);
-
-	/* the block's 64 start/end mark bits = 8 bytes at mark_base+(bs>>6) */
-	if (bpf_probe_read_user(&markbits, sizeof(markbits),
-				(void *)(mark_base + (block_start >> 6))))
-		return old;
-
-	limit = (unsigned int)((old - block_start) >> 3); /* words before old */
-	for (i = 0; i < 64; i++) {
-		if (i >= limit)
-			break;
-		if (markbits & (1ULL << i)) {
-			if (in_object)
-				to += (unsigned long)(i - last) * 8 + 8;
-			in_object ^= 1u;
-			last = i;
-		}
-	}
-	return to;
-}
-
 struct fwd_ctx {
 	unsigned char *page;
 	unsigned long page_refbm;       /* refbm byte addr for slot 0 of page */
@@ -103,7 +67,7 @@ static int fwd_slot(__u32 i, void *vctx)
 	struct fwd_ctx *c = vctx;
 	unsigned int off, idx;
 	__u32 v, nv;
-	unsigned long old, new;
+	unsigned long old;
 
 	if (i >= PAGE_SIZE / 4)
 		return 1;
@@ -121,9 +85,16 @@ static int fwd_slot(__u32 i, void *vctx)
 	v = *(__u32 *)(c->page + off);
 	if (v == 0)
 		return 0;
+	/* forward via the GC-built table: index by word (old_addr-space_base)>>3 */
 	old = coops_base + ((unsigned long)v << coops_shift);
-	new = compressor_forward(old);
-	nv = (__u32)((new - coops_base) >> coops_shift);
+	if (old < space_base || old - space_base >= span_len)
+		return 0;                           /* not a compressor-space ref */
+	if (bpf_probe_read_user(&nv, sizeof(nv),
+				(void *)(fwdtable_base +
+					 (((old - space_base) >> 3) << 2))))
+		return 0;
+	if (nv == 0)
+		return 0;                           /* no live forward: leave as-is */
 	*(__u32 *)(c->page + off) = nv;
 	__sync_fetch_and_add(&b0_refs_forwarded, 1);
 	return 0;
