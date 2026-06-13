@@ -11,3 +11,4 @@ micro/test_frag
 micro/bench_kfixup
 micro/bench_kfixarena
 micro/bench_kompress
+micro/bench_kompress2
