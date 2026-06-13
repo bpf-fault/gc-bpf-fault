@@ -253,6 +253,10 @@ void gcb0_dbg_print(void) {
 		(unsigned long long)b0_skel->bss->dbg_scratch0,
 		(unsigned long long)b0_skel->bss->dbg_live0,
 		(unsigned long long)b0_skel->bss->dbg_set);
+	fprintf(stderr, "[r1cnt] staged_installs=%llu refs_fwd=%llu fault_count=%llu\n",
+		(unsigned long long)b0_skel->bss->b0_staged_installs,
+		(unsigned long long)b0_skel->bss->b0_refs_forwarded,
+		(unsigned long long)b0_skel->bss->b0_fault_count);
 	fprintf(stderr, "[r1page] off=0x%llx w=", (unsigned long long)b0_skel->bss->dbg_off);
 	for (int j = 0; j < 8; j++)
 		fprintf(stderr, "%llx ", (unsigned long long)b0_skel->bss->dbg_w[j]);

@@ -197,3 +197,70 @@ batched/vectored WP command. bpf<uffd<segv throughout. Data:
 results/classA/{crossover,extreme}.txt. The earlier xalan-4GB -58% REPRODUCES.
 mmtk-core reverted to committed chunk-granular (clean). ALL THREE CLASSES
 (A barrier, B.0/B.1 concurrent compaction + steal-mode) complete + committed.
+
+## Session 3 (2026-06-13): Class B v2 in-kernel forward + arena opt + R1 WIP
+
+### Class B v2 in-kernel reference forwarding — DONE, optimized, validated
+The eBPF missing-fault handler now forwards references IN-KERNEL during page
+materialization (MMTK_COMPACT_DEFER_FORWARD). Optimization arc (clean
+interleaved best-of-5, pmd 512M):
+  transducer scan +66% -> forward table -1.4% -> table in BPF arena -14%
+  -> bpf_loop 1024->16 -21% -> reference bitmap in arena -23% (== uffd-defer).
+bpf-defer now MATCHES/slightly beats native userspace (uffd-defer), with the
+in-kernel fault-resolution advantage (5-6x fewer userspace fault round-trips).
+Key pieces: forward table + refbits in a clang-20 BPF arena (map_extra=1<<44,
+mmap MAP_FIXED), read direct via arena ptrs; bug found: compressed-oops SHIFT=0
+for <=4GiB heaps so the table is WORD-indexed (>>3) not shift-indexed.
+Committed: mmtk-core fce6f49, mmtk-openjdk 15c0350, gc-bpf-fault (several).
+
+### Latency — HONEST result: parity, not a bpf win on app metrics
+measure_b2_latency.sh: lusearch showed bpf-defer ~43% lower MAX latency than
+uffd, but h2 contradicted it (tied at all percentiles). So that was noise/
+benchmark-specific. End-to-end (throughput + tail latency): bpf-defer == uffd-
+defer. The robust difference is structural (bpf ~5-6x fewer fault round-trips;
+micro per-fault ~3-6us in-kernel vs ~7-34us uffd SIGBUS) but faults are too
+small a fraction of runtime to move app numbers. This motivated R1.
+
+### R1: full in-kernel compaction (drop userspace staging) — WIP, ONE BUG LEFT
+Goal: handler builds each to-space page from UN-SLID from-space, removing the
+userspace slide-compact copy (work uffd cannot avoid -> where bpf would pull
+AHEAD). Gated MMTK_COMPACT_INKERNEL; B v2 path UNAFFECTED (re-verified PASS).
+- De-risk gc_kompress2 (commit 83b51b0): probe_read from-space chunk -> arena
+  scratch + flat fwd table, ~16us/page (== arena-direct). Lessons: clamp read
+  to resident region; flat table avoids 1M-insn verifier limit; per-cpu scratch.
+- BUILT (commit gc-bpf-fault 5780b1b, mmtk-core 742f913c): arena =
+  [fwdtable|refbits|livebits|first_src]; calculate_offset_vector emits live-word
+  bitmap + per-page first_src; stage_region_idx R1 branch records ref bits at
+  OLD positions + SKIPS copy/install (record_ref_bits_old); handler emit_compact
+  builds page from from-space (per-cpu r1_scratch_map, region-clamped read,
+  per-region stop, 4-byte compressed-oop forward).
+- VALIDATED: compaction works (built pages decode to real compacted data, e.g.
+  a char-array page = clean ASCII "(Ljava/lang/invoke/...").
+- **BUG**: crashes early (guarantee: module is null). Telemetry (MMTK_R1_DEBUG):
+  staged_installs=1, refs_fwd=38, fault_count=11. So only ONE page built across
+  11 faults -> ~10 faults did NOT produce a built page. POINTS AT STAGING/
+  page-state, NOT the forward: pages aren't becoming STAGED on the steal/retry
+  path, or staged_end is too small so compacted pages read ZERO_FILL -> null
+  ref. NEXT STEPS (next session):
+  1. In R1 stage_region_idx, confirm cf.stage(start, staged_end-start) marks the
+     right range, and that the steal path (handle_window_fault PENDING -> steal
+     -> stage_region_idx -> retry) actually flips pages PENDING->STAGED in R1
+     (B.0 install was skipped; verify the retry build path).
+  2. Check whether stage_sweep (GC-worker staging of all regions) runs in R1, or
+     only on-demand steal (only 1 region staged before crash?).
+  3. Compare a built REFERENCE page (R1) vs the B v2 staged page at the same off
+     (gcb0_dbg_print captures 8 words; gate both on a fixed off both reach).
+  4. If staging is fine: the 38 forwarded refs in the one built page may include
+     a wrong/missed one -> dump and diff vs B v2.
+- Telemetry left in place (remove before final): gcb0_compact_words/prefail/
+  dbg_print, dbg_w[8], MMTK_R1_DEBUG. r1_scratch_map per-cpu.
+
+### State
+- All committed. mmtk-core (742f913c) + mmtk-openjdk (15c0350) on branch
+  gc-bpf-fault; gc-bpf-fault on master (5780b1b). b0test JDK is current build.
+- R1 gated behind MMTK_COMPACT_INKERNEL (broken); B v2 (MMTK_COMPACT_DEFER_
+  FORWARD) is the validated/optimized path. No background tasks; machine idle.
+- Repro R1 bug: sudo env MMTK_R1_DEBUG=1 MMTK_PLAN=Compressor MMTK_COMPACT_FAULTS=Bpf
+  MMTK_COMPACT_CONCURRENT=true MMTK_COMPACT_INKERNEL=1 MMTK_NO_REFERENCE_TYPES=true
+  MMTK_NO_FINALIZER=true <b0test java> -XX:+UseThirdPartyHeap -Xms512m -Xmx512m
+  -jar dacapo...jar luindex
