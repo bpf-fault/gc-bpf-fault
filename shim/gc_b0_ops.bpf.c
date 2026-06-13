@@ -55,10 +55,27 @@ unsigned long refbm_off = 0;     /* arena byte offset of the reference bitmap */
 unsigned long coops_base = 0;    /* compressed-oops base (set after JVM init) */
 unsigned int  coops_shift = 0;   /* compressed-oops shift */
 unsigned int  defer_fwd = 0;     /* 1 = forward references in-kernel */
+/* R1 (full in-kernel compaction) params */
+unsigned long livebm_off = 0;    /* arena byte offset of the live-word bitmap */
+unsigned long firstsrc_off = 0;  /* arena byte offset of the per-page first-src index */
+unsigned int  inkernel = 0;      /* 1 = build pages from un-slid from-space */
 
 volatile __u64 b0_fault_count = 0;
 volatile __u64 b0_staged_installs = 0;
 volatile __u64 b0_refs_forwarded = 0;
+volatile __u64 b0_compact_words = 0;
+volatile __u64 b0_prefail = 0;
+volatile __u64 dbg_off = 0, dbg_srcw0 = 0, dbg_scratch0 = 0, dbg_live0 = 0, dbg_set = 0;
+volatile __u64 dbg_w[8] = {};
+
+#define R1_SCRATCH_WORDS 1024            /* 8 KiB from-space chunk / page */
+struct r1_scratch { __u64 w[R1_SCRATCH_WORDS]; };
+struct {
+	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
+	__uint(max_entries, 1);
+	__type(key, __u32);
+	__type(value, struct r1_scratch);
+} r1_scratch_map SEC(".maps");
 
 struct {
 	__uint(type, BPF_MAP_TYPE_ARRAY);
@@ -118,6 +135,79 @@ static int fwd_word(__u32 w, void *vctx)
 	return 0;
 }
 
+/* Forward one compressed-oop (narrow) value via the arena forward table.
+ * Returns the new narrow value, or 0 for "leave unchanged" (null / out of the
+ * compressor space / no live forward). */
+static __always_inline __u32 forward_narrow(__u32 v)
+{
+	__u32 __arena *table = (__u32 __arena *)arena_base(&fwd_arena);
+	unsigned long old;
+
+	if (v == 0)
+		return 0;
+	old = coops_base + ((unsigned long)v << coops_shift);
+	if (old < space_base || old - space_base >= span_len)
+		return 0;
+	return table[(old - space_base) >> 3];
+}
+
+#define R1_REGION_WORDS (1u << 17)       /* 1 MiB region / 8 bytes */
+
+/* R1 compaction context: build one to-space page from un-slid from-space. */
+struct r1_ctx {
+	unsigned char *page;
+	struct r1_scratch *s;
+	__u32 srcw0;             /* from-space word index of scratch[0] */
+	__u32 srcw;             /* next from-space word to inspect */
+	__u32 outw;            /* live words emitted (0..512) */
+	__u32 region_end;       /* stop here: the Compressor compacts per region */
+};
+
+/* Emit at most one live from-space word per call, forwarding its reference
+ * dwords; srcw advances every call, outw only on a live word. */
+static int emit_compact(__u32 index, void *vctx)
+{
+	struct r1_ctx *c = vctx;
+	__u8 __arena *arena = (__u8 __arena *)arena_base(&fwd_arena);
+	__u32 srcw = c->srcw, outw = c->outw, sidx;
+	__u64 word;
+	int h;
+
+	/* stop at page full or the region's end (per-region compaction) */
+	if (outw >= PAGE_SIZE / 8 || srcw >= c->region_end)
+		return 1;
+	c->srcw = srcw + 1;
+	/* live-word bitmap (arena, old positions): 1 bit per 8-byte word */
+	if (!(*(__u8 __arena *)(arena + livebm_off + (srcw >> 3)) & (1u << (srcw & 7))))
+		return 0;
+	sidx = srcw - c->srcw0;
+	if (sidx >= R1_SCRATCH_WORDS)
+		return 1;                           /* chunk exhausted (would reload) */
+	word = c->s->w[sidx & (R1_SCRATCH_WORDS - 1)];
+	/* forward the two 4-byte reference dwords flagged in the (old) refbitmap */
+	for (h = 0; h < 2; h++) {
+		__u32 slot = (srcw << 1) | h;       /* old 4-byte slot index */
+		__u32 v, nv;
+
+		if (!(*(__u8 __arena *)(arena + refbm_off + (slot >> 3)) & (1u << (slot & 7))))
+			continue;
+		v = (h == 0) ? (__u32)word : (__u32)(word >> 32);
+		nv = forward_narrow(v);
+		if (nv == 0)
+			continue;
+		if (h == 0)
+			word = (word & ~0xffffffffULL) | nv;
+		else
+			word = (word & 0xffffffffULL) | ((__u64)nv << 32);
+		__sync_fetch_and_add(&b0_refs_forwarded, 1);
+	}
+	outw &= (PAGE_SIZE / 8 - 1);                 /* bound outw < 512 */
+	*(__u64 *)(c->page + outw * 8) = word;
+	c->outw = outw + 1;
+	__sync_fetch_and_add(&b0_compact_words, 1);
+	return 0;
+}
+
 SEC("struct_ops/handle_page_fault")
 int BPF_PROG(handle_page_fault, struct bpf_fault_ops_ctx *ops_ctx,
 	     unsigned char *page)
@@ -133,7 +223,49 @@ int BPF_PROG(handle_page_fault, struct bpf_fault_ops_ctx *ops_ctx,
 
 	idx = off >> PAGE_SHIFT;
 	st = bpf_map_lookup_elem(&page_state, &idx);
-	if (st && *st == B0_STAGED) {
+	if (st && *st == B0_STAGED && inkernel) {
+		/* R1: build the page from UN-SLID from-space (no userspace stage). */
+		__u32 zero = 0, srcw0, total_words = span_len >> 3;
+		__u32 __arena *fs_arena = (__u32 __arena *)((__u8 __arena *)arena_base(&fwd_arena) + firstsrc_off);
+		struct r1_scratch *s = bpf_map_lookup_elem(&r1_scratch_map, &zero);
+		struct r1_ctx c;
+		__u32 chunk;
+
+		__sync_fetch_and_add(&b0_staged_installs, 1);
+		if (!s)
+			return 0;
+		srcw0 = fs_arena[idx];
+		/* bulk-read one from-space chunk (clamped to the span) into scratch */
+		chunk = R1_SCRATCH_WORDS;
+		if (srcw0 < total_words && total_words - srcw0 < chunk)
+			chunk = total_words - srcw0;
+		barrier_var(chunk);
+		if (chunk > R1_SCRATCH_WORDS)            /* bound the read size */
+			chunk = R1_SCRATCH_WORDS;
+		if (bpf_probe_read_user(s->w, (unsigned long)chunk * 8,
+					(void *)(arena_base + (unsigned long)srcw0 * 8))) {
+			__sync_fetch_and_add(&b0_prefail, 1);
+			return -14;
+		}
+		c.page = page;
+		c.s = s;
+		c.srcw0 = srcw0;
+		c.srcw = srcw0;
+		c.outw = 0;
+		/* region of srcw0 -> its global end word (compaction is per region) */
+		c.region_end = ((srcw0 / R1_REGION_WORDS) + 1) * R1_REGION_WORDS;
+		if (c.region_end > total_words)
+			c.region_end = total_words;
+		bpf_loop(R1_SCRATCH_WORDS, emit_compact, &c, 0);
+		if (!dbg_set) {
+			int j;
+			dbg_off = off; dbg_srcw0 = srcw0;
+			for (j = 0; j < 8; j++)
+				dbg_w[j] = *(__u64 *)(page + j * 8);
+			dbg_set = 1;
+		}
+		return 0;
+	} else if (st && *st == B0_STAGED) {
 		err = bpf_probe_read_user(page, PAGE_SIZE,
 					  (void *)(arena_base + off));
 		__sync_fetch_and_add(&b0_staged_installs, 1);
@@ -146,6 +278,13 @@ int BPF_PROG(handle_page_fault, struct bpf_fault_ops_ctx *ops_ctx,
 			/* arena byte offset of this page's first slot's ref bit */
 			c.page_refbm = refbm_off + (((fa - space_base) >> 2) >> 3);
 			bpf_loop(REFWORDS_PER_PAGE, fwd_word, &c, 0);
+		}
+		if (!dbg_set) {
+			int j;
+			dbg_off = off;
+			for (j = 0; j < 8; j++)
+				dbg_w[j] = *(__u64 *)(page + j * 8);
+			dbg_set = 1;
 		}
 	} else if (st && *st == B0_PENDING) {
 		err = -14; /* -EFAULT: bounce to userspace (SIGBUS steal) */

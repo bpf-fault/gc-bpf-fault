@@ -491,3 +491,36 @@ IMPLICATION for R1 (full in-kernel compaction): both bpf and uffd currently pay
 for the userspace staging pass -- that shared cost is why they tie.  Doing
 compaction in-kernel removes work uffd structurally cannot avoid; that is where
 bpf would pull AHEAD rather than tie.
+
+## R1: full in-kernel compaction — WORK IN PROGRESS (2026-06-13)
+Goal: the eBPF handler builds each to-space page from UN-SLID from-space (no
+userspace slide-compact), removing the staging copy + the 4 KiB page copy.
+Gated behind MMTK_COMPACT_INKERNEL; B v2 (the validated path) is untouched.
+
+DONE + de-risked:
+- gc_kompress2 microbench: in-kernel compaction reading from-space via
+  probe_read into an arena scratch + flat forward table, ~16us/page. (commit
+  83b51b0)
+- Arena extended to [ fwdtable | refbits | live-word bitmap | first_src ].
+- GC metadata production: calculate_offset_vector emits the live-word bitmap
+  (old positions) + per-page first_src; stage_region_idx (R1 branch) records
+  reference bits at OLD positions and SKIPS the slide-compact copy + install
+  (record_ref_bits_old). Forward table reused from B v2.
+- Handler (gc_b0_ops, inkernel branch): per to-space page, read first_src,
+  bulk-probe_read the from-space chunk (region-clamped) into a per-cpu scratch,
+  emit live words, forward each 4-byte reference dword via the forward table.
+  Verifies (after barrier_var on the probe_read size + per-region stop clamp).
+
+VALIDATED PARTIALLY: the COMPACTION is correct -- R1 built pages decode to real
+compacted data (e.g. a char array page = clean ASCII "(Ljava/lang/invoke/...").
+refbits populated (66k/cycle).
+
+REMAINING BUG: R1 crashes early (guarantee: module is null) -- compact_words=512
+(exactly ONE page built) then a corrupted reference.  The first built page is
+correct (char array); the crash is on a subsequent access -- either a not-yet-
+staged region's steal/stage path, or a specific mis-forwarded reference page.
+Likely suspects to chase next: (a) per-region stage/page-state interaction in
+the R1 stage_region_idx branch (only one page's worth compacts before the
+crash); (b) the 4-byte reference forward during the copy vs B v2's post-copy
+forward.  Telemetry in place: MMTK_R1_DEBUG prints compact_words/prefail + a
+per-page dump (gcb0_dbg_print).

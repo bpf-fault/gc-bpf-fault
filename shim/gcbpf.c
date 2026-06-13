@@ -124,6 +124,8 @@ static uint64_t b0_arena_base;
 static uint64_t b0_span;
 static uint64_t b0_fwdtable; /* userspace base of the forward-table arena */
 static uint64_t b0_refbits;  /* userspace base of the reference bitmap (in arena) */
+static uint64_t b0_livebits; /* userspace base of the live-word bitmap (R1) */
+static uint64_t b0_first_src;/* userspace base of the per-page first-src index (R1) */
 
 /* Returns the arena base address, or 0 on failure. */
 uint64_t gcb0_init(uint64_t space_base, uint64_t span_len)
@@ -167,11 +169,15 @@ uint64_t gcb0_init(uint64_t space_base, uint64_t span_len)
 		fprintf(stderr, "gcb0: set_max_entries failed\n");
 		return 0;
 	}
-	/* BPF arena layout: [ forward table (span/2) | reference bitmap
-	 * (span/32) ], each page-aligned.  Both read directly by the prog. */
-	size_t refbm_off = (span_len / 2 + page - 1) & ~(size_t)(page - 1);
-	size_t refbm_bytes = (span_len / 32 + page - 1) & ~(size_t)(page - 1);
-	size_t arena_bytes = refbm_off + refbm_bytes;
+	/* BPF arena layout, each region page-aligned, all read directly by the
+	 * prog: [ forward table (span/2) | reference bitmap (span/32) |
+	 * live-word bitmap (span/64, R1) | first_src index (span/128, R1) ]. */
+#define RUP(x) (((x) + page - 1) & ~(size_t)(page - 1))
+	size_t refbm_off    = RUP(span_len / 2);
+	size_t livebm_off   = refbm_off  + RUP(span_len / 32);
+	size_t firstsrc_off = livebm_off + RUP(span_len / 64);
+	size_t arena_bytes  = firstsrc_off + RUP(span_len / 128);
+#undef RUP
 	{
 		if (bpf_map__set_max_entries(b0_skel->maps.fwd_arena, arena_bytes / page)) {
 			fprintf(stderr, "gcb0: arena set_max_entries failed\n");
@@ -183,6 +189,8 @@ uint64_t gcb0_init(uint64_t space_base, uint64_t span_len)
 		return 0;
 	}
 	b0_skel->bss->refbm_off = refbm_off;
+	b0_skel->bss->livebm_off = livebm_off;
+	b0_skel->bss->firstsrc_off = firstsrc_off;
 	/* mmap the arena so the GC can write the forward table + reference
 	 * bitmap; the BPF prog reads them directly via arena pointers (no
 	 * probe_read).  Arenas must map at their user_vm_start (= map_extra)
@@ -197,6 +205,8 @@ uint64_t gcb0_init(uint64_t space_base, uint64_t span_len)
 		}
 		b0_fwdtable = (uint64_t)a;
 		b0_refbits = (uint64_t)a + refbm_off;
+		b0_livebits = (uint64_t)a + livebm_off;
+		b0_first_src = (uint64_t)a + firstsrc_off;
 	}
 
 	map_bytes = (pages * sizeof(uint64_t) + page - 1) & ~(page - 1);
@@ -218,18 +228,35 @@ uint64_t gcb0_init(uint64_t space_base, uint64_t span_len)
  * and the defer flag).  The arena layout (table at offset 0, refbits at
  * refbm_off) is set in gcb0_init. */
 void gcb0_set_forward(uint64_t coops_base, unsigned int coops_shift,
-		      unsigned int defer)
+		      unsigned int defer, unsigned int inkernel)
 {
 	if (!b0_skel)
 		return;
 	b0_skel->bss->coops_base = coops_base;
 	b0_skel->bss->coops_shift = coops_shift;
 	b0_skel->bss->defer_fwd = defer;
+	b0_skel->bss->inkernel = inkernel;
 }
 
 uint64_t gcb0_refs_forwarded(void)
 {
 	return b0_skel ? b0_skel->bss->b0_refs_forwarded : 0;
+}
+
+uint64_t gcb0_compact_words(void) { return b0_skel ? b0_skel->bss->b0_compact_words : 0; }
+uint64_t gcb0_prefail(void) { return b0_skel ? b0_skel->bss->b0_prefail : 0; }
+void gcb0_dbg_print(void) {
+	if (!b0_skel) return;
+	fprintf(stderr, "[r1dbg] off=0x%llx srcw0=%llu scratch0=0x%llx live0=0x%llx set=%llu\n",
+		(unsigned long long)b0_skel->bss->dbg_off,
+		(unsigned long long)b0_skel->bss->dbg_srcw0,
+		(unsigned long long)b0_skel->bss->dbg_scratch0,
+		(unsigned long long)b0_skel->bss->dbg_live0,
+		(unsigned long long)b0_skel->bss->dbg_set);
+	fprintf(stderr, "[r1page] off=0x%llx w=", (unsigned long long)b0_skel->bss->dbg_off);
+	for (int j = 0; j < 8; j++)
+		fprintf(stderr, "%llx ", (unsigned long long)b0_skel->bss->dbg_w[j]);
+	fprintf(stderr, "\n");
 }
 
 /* Userspace bases of the arena regions: the GC writes the forward table and
@@ -242,6 +269,16 @@ uint64_t gcb0_fwdtable_base(void)
 uint64_t gcb0_refbits_base(void)
 {
 	return b0_refbits;
+}
+
+uint64_t gcb0_livebits_base(void)
+{
+	return b0_livebits;
+}
+
+uint64_t gcb0_first_src_base(void)
+{
+	return b0_first_src;
 }
 
 /* Flip a region: move its physical pages into the arena slot and (if
