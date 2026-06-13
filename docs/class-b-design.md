@@ -469,3 +469,25 @@ us/page, overhead-amortized) -- same cost uffd's native memcpy pays, so no edge
 to chase there.  KEY WIN: bpf-defer keeps the in-kernel fault-resolution
 advantage (no SIGBUS round-trip, ~5-6x fewer window faults than uffd) AND now
 matches userspace throughput -> it is the better configuration overall.
+
+## B v2 latency measurement — honest result: parity, not a bpf win (2026-06-13)
+measure_b2_latency.sh parses DaCapo "simple" tail latency (per-event) for the
+three configs.  Deferral helps both bpf and uffd; bpf vs uffd is PARITY:
+- lusearch 384M (median of 5, usec): 99.9% bpf 29048 / uffd 29066; 99.99% bpf
+  37831 / uffd 38131; MAX bpf 55328 / uffd 97846.  (bpf looked ~43% better at
+  max -- but...)
+- h2 768M (median of 3, usec): 99.9% bpf 1.96M / uffd 1.95M; 99.99% bpf 1.99M /
+  uffd 1.97M; MAX bpf 2.00M / uffd 1.98M.  TIED at every percentile.
+
+h2 contradicts the lusearch max edge, so that edge was noise / lusearch-
+specific (max is one sample/run).  Honest conclusion: the optimized in-kernel
+bpf-defer MATCHES native userspace (uffd-defer) on throughput AND tail latency
+-- it does not beat it on app-visible metrics.  The robust difference is
+structural (bpf ~5-6x fewer userspace fault round-trips; micro per-fault
+latency ~3-6us in-kernel vs ~7-34us uffd SIGBUS) but faults are too small a
+fraction of runtime to move end-to-end numbers here.
+
+IMPLICATION for R1 (full in-kernel compaction): both bpf and uffd currently pay
+for the userspace staging pass -- that shared cost is why they tie.  Doing
+compaction in-kernel removes work uffd structurally cannot avoid; that is where
+bpf would pull AHEAD rather than tie.
