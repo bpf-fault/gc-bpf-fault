@@ -491,3 +491,45 @@ DaCapo "simple" tail latency of the converged iteration.
 ### State
 - Committed: gc-bpf-fault 7770570 + this docs commit; mmtk-core 49f91975.
   Machine idle, trees clean.  b0test current; s2test = bisect build.
+
+## Session 4 (cont. 4): uffd columns + mremap-install micro (2026-07-06/07 midnight)
+
+### uffd baseline columns (completes the ART-policy comparison; commit f94fd17)
+  h2 768M: uffd-B.1 35.6s/421ms | uffd-defer 36.1s/442ms
+  h2 3072M: uffd-B.1 8.2s/404ms | uffd-defer 8.3s/445ms
+  xalan 1G: uffd-B.1 1290ms | uffd-defer 1346ms
+Two conclusions:
+1. **B.1 is mechanism-agnostic at app level** (bpf == uffd on time and tail
+   everywhere).  The bpf-over-uffd claims live at the micro level (2.2-5x
+   window, 3-6us vs 7-34us/fault, scaling) and in window-fault counts,
+   NOT in end-to-end DaCapo numbers for the B.1 policy.
+2. **The defer tax is OURS, not defer's**: uffd-defer pays ~nothing (it
+   forwards the same refs at install time in USERSPACE, native loads),
+   while bpf-defer pays 2.4x.  Root cause: the in-kernel install path's
+   BPF-arena-heavy work (~16us/page vs ~3us plain copy, session-3 micro;
+   x34M pages / 16 workers == the ~50s observed delta).  In-kernel
+   forwarding via BPF arena loads is ~5x slower per page than userspace
+   forwarding.  R1's xalan edge survives (R1 1264-1303ms beats uffd-defer
+   1346ms and uffd-B.1 1290ms) -- in the low-ref regime the in-kernel
+   build wins; in the ref-dense regime it loses to userspace forwarding.
+
+### mremap-install VALIDATED (micro/test_mremap_install.c)
+Install a staged region by mremap(MAYMOVE|FIXED) of the arena slot back
+over the heap range -- the exact inverse of the flip -- instead of fault-
+touching every page:
+  install 43ms -> 0.02ms per 64MiB cycle (~2000x), zero faults, contents
+  verified over repeated cycles, NO VMA fragmentation (vmas=1), works
+  while armed (no unregister needed), next flip drops 6.8 -> 0.02ms
+  (whole-VMA move path), arena slot becomes a hole on move-out (obsoletes
+  finish_region's MADV_DONTNEED).
+No kernel interface change.  JVM integration notes: per-region prefix
+moves (staged_end-aligned), armed-remnant patchwork per region (micro
+suggests merging behaves; verify at 1MiB granularity), steal-path does
+its own region mremap from the SIGBUS handler.
+=> NEXT: wire mremap-install into B.1 (+ userspace forwarding as today);
+   expected: install phase ~360ms/GC -> ~10ms/GC, window drains long
+   before the next GC, possibly recovering B.1's avg-pause win without
+   tail damage, at near-stock throughput.
+
+### State
+- Committed: gc-bpf-fault f94fd17; trees clean; machine idle.
