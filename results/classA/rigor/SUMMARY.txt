@@ -1,0 +1,43 @@
+### phase 1: ctz fwd_word
+ctz bv2 luindex: PASS
+ctz r1 luindex: PASS
+ctz bv2 fop: PASS
+ctz r1 fop: PASS
+ctz handler profile (prog 1688):
+           3385198 run_cnt             
+       89883450680 cycles                                                       
+       91778124951 instructions        #     1.02 insns per cycle               
+PASSED in 26640
+RESULT ctz bv2 h2 768M: 26379ms (baseline 26218)
+### phase 2: Class A rigor (3 invocations)
+RESULT run=1 bench=h2 heap=4G cfg=Barrier time_ms=3718 p999_us=17674
+RESULT run=1 bench=xalan heap=1664M cfg=Barrier time_ms=1555 p999_us=na
+RESULT run=1 bench=xalan heap=416M cfg=Barrier time_ms=1203 p999_us=na
+RESULT run=1 bench=lusearch heap=1216M cfg=Barrier time_ms=1891 p999_us=2656
+RESULT run=1 bench=h2 heap=4G cfg=Bpf time_ms=4009 p999_us=48065
+RESULT run=1 bench=xalan heap=1664M cfg=Bpf time_ms=1254 p999_us=na
+RESULT run=1 bench=xalan heap=416M cfg=Bpf time_ms=1672 p999_us=na
+RESULT run=1 bench=lusearch heap=1216M cfg=Bpf time_ms=3333 p999_us=35337
+RESULT run=1 bench=xalan heap=1664M cfg=Uffd time_ms=1274 p999_us=na
+RESULT run=1 bench=h2 heap=4G cfg=Uffd time_ms=4735 p999_us=84155
+RESULT run=2 bench=h2 heap=4G cfg=Barrier time_ms=3700 p999_us=18878
+RESULT run=2 bench=xalan heap=1664M cfg=Barrier time_ms=1600 p999_us=na
+RESULT run=2 bench=xalan heap=416M cfg=Barrier time_ms=1198 p999_us=na
+RESULT run=2 bench=lusearch heap=1216M cfg=Barrier time_ms=1867 p999_us=2684
+RESULT run=2 bench=h2 heap=4G cfg=Bpf time_ms=4053 p999_us=48239
+RESULT run=2 bench=xalan heap=1664M cfg=Bpf time_ms=1290 p999_us=na
+RESULT run=2 bench=xalan heap=416M cfg=Bpf time_ms=1629 p999_us=na
+RESULT run=2 bench=lusearch heap=1216M cfg=Bpf time_ms=3288 p999_us=35014
+RESULT run=2 bench=xalan heap=1664M cfg=Uffd time_ms=1340 p999_us=na
+RESULT run=2 bench=h2 heap=4G cfg=Uffd time_ms=4770 p999_us=84174
+RESULT run=3 bench=h2 heap=4G cfg=Barrier time_ms=3776 p999_us=18084
+RESULT run=3 bench=xalan heap=1664M cfg=Barrier time_ms=1557 p999_us=na
+RESULT run=3 bench=xalan heap=416M cfg=Barrier time_ms=1197 p999_us=na
+RESULT run=3 bench=lusearch heap=1216M cfg=Barrier time_ms=1901 p999_us=2628
+RESULT run=3 bench=h2 heap=4G cfg=Bpf time_ms=4013 p999_us=46934
+RESULT run=3 bench=xalan heap=1664M cfg=Bpf time_ms=1317 p999_us=na
+RESULT run=3 bench=xalan heap=416M cfg=Bpf time_ms=1753 p999_us=na
+RESULT run=3 bench=lusearch heap=1216M cfg=Bpf time_ms=3279 p999_us=34590
+RESULT run=3 bench=xalan heap=1664M cfg=Uffd time_ms=1245 p999_us=na
+RESULT run=3 bench=h2 heap=4G cfg=Uffd time_ms=4765 p999_us=87028
+RIGOR_A_DONE

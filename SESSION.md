@@ -695,3 +695,32 @@ Correctness 12/12 across all three backends + full-heap transitions.
 3. Two userspace-policy lessons for the paper: (a) re-arm cost must be
    O(write working set), not O(mature); (b) the atomic-contention bug
    class (4 instances now) — audit per-item hot paths first.
+
+## Session 5 (cont.): ctz trim + Class A rigor — final tables (2026-07-07)
+
+### ctz fwd_word (gc-bpf-fault 7574d27)
+Handler 42,988 -> 26,553 cycles/fault @ IPC 1.02 (full session arc:
+430,900 -> 26,553, 16x).  End-to-end h2 unchanged (handler off the
+critical path post-atomics) — banked as window-CPU headroom.
+
+### Class A rigor — median of 3 interleaved -n4 invocations
+                      Barrier          Bpf                Uffd
+  xalan@1664M:        1557ms           1290ms (-17%)      1274ms
+  xalan@416M:         1198ms           1672ms (+40%)      —
+  h2@4G:              3718ms/18.1ms    4013ms (+7.9%)/48ms  4765ms (+28%)/84ms
+  lusearch@1216M:     1891ms/2.7ms     3288ms (+74%)/35ms   —
+  (p99.9 "simple" tail after the slash where metered)
+
+### Class A final claims
+1. bpf <= uffd EVERYWHERE; decisive where faults are frequent (h2@4G:
+   +7.9% vs +28%; tail 48 vs 84ms).  At points where dirty-chunk
+   re-arming makes WP work rare (xalan@1664M), the mechanisms converge —
+   itself a finding: the policy fix shrinks the mechanism gap.
+2. vs the compiled barrier: WINS write-clustered workloads at >=128x
+   min-heap (-17%), near-parity on dense-write h2 throughput (+7.9%),
+   loses scattered-write lusearch (+74%) — page granularity physics.
+3. HONEST latency caveat: the dirty-page scan lives in the nursery
+   pause, so p99.9 grows (h2: 18 -> 48ms) even at time near-parity.
+   Mitigation = concurrent/incremental dirty scanning — future work
+   (Class B's window machinery is the obvious donor).
+Data: results/classA/rigor/.  ctz correctness 4/4; Class A suite green.

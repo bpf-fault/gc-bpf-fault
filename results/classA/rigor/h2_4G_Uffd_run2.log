@@ -1,0 +1,76 @@
+Using scaled threading model. 32 processors detected, 32 threads used to drive the workload, in a possible range of [1,1024]
+Version: h2 2.2.220 derby 10.15.2.0 (use -p to print nominal benchmark stats)
+Preparing the H2 database...
+TPCC configuration: scale: 16, terminals: 32, transactions: 100000
+===== DaCapo 23.11-MR2-chopin h2 starting warmup 1 =====
+Starting 100000 requests...
+5%10%15%20%25%30%35%40%45%50%55%60%65%70%75%80%85%90%95%100%
+Completed requests
+	Stock level .............   3973 ( 4.0%)
+	Order status by name ....   2361 ( 2.4%)
+	Order status by ID ......   1609 ( 1.6%)
+	Payment by name .........  25847 (25.8%)
+	Payment by ID ...........  17220 (17.2%)
+	Delivery schedule .......   4029 ( 4.0%)
+	New order ...............  44509 (44.5%)
+	New order rollback ......    452 ( 0.5%)
+===== DaCapo 23.11-MR2-chopin h2 completed warmup 1 in 4673 msec =====
+===== DaCapo processed 100000 requests in 4655 msec, 21482 requests per second =====
+===== DaCapo tail latency, simple: 50% 464 usec, 90% 3186 usec, 99% 11900 usec, 99.9% 53116 usec, 99.99% 65028 usec, max 85005 usec, measured over 100000 events =====
+===== DaCapo tail latency, metered 100ms smoothing: 50% 1913 usec, 90% 8935 usec, 99% 36773 usec, 99.9% 53719 usec, 99.99% 66164 usec, max 85005 usec, measured over 100000 events =====
+===== DaCapo tail latency, metered full smoothing: 50% 86511 usec, 90% 234066 usec, 99% 261056 usec, 99.9% 266614 usec, 99.99% 273870 usec, max 287931 usec, measured over 100000 events =====
+Resetting database to initial state....................
+===== DaCapo 23.11-MR2-chopin h2 starting warmup 2 =====
+Starting 100000 requests...
+5%10%15%20%25%30%35%40%45%50%55%60%65%70%75%80%85%90%95%100%
+Completed requests
+	Stock level .............   3973 ( 4.0%)
+	Order status by name ....   2361 ( 2.4%)
+	Order status by ID ......   1609 ( 1.6%)
+	Payment by name .........  25847 (25.8%)
+	Payment by ID ...........  17220 (17.2%)
+	Delivery schedule .......   4029 ( 4.0%)
+	New order ...............  44509 (44.5%)
+	New order rollback ......    452 ( 0.5%)
+===== DaCapo 23.11-MR2-chopin h2 completed warmup 2 in 4512 msec =====
+===== DaCapo processed 100000 requests in 4509 msec, 22177 requests per second =====
+===== DaCapo tail latency, simple: 50% 436 usec, 90% 2923 usec, 99% 11707 usec, 99.9% 54386 usec, 99.99% 63857 usec, max 70196 usec, measured over 100000 events =====
+===== DaCapo tail latency, metered 100ms smoothing: 50% 1979 usec, 90% 10318 usec, 99% 38168 usec, 99.9% 55488 usec, 99.99% 65608 usec, max 70196 usec, measured over 100000 events =====
+===== DaCapo tail latency, metered full smoothing: 50% 478 usec, 90% 3925 usec, 99% 27554 usec, 99.9% 54386 usec, 99.99% 63857 usec, max 70196 usec, measured over 100000 events =====
+Resetting database to initial state....................
+===== DaCapo 23.11-MR2-chopin h2 starting warmup 3 =====
+Starting 100000 requests...
+5%10%15%20%25%30%35%40%45%50%55%60%65%70%75%80%85%90%95%100%
+Completed requests
+	Stock level .............   3973 ( 4.0%)
+	Order status by name ....   2361 ( 2.4%)
+	Order status by ID ......   1609 ( 1.6%)
+	Payment by name .........  25847 (25.8%)
+	Payment by ID ...........  17220 (17.2%)
+	Delivery schedule .......   4029 ( 4.0%)
+	New order ...............  44509 (44.5%)
+	New order rollback ......    452 ( 0.5%)
+===== DaCapo 23.11-MR2-chopin h2 completed warmup 3 in 4889 msec =====
+===== DaCapo processed 100000 requests in 4885 msec, 20470 requests per second =====
+===== DaCapo tail latency, simple: 50% 441 usec, 90% 3025 usec, 99% 11686 usec, 99.9% 85505 usec, 99.99% 226535 usec, max 241533 usec, measured over 100000 events =====
+===== DaCapo tail latency, metered 100ms smoothing: 50% 2015 usec, 90% 9378 usec, 99% 26113 usec, 99.9% 85505 usec, 99.99% 226535 usec, max 241533 usec, measured over 100000 events =====
+===== DaCapo tail latency, metered full smoothing: 50% 2023 usec, 90% 71566 usec, 99% 124396 usec, 99.9% 135818 usec, 99.99% 226535 usec, max 241533 usec, measured over 100000 events =====
+Resetting database to initial state....................
+===== DaCapo 23.11-MR2-chopin h2 starting =====
+Starting 100000 requests...
+5%10%15%20%25%30%35%40%45%50%55%60%65%70%75%80%85%90%95%100%
+Completed requests
+	Stock level .............   3973 ( 4.0%)
+	Order status by name ....   2361 ( 2.4%)
+	Order status by ID ......   1609 ( 1.6%)
+	Payment by name .........  25847 (25.8%)
+	Payment by ID ...........  17220 (17.2%)
+	Delivery schedule .......   4029 ( 4.0%)
+	New order ...............  44509 (44.5%)
+	New order rollback ......    452 ( 0.5%)
+===== DaCapo 23.11-MR2-chopin h2 PASSED in 4770 msec =====
+===== DaCapo processed 100000 requests in 4767 msec, 20977 requests per second =====
+===== DaCapo tail latency, simple: 50% 425 usec, 90% 2851 usec, 99% 11602 usec, 99.9% 84174 usec, 99.99% 95510 usec, max 106867 usec, measured over 100000 events =====
+===== DaCapo tail latency, metered 100ms smoothing: 50% 1827 usec, 90% 9726 usec, 99% 17211 usec, 99.9% 84174 usec, 99.99% 95510 usec, max 106867 usec, measured over 100000 events =====
+===== DaCapo tail latency, metered full smoothing: 50% 440 usec, 90% 3024 usec, 99% 11955 usec, 99.9% 84174 usec, 99.99% 95510 usec, max 106867 usec, measured over 100000 events =====
+Resetting database to initial state....................
