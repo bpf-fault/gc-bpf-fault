@@ -533,3 +533,30 @@ its own region mremap from the SIGBUS handler.
 
 ### State
 - Committed: gc-bpf-fault f94fd17; trees clean; machine idle.
+
+## Session 4 (cont. 5): mremap-install in the JVM — honest negative result (2026-07-07)
+
+Wired MMTK_INSTALL_MREMAP into B.1 (mmtk-core 5d85e8dd, off by default):
+stage keeps pages PENDING, one mremap moves the staged arena prefix over
+the heap, state-clear releases SIGBUS waiters, arena slot re-mmap'd empty
+(DerivedPointerTable safety).  Correctness: 6/6 PASS (Bpf+Uffd x
+luindex/fop/pmd).
+
+RESULT (h2 768M): touch 35.4s / 418ms tail / 269ms avg pause vs
+mremap 38.5s / 444ms / 281ms — the 2000x micro win does NOT transfer:
++9% time, tail slightly worse, pauses equal.  WHY: B.1's install faults
+were never the app bottleneck — 128k faults/GC parallelize across GC
+workers on the mmap_READ_lock path, while mremap-install serializes
+~1500 mmap_WRITE_lock VMA ops per GC against the allocation path's
+zero-fill faults, and the per-region VMA patchwork makes the STW flip
+slower.  (The drain-queued pauses belonged to the DEFER modes, where
+mremap-install cannot apply — un-forwarded refs in the arena.)
+
+PAPER INSIGHT (design space): page-install mechanisms that ride the
+fault/read-lock path (touch-faults, UFFDIO_COPY) beat VMA-level
+write-lock moves under GC-worker parallelism.  A future bpf-fault
+bulk-install command should be a read-lock-path range operation (like a
+vectored UFFDIO_COPY), NOT a VMA op — the mremap experiment is the
+evidence.
+
+### State: all committed (mmtk-core 5d85e8dd), trees clean, machine idle.
