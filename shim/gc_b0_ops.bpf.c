@@ -281,6 +281,22 @@ static int emit_group(__u32 g, void *vctx)
 	/* the group's reference bits: slots [2*gbase, 2*gbase + 128) */
 	rb0 = *(__u64 __arena *)(arena + refbm_off + (gbase >> 2));
 	rb1 = *(__u64 __arena *)(arena + refbm_off + (gbase >> 2) + 8);
+	if (lw == ~0ULL) {
+		/* fully-live group (the common case in compacted data): the
+		 * output offset is simply outw + b — no bit test, no popcount */
+#pragma clang loop unroll(disable)
+		for (b = 0; b < 64; b++) {
+			__u32 sidx = gbase + b - c->srcw0;
+			__u32 o = (outw + b) & (PAGE_SIZE / 8 - 1);
+			__u64 word = c->s->w[sidx & (R1_SCRATCH_WORDS - 1)];
+			__u64 rbits2 = (b < 32 ? rb0 >> (2 * b)
+					      : rb1 >> (2 * (b & 31))) & 3;
+
+			if (rbits2)
+				word = fwd_refs_in_word(word, rbits2);
+			*(__u64 *)(c->page + o * 8) = word;
+		}
+	} else {
 #pragma clang loop unroll(disable)
 	for (b = 0; b < 64; b++) {
 		__u32 sidx, o;
@@ -297,6 +313,7 @@ static int emit_group(__u32 g, void *vctx)
 		o = (outw + __builtin_popcountll(lw & ((1ULL << b) - 1)))
 			& (PAGE_SIZE / 8 - 1);
 		*(__u64 *)(c->page + o * 8) = word;
+	}
 	}
 	c->outw = outw + pc;
 	c->srcw = gbase + 64 < end ? gbase + 64 : end;
