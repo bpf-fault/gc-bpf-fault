@@ -487,3 +487,19 @@ stock -- next arc is run-granular emit (live-bitmap runs, bulk copy).
   results/classB/h2_n4_comparison_20260706.txt.
 - R1 caveat for the paper: record_ref_bits_old skips non-slot-enqueuing
   objects (never fires on HotSpot/DaCapo; Bv2 forwards those eagerly).
+
+## Defer-tax decomposition + pause attribution (2026-07-06 night)
+- MMTK_FORCE_REFBITS knob (mmtk-core 49f91975): stage-time refbit recording
+  is FREE; STW set_fwd fill minor (6.3s/run); the defer tax is INSTALL-TIME
+  forwarding, which at h2 GC frequency queues the next pause behind the
+  window drain (stop->close waits: B.1 31.3s | Bv2 78.8s | R1 84.7s per
+  h2 -n1 run, 76 overlapped GCs).
+- Pause table (h2 768M -n2): stock 377ms avg | B.1 269ms (-29%, session-2
+  headline reproduced) | Bv2 604ms | R1 641ms.  Defer modes' pauses exceed
+  stock BECAUSE of drain queuing, not pause-phase work.
+- Paper story: B.1 = clean -29%/+10% result; R1 == Bv2 proves in-kernel
+  build is free; fault-time forwarding is the intrinsic cost of defer at
+  25-42M refs/GC.  Mitigations to explore: batched multi-page install,
+  fwd-table prefetch, hybrid stage-forward + defer-on-steal (needs an
+  idempotency marker).
+- Data: results/classB/h2_pause_defer_decomposition_20260706.txt.
