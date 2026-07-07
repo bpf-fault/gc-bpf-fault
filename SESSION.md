@@ -560,3 +560,25 @@ vectored UFFDIO_COPY), NOT a VMA op — the mremap experiment is the
 evidence.
 
 ### State: all committed (mmtk-core 5d85e8dd), trees clean, machine idle.
+
+## Session 4 (cont. 6): uffd-defer anomaly resolved — attribution sharpened (2026-07-07)
+
+The "uffd-defer is nearly free" result looked too good (25M refs/GC
+forwarded at install for +1ms/GC?).  Probed install_page_uffd/forward_buf
+(uprobes, h2 -n1): install_pages == fwdbuf calls == 19.3M (~130k/GC, defer
+fully active), install+forward CPU = 40.2s over the run = **~2.1us/page
+INCLUDING the UFFDIO_COPY**.  It is not free — it is parallel: /16 GC
+workers ≈ 17ms wall/GC, well inside the inter-GC gap, so it vanishes
+end-to-end.
+The bpf handler pays ~16us/page for the same job (fault entry + arena-
+heavy fwd_word) = ~2.1s CPU/GC, which SATURATES the window -> drain-
+queued pauses -> the 2.4x.  CONCLUSION (confirmed + quantified): the
+defer tax is the 7-8x per-page gap between our in-kernel install path
+and userspace install; there is a THRESHOLD effect — getting bpf's
+per-page cost under the window capacity would eliminate most of the
+2.4x, not just shave it.
+Candidate (no kernel interface change): replace the cache-hostile flat
+forward table (384MB, ~1 miss/ref) with an in-kernel TRANSDUCER over
+arena-resident offset vector (3MB) + mark bitmap (12MB) — cache-resident
+working set, using the group/popcount verifier techniques from the
+emit-group work (session 3's transducer attempt predates them).
