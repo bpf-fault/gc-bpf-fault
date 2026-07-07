@@ -162,35 +162,30 @@ struct r1_ctx {
 	__u32 outw;            /* live words emitted (0..512) */
 	__u32 region_end;       /* stop here: the Compressor compacts per region */
 	__u32 chunk;            /* words valid in scratch for this load */
+	__u32 gbase0;           /* 64-aligned group base of this chunk's groups */
+	__u32 total_words;      /* span_len >> 3 (chunk clamp) */
+	/* slow path (page-boundary group) state, in memory so the per-bit
+	 * callback carries no verifier-tracked register state */
+	__u32 gcur;              /* group base of the group being emitted */
+	__u64 lw, rb0, rb1;      /* the group's live and reference bits */
 };
 
-/* Emit at most one live from-space word per call, forwarding its reference
- * dwords; srcw advances every call, outw only on a live word. */
-static int emit_compact(__u32 index, void *vctx)
+/* Groups per chunk: a page-sized chunk (512 words) plus first-chunk
+ * misalignment spans at most 9 64-word live-bitmap groups. */
+#define R1_GROUPS_PER_CHUNK 9
+
+/* Forward the reference dwords of one emitted 64-bit word in place.
+ * Successful forwards are counted straight into the global (a memory
+ * side effect, like fwd_word) — a register accumulator here would be
+ * loop-carried state that defeats verifier pruning in the caller. */
+static __always_inline __u64 fwd_refs_in_word(__u64 word, __u64 rbits2)
 {
-	struct r1_ctx *c = vctx;
-	__u8 __arena *arena = (__u8 __arena *)arena_base(&fwd_arena);
-	__u32 srcw = c->srcw, outw = c->outw, sidx;
-	__u64 word;
 	int h;
 
-	/* stop at page full or the region's end (per-region compaction) */
-	if (outw >= PAGE_SIZE / 8 || srcw >= c->region_end)
-		return 1;
-	sidx = srcw - c->srcw0;
-	if (sidx >= c->chunk || sidx >= R1_SCRATCH_WORDS)
-		return 1;      /* chunk exhausted: outer loop reloads at c->srcw */
-	c->srcw = srcw + 1;
-	/* live-word bitmap (arena, old positions): 1 bit per 8-byte word */
-	if (!(*(__u8 __arena *)(arena + livebm_off + (srcw >> 3)) & (1u << (srcw & 7))))
-		return 0;
-	word = c->s->w[sidx & (R1_SCRATCH_WORDS - 1)];
-	/* forward the two 4-byte reference dwords flagged in the (old) refbitmap */
 	for (h = 0; h < 2; h++) {
-		__u32 slot = (srcw << 1) | h;       /* old 4-byte slot index */
 		__u32 v, nv;
 
-		if (!(*(__u8 __arena *)(arena + refbm_off + (slot >> 3)) & (1u << (slot & 7))))
+		if (!(rbits2 & (1ULL << h)))
 			continue;
 		v = (h == 0) ? (__u32)word : (__u32)(word >> 32);
 		nv = forward_narrow(v);
@@ -202,10 +197,148 @@ static int emit_compact(__u32 index, void *vctx)
 			word = (word & 0xffffffffULL) | ((__u64)nv << 32);
 		__sync_fetch_and_add(&b0_refs_forwarded, 1);
 	}
-	outw &= (PAGE_SIZE / 8 - 1);                 /* bound outw < 512 */
-	*(__u64 *)(c->page + outw * 8) = word;
-	c->outw = outw + 1;
+	return word;
+}
+
+/* Slow path: emit one live word per call, used only for the (at most one
+ * per fault) group that straddles the page-full boundary.  Loop-carried
+ * state (outw/srcw) lives in the ctx STRUCT, which the verifier havocs
+ * per callback — no cross-iteration register state, no explosion. */
+static int emit_bit(__u32 b, void *vctx)
+{
+	struct r1_ctx *c = vctx;
+	__u32 sidx, o;
+	__u64 word, rbits2;
+
+	if (!(c->lw & (1ULL << (b & 63))))
+		return 0;
+	if (c->outw >= PAGE_SIZE / 8) {
+		/* page full: this bit resumes the next page's build */
+		c->srcw = c->gcur + b;
+		return 1;
+	}
+	sidx = c->gcur + b - c->srcw0;
+	word = c->s->w[sidx & (R1_SCRATCH_WORDS - 1)];
+	rbits2 = (b < 32 ? c->rb0 >> (2 * b) : c->rb1 >> (2 * (b & 31))) & 3;
+	if (rbits2)
+		word = fwd_refs_in_word(word, rbits2);
+	o = c->outw & (PAGE_SIZE / 8 - 1);
+	*(__u64 *)(c->page + o * 8) = word;
+	c->outw++;
 	__sync_fetch_and_add(&b0_compact_words, 1);
+	return 0;
+}
+
+/* Emit one 64-word live-bitmap group per call (the compaction analogue of
+ * fwd_word's 64-slot groups): a dead group is skipped with one u64 load; a
+ * live group whose words all fit on the page is emitted by the FAST loop,
+ * whose output offset is a PURE FUNCTION of the iteration —
+ * outw0 + popcount(live bits below b) — so the loop carries no register
+ * state and the verifier prunes it like fwd_word's.  (An `outw++`-style
+ * accumulator differs on every live/dead path and explodes verification
+ * to E2BIG; barrier_var does not help — it blinds clang, not the
+ * verifier.)  The at-most-one group per fault that straddles the
+ * page-full boundary takes the per-bit bpf_loop slow path instead. */
+static int emit_group(__u32 g, void *vctx)
+{
+	struct r1_ctx *c = vctx;
+	__u8 __arena *arena = (__u8 __arena *)arena_base(&fwd_arena);
+	__u32 gbase = c->gbase0 + (g << 6);
+	__u32 end = c->srcw0 + c->chunk;
+	__u32 outw = c->outw;
+	__u32 pc;
+	__u64 lw, rb0, rb1;
+	int b;
+
+	if (end > c->region_end)
+		end = c->region_end;
+	if (gbase >= end)
+		return 1;                /* chunk done: outer loop reloads */
+	if (outw >= PAGE_SIZE / 8)
+		return 1;                /* page full */
+	/* live-word bitmap (arena, old positions), one whole group */
+	lw = *(__u64 __arena *)(arena + livebm_off + (gbase >> 3));
+	/* mask below the resume point (first group of a chunk only) and
+	 * beyond the chunk/region end */
+	if (c->srcw > gbase)
+		lw &= ~0ULL << ((c->srcw - gbase) & 63);
+	if (end - gbase < 64)
+		lw &= (1ULL << ((end - gbase) & 63)) - 1;
+	if (lw == 0) {
+		c->srcw = gbase + 64 < end ? gbase + 64 : end;
+		return 0;
+	}
+	pc = __builtin_popcountll(lw);
+	if (outw + pc > PAGE_SIZE / 8) {
+		/* page boundary inside this group: per-bit slow path */
+		c->gcur = gbase;
+		c->lw = lw;
+		c->rb0 = *(__u64 __arena *)(arena + refbm_off + (gbase >> 2));
+		c->rb1 = *(__u64 __arena *)(arena + refbm_off + (gbase >> 2) + 8);
+		bpf_loop(64, emit_bit, c, 0);
+		return 1;                /* page is now full */
+	}
+	/* the group's reference bits: slots [2*gbase, 2*gbase + 128) */
+	rb0 = *(__u64 __arena *)(arena + refbm_off + (gbase >> 2));
+	rb1 = *(__u64 __arena *)(arena + refbm_off + (gbase >> 2) + 8);
+#pragma clang loop unroll(disable)
+	for (b = 0; b < 64; b++) {
+		__u32 sidx, o;
+		__u64 word, rbits2;
+
+		if (!(lw & (1ULL << b)))
+			continue;
+		sidx = gbase + b - c->srcw0;
+		word = c->s->w[sidx & (R1_SCRATCH_WORDS - 1)];
+		rbits2 = (b < 32 ? rb0 >> (2 * b) : rb1 >> (2 * (b & 31))) & 3;
+		if (rbits2)
+			word = fwd_refs_in_word(word, rbits2);
+		/* output offset as a pure function of (outw, lw, b) */
+		o = (outw + __builtin_popcountll(lw & ((1ULL << b) - 1)))
+			& (PAGE_SIZE / 8 - 1);
+		*(__u64 *)(c->page + o * 8) = word;
+	}
+	c->outw = outw + pc;
+	c->srcw = gbase + 64 < end ? gbase + 64 : end;
+	__sync_fetch_and_add(&b0_compact_words, pc);
+	return c->outw >= PAGE_SIZE / 8 ? 1 : 0;
+}
+
+/* Load one from-space source page into scratch and emit its groups.  A
+ * bpf_loop callback (rather than an open-coded loop in the handler) so the
+ * verifier walks emit_group's callsite once, not once per chunk iteration
+ * (open-coded 256x re-verification of the branchy group emit is E2BIG).
+ * Each load stays within ONE from-space page: arena holes (dead heap pages
+ * that were never materialized, so mremap moved nothing there) are
+ * page-granular, and bpf_probe_read_user is all-or-nothing — a hole page
+ * just means "nothing live here", skip it (any live word was written by
+ * the mutator, so its page is mapped). */
+static int load_and_emit_chunk(__u32 it, void *vctx)
+{
+	struct r1_ctx *c = vctx;
+	__u32 wbase = c->srcw;
+	__u32 chunk;
+
+	if (c->outw >= PAGE_SIZE / 8 || wbase >= c->region_end)
+		return 1;
+	/* words from wbase to the end of its from-space page */
+	chunk = (PAGE_SIZE / 8) - (wbase & (PAGE_SIZE / 8 - 1));
+	if (wbase < c->total_words && c->total_words - wbase < chunk)
+		chunk = c->total_words - wbase;
+	barrier_var(chunk);
+	if (chunk > R1_SCRATCH_WORDS)            /* bound the read size */
+		chunk = R1_SCRATCH_WORDS;
+	if (bpf_probe_read_user(c->s->w, (unsigned long)chunk * 8,
+				(void *)(arena_base + (unsigned long)wbase * 8))) {
+		/* hole: all-dead page, skip it */
+		__sync_fetch_and_add(&b0_prefail, 1);
+		c->srcw = wbase + chunk;
+		return 0;
+	}
+	c->srcw0 = wbase;
+	c->chunk = chunk;
+	c->gbase0 = wbase & ~63u;
+	bpf_loop(R1_GROUPS_PER_CHUNK, emit_group, c, 0);
 	return 0;
 }
 
@@ -230,7 +363,6 @@ int BPF_PROG(handle_page_fault, struct bpf_fault_ops_ctx *ops_ctx,
 		__u32 __arena *fs_arena = (__u32 __arena *)((__u8 __arena *)arena_base(&fwd_arena) + firstsrc_off);
 		struct r1_scratch *s = bpf_map_lookup_elem(&r1_scratch_map, &zero);
 		struct r1_ctx c;
-		__u32 chunk, it;
 
 		__sync_fetch_and_add(&b0_staged_installs, 1);
 		if (!s)
@@ -244,37 +376,13 @@ int BPF_PROG(handle_page_fault, struct bpf_fault_ops_ctx *ops_ctx,
 		c.region_end = ((srcw0 / R1_REGION_WORDS) + 1) * R1_REGION_WORDS;
 		if (c.region_end > total_words)
 			c.region_end = total_words;
-		/* Build the page, reloading the scratch window as needed: with
-		 * sparse liveness one to-space page draws from far more than one
-		 * chunk of from-space (up to the whole region).  Each load stays
-		 * within ONE from-space page: arena holes (dead heap pages that
-		 * were never materialized, so mremap moved nothing there) are
-		 * page-granular, and bpf_probe_read_user is all-or-nothing — a
-		 * hole page just means "nothing live here", skip it (any live
-		 * word was written by the mutator, so its page is mapped). */
-		for (it = 0; it < R1_REGION_WORDS / (PAGE_SIZE / 8); it++) {
-			__u32 wbase = c.srcw;
-
-			if (c.outw >= PAGE_SIZE / 8 || wbase >= c.region_end)
-				break;
-			/* words from wbase to the end of its from-space page */
-			chunk = (PAGE_SIZE / 8) - (wbase & (PAGE_SIZE / 8 - 1));
-			if (wbase < total_words && total_words - wbase < chunk)
-				chunk = total_words - wbase;
-			barrier_var(chunk);
-			if (chunk > R1_SCRATCH_WORDS)    /* bound the read size */
-				chunk = R1_SCRATCH_WORDS;
-			if (bpf_probe_read_user(s->w, (unsigned long)chunk * 8,
-						(void *)(arena_base + (unsigned long)wbase * 8))) {
-				/* hole: all-dead page, skip it */
-				__sync_fetch_and_add(&b0_prefail, 1);
-				c.srcw = wbase + chunk;
-				continue;
-			}
-			c.srcw0 = wbase;
-			c.chunk = chunk;
-			bpf_loop(R1_SCRATCH_WORDS, emit_compact, &c, 0);
-		}
+		c.total_words = total_words;
+		/* Build the page, reloading the scratch window (one source page
+		 * per iteration) as needed: with sparse liveness one to-space
+		 * page draws from far more than one chunk of from-space (up to
+		 * the whole region). */
+		bpf_loop(R1_REGION_WORDS / (PAGE_SIZE / 8), load_and_emit_chunk,
+			 &c, 0);
 		if (!dbg_set) {
 			int j;
 			dbg_off = off; dbg_srcw0 = srcw0;
