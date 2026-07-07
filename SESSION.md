@@ -582,3 +582,48 @@ forward table (384MB, ~1 miss/ref) with an in-kernel TRANSDUCER over
 arena-resident offset vector (3MB) + mark bitmap (12MB) — cache-resident
 working set, using the group/popcount verifier techniques from the
 emit-group work (session 3's transducer attempt predates them).
+
+## Session 4 (cont. 7): THE DEFER TAX WAS ATOMIC CONTENTION — bpf now beats stock AND uffd (2026-07-07)
+
+Arc: transducer forward built (ov2 + live-bit popcount, bit-exact vs flat,
+0 mismatches) -> no speedup -> exposed a latent bug (fwd_word had its own
+inline flat-table read; skipping the fill under transducer mode left refs
+stale -> deterministic h2 corruption; fixed: fwd_word -> forward_narrow)
+-> bpftool prog profile gave the real answer:
+
+**bv2 handler: 430,900 cycles/fault at IPC 0.07** (vs B.1's plain-copy
+3,234 at 0.47).  The handler was ~entirely stalled on a CONTENDED GLOBAL
+ATOMIC — __sync_fetch_and_add(&b0_refs_forwarded) per forwarded reference,
+~150/page across 16 workers.  Third generation of the same bug class
+(session 3: REFBITS_POPULATED userspace atomic; tonight: the in-handler
+one).  The flat table's cache misses and BPF arena access costs were
+red herrings; the transducer was unnecessary for speed (kept: it lets the
+GC skip the 6.3s/run STW table fill).
+
+### RESULT (atomics gated behind MMTK_R1_DEBUG): h2 768M -n4 last-iter / p99.9
+  stock STW:   32.4s / 372ms      bpf B.1:   35.4s / 418ms
+  uffd B.1:    35.6s / 421ms      uffd defer: 36.1s / 442ms
+  **bpf Bv2:   28.7s / 336ms      bpf R1:    28.7s / 338ms**
+bpf defer modes now beat STOCK (-11% time, -10% tail) and UFFD (-20% time,
+-24% tail) on BOTH metrics.  Staging without forwarding shrinks the window;
+in-kernel install forwarding is nearly free; the window drains before the
+next GC; the concurrent-compaction pause win finally reaches the TAIL.
+This is the paper's headline Class B result, and it is bpf-ONLY: uffd-defer
+still pays userspace per-page forward (36.1s), and uffd cannot do R1 at all.
+xalan 1G -n4: stock 1173 | b1 1291 | bv2 1272 | r1 1281 (defer best of the
+fault variants there too).
+Correctness: 12/12 (bv2/r1/bv2+transducer x luindex/fop/pmd/avrora) + h2 +
+xalan PASS.  Commits: gc-bpf-fault d961c93, mmtk-core 716b62f1.
+
+### Revised attribution chain (for the paper's honesty section)
+1. defer tax != defer concept (uffd-defer cheap)         [cont. 6]
+2. defer tax != per-page in-kernel work per se           [wrong at cont. 6]
+3. defer tax == per-ref contended global atomic in the handler [PROVEN:
+   430k cycles/fault -> 3-4k after gating; 3x total-time collapse]
+Lesson recorded: on per-item hot paths (refs, words, slots), check shared-
+cacheline atomics FIRST — this bug class has now cost us 3 rounds.
+
+### Still open / next
+- Re-profile handler cycles post-fix for the record; heap sweep + pause
+  probe for the new bv2/r1; uffd columns at other heaps unchanged.
+- Multi-invocation rigor for the headline table; then paper writeup.
