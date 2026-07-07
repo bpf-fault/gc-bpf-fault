@@ -90,3 +90,6 @@ gc_kompress2.bpf.o: gc_kompress2.bpf.c vmlinux.h $(LIBBPF_DIR)/libbpf.a
 
 bench_kompress2: bench_kompress2.c gc_kompress2.skel.h gc_common.h $(LIBBPF_DIR)/libbpf.a
 	$(CC) $(USER_CFLAGS) -o $@ $< $(USER_LDFLAGS) -static
+
+test_mremap_install: test_mremap_install.c gc_compact_ops.skel.h gc_common.h $(LIBBPF_DIR)/libbpf.a
+	$(CC) $(USER_CFLAGS) -o $@ $< $(USER_LDFLAGS) -static

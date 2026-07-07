@@ -21,3 +21,10 @@ xalan run2 b1: 1328ms
 xalan run2 r1: 1315ms
 xalan run3 b1: 1349ms
 xalan run3 r1: 1303ms
+RESULT h2 heap=768M cfg=uffd_b1 time_ms=35647  DaCapo tail latency, simple: 50% 586 usec, 90% 4417 usec, 99% 385759 usec, 99.9% 421228 usec, 99.99% 436238 usec, max 443152 usec, measured over 100000 events 
+RESULT h2 heap=768M cfg=uffd_defer time_ms=36099  DaCapo tail latency, simple: 50% 585 usec, 90% 4315 usec, 99% 392525 usec, 99.9% 441954 usec, 99.99% 462938 usec, max 472776 usec, measured over 100000 events 
+RESULT h2 heap=3072M cfg=uffd_b1 time_ms=8171  DaCapo tail latency, simple: 50% 623 usec, 90% 3945 usec, 99% 12680 usec, 99.9% 404110 usec, 99.99% 452166 usec, max 457706 usec, measured over 100000 events 
+RESULT h2 heap=3072M cfg=uffd_defer time_ms=8323  DaCapo tail latency, simple: 50% 608 usec, 90% 3928 usec, 99% 12474 usec, 99.9% 444597 usec, 99.99% 492869 usec, max 502902 usec, measured over 100000 events 
+RESULT xalan heap=1G cfg=uffd_b1 time_ms=1290 nolat
+RESULT xalan heap=1G cfg=uffd_defer time_ms=1346 nolat
+UFFD_COLS_DONE
