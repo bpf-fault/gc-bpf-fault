@@ -627,3 +627,9 @@ cacheline atomics FIRST — this bug class has now cost us 3 rounds.
 - Re-profile handler cycles post-fix for the record; heap sweep + pause
   probe for the new bv2/r1; uffd columns at other heaps unchanged.
 - Multi-invocation rigor for the headline table; then paper writeup.
+
+### Post-fix handler profile (for the record, bv2 h2)
+430,900 cycles/fault @ IPC 0.07 -> **42,988 @ IPC 0.68** (10x/fault; 3.4x
+handler throughput).  Remaining ~29k insns/page = fwd_word scanning all
+1024 slots via 16 groups (ctz-iteration over set bits is the known next
+trim, ~2x, not yet needed for the headline).
