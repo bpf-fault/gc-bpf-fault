@@ -264,3 +264,64 @@ AHEAD). Gated MMTK_COMPACT_INKERNEL; B v2 path UNAFFECTED (re-verified PASS).
   MMTK_COMPACT_CONCURRENT=true MMTK_COMPACT_INKERNEL=1 MMTK_NO_REFERENCE_TYPES=true
   MMTK_NO_FINALIZER=true <b0test java> -XX:+UseThirdPartyHeap -Xms512m -Xmx512m
   -jar dacapo...jar luindex
+
+## Session 4 (2026-07-06): machine reset recovery + R1 FIXED and validated
+
+### Machine reset (node reimaged since 2026-06-13)
+The node was reset: /mydata/openjdk-mmtk (JDK build) and /mydata/dacapo were
+DELETED; mmtk-core/mmtk-openjdk were re-cloned and left parked on the
+unrelated April branch experiment/bpf-fault-write-notify; the kernel tree
+moved from /mydata/linux into the new /mydata/bpf-fault repo (as submodule
+linux/).  Restored:
+- mmtk-core + mmtk-openjdk checked out to gc-bpf-fault (742f913c / 15c0350).
+- /mydata/linux is now a SYMLINK -> /mydata/bpf-fault/linux (keeps all
+  Makefiles/scripts working; new tree has libbpf + bpftool built).
+- openjdk-mmtk re-cloned (mmtk/openjdk @ b557520f04b), single conf `b0test`
+  (--disable-warnings-as-errors, boot JDK apt openjdk-21). NOTE: the old
+  linux-x86_64-server-release conf was not recreated; b0test is the only JDK.
+- DaCapo 23.11-MR2-chopin re-downloaded to the same path.
+- Installed on fresh node: clang-20 (BPF arena), rustup 1.92.0, zip/X11 dev
+  libs, openjdk-21-jdk.  Shim + micro rebuilt and smoke-tested (bpf WP
+  p50 2.8us @2t, matches history).  B v2 luindex re-validated PASS.
+
+### R1 bug ROOT-CAUSED and FIXED (three defects, all committed)
+Repro'd the session-3 crash exactly (staged_installs=1, refs_fwd=38,
+fault_count=11, "guarantee: module is null").  It was NOT one bug but three:
+1. **finish_region-before-install** (mmtk-core): R1 skipped cf.install()
+   (lazy build intent) but stage_region_idx still ran cf.finish_region()
+   immediately -> bpf unregister (faults on unbuilt pages bypass the handler:
+   kernel zero-fill -> null refs) AND arena MADV_DONTNEED (from-space source
+   destroyed).  Fix: install eagerly like B v2 -- the touch drives the
+   in-kernel build, preserving R1's point (no userspace slide-copy).
+2. **stale live bits** (mmtk-core): the R1 live-word bitmap was only OR'd;
+   stale bits from the prior cycle emit dead words.  Fix: per-region clear in
+   calculate_offset_vector (regions are 1MiB-aligned -> parallel-safe).
+3. **single-chunk build + arena holes** (shim): emit_compact read ONE 8KiB
+   chunk ("would reload" unimplemented) -> zero page tails.  And a naive
+   reload -EFAULTs when a chunk crosses an arena HOLE (dead heap pages never
+   materialized -> nothing mremap'd there); handler -14 -> SIGBUS -> retry ->
+   infinite fault loop (75M retries, 2 GC workers spinning, observed).
+   Fix: page-granular loads (holes are page-granular so reads are all-or-
+   nothing per page), failed read = all-dead page, skip (any live word was
+   mutator-written -> its page is mapped); also don't advance srcw past the
+   scratch-overflow word.
+Commits: mmtk-core b3ad57fc, gc-bpf-fault 93098b8.
+
+### R1 VALIDATED (correctness) -- performance is the next arc
+luindex/fop/pmd/avrora PASS @512M; h2 768M -n2 PASS (31.6M pages built
+in-kernel, 10.57e9 refs forwarded in-kernel, prefail=hole-skips only).
+B v2 regression: PASS (unchanged).
+**Perf caveat**: h2 iteration ~188s vs stock ~30s (~6x).  Cause (analyzed,
+not yet fixed): emit_compact is WORD-granular -- one bpf_loop iteration per
+from-space word inspected (live or dead), so each region's live extent is
+rescanned ~once per GC (~100M iterations/GC on h2).  Next optimization:
+RUN-granular emit (walk the live bitmap word-at-a-time to find live runs,
+copy runs in bulk), and/or skip-ahead via first_src of the next page.
+luindex/fop/avrora show no visible regression (few GCs at 512M).
+
+### State
+- All committed: mmtk-core b3ad57fc + mmtk-openjdk 15c0350 (unchanged) on
+  gc-bpf-fault; gc-bpf-fault master 93098b8.  b0test JDK current (only conf).
+- No background tasks; machine idle.  Kernel 6.17.0-bpf-fault+ running.
+- Next: R1 perf arc (run-granular emit), then the A/B/R1 comparison table
+  (h2 pauses + throughput), then paper writeup.
