@@ -75,3 +75,34 @@ mutable heap slot:
 - Snapshot arena RSS (heap-sized worst case).
 - Compressor integration (the original motivation) is future work once
   this validates; its mark is the same tracing machinery.
+
+## M2 status (2026-07-07): WIP, parked with root-cause analysis
+
+Integration built end-to-end (shim gcsatb API, satb_pages.rs tracker,
+ConcurrentImmix wiring, binding gate).  luindex/pmd PASS; xalan/lusearch
+fail.  Five bugs fixed en route (see mmtk-core 06c0b68e); the remaining
+issue is FUNDAMENTAL to conservative snapshot draining on an exact VM:
+
+**Conservative candidates can resurrect intact-dead objects** (stale VO
+bits under lazy sweep).  Tracing them is unsafe not because they are
+malformed (they are intact) but because their CHILDREN may point into
+reused memory, and the exact tracer scans children unvalidated.
+Candidate filters cannot fix this: dead-intact objects are
+indistinguishable from live ones by VO/chunk state, and young-BLOCK
+filtering over-rejects (recycled blocks mix mark-start-live objects with
+fresh allocation).  Exact snapshot scanning (walk VO bits of the page,
+scan object copies) collides with line recycling during mark (new VO
+bits appear mid-mark; their slots read from the snapshot are pre-alloc
+garbage).
+
+**Sound design requirement identified**: the allocation frontier must be
+tracked at LINE granularity (immix line = 256B) — objects/candidates in
+lines recycled since mark start are post-snapshot by definition and can
+be skipped exactly, while mark-start-live objects in the same block are
+retained.  This needs an allocator hook logging line-range acquisitions
+(same shape as the Class A block hook, one level finer).  Estimated as
+the single remaining piece; parked in favor of idea 6 for now.
+
+M1 (the kernel mechanism) is fully validated and stands on its own:
+in-kernel pre-write snapshots at 8.9us p50, 3.5GB/s, no signals — the
+enabling primitive uffd cannot match (its WP round-trip is 30-50us).
