@@ -392,3 +392,50 @@ the compressor space; B v2's staged path forwards those eagerly instead.
   comparison (measure_pauses.sh) — R1 should shorten the *stage* phase
   (no copy), (c) possibly batched WP / install-side prefetch as kernel
   items, (d) paper writeup.
+
+## Session 4 (cont. 2): defer-tax decomposition + pause attribution (2026-07-06 night)
+
+### Decomposition of the defer-forward tax (h2 768M; mmtk-core 49f91975)
+Knob MMTK_FORCE_REFBITS (record refbits in non-defer mode, forward at stage
+time) splits the tax:
+- Stage-time refbit recording: **FREE** (B.1 35.7s == B.1+recording 35.7s
+  -n4).  The pre-fix 6x regression was thus ENTIRELY the per-slot contended
+  telemetry atomic, not the bitmap writes.
+- STW set_fwd forward-table fill (CalculateOffsetVector packets, bpftrace
+  uretprobe sums per -n1 run): B.1 6ms / Bv2 6.3s / R1 6.4s — real but
+  minor (~30-40ms CPU per GC over parallel workers).  R1's livebits/
+  first_src emission adds only ~50ms/run — negligible.
+- **Install-time forwarding is the dominant tax**, and at h2's GC frequency
+  it shows up as PAUSE time: half of all stops land while the previous
+  window is still draining, and stop->window-close waits total
+  B.1 31.3s | Bv2 78.8s | R1 84.7s (76 overlapped GCs, -n1).  The window
+  has no slack, so work moved out of the pause queues the NEXT pause.
+
+### Pause table (h2 768M -n2, ~271 GCs, whole process)
+  stock: avg 377ms max 521ms | B.1: 269ms (-29%) max 558ms
+  Bv2:   avg 604ms max 1458ms | R1: 641ms max 1520ms
+B.1 reproduces session 2's -29% avg-pause headline.  Bv2/R1 pauses are
+WORSE than stock STW — fully explained by window-drain queuing above.
+
+### Paper-facing conclusions (Class B family, ref-dense/GC-frequent regime)
+1. B.1 (staging-time forwarding): -29% avg pause for +10% throughput —
+   the clean concurrent-compaction result; holds up.
+2. Defer-forward (Bv2) and full in-kernel compaction (R1) both work
+   correctly, and R1 == Bv2 (within ~8%): the in-kernel page build is
+   free relative to userspace staging — the MECHANISM claim stands.
+3. But fault-time reference forwarding is intrinsically expensive at
+   scale (25-42M refs/GC): ~2.4x throughput and pause regression via
+   window-drain queuing.  Defer modes need either (a) workloads with GC
+   slack (bigger heaps / fewer refs), or (b) a way to cut install-time
+   forward cost.  Candidate kernel/design items: batched install (fault
+   N pages per handler entry), forward-table prefetch, or hybrid
+   stage-forward for GC-staged regions + defer only for stolen regions
+   (needs an idempotency marker — unsafe today).
+Data: results/classB/h2_pause_defer_decomposition_20260706.txt.
+
+### State
+- Committed: mmtk-core 49f91975 (knob + prior fixes), gc-bpf-fault at
+  fba6ef9 + docs commits; branches gc-bpf-fault / master; trees clean.
+- bpftrace v0.20.2 installed from apt (works on 6.17.0-bpf-fault+;
+  uprobes verified).  b0test JDK current; s2test = session-2 bisect build.
+- Machine idle; no background tasks.

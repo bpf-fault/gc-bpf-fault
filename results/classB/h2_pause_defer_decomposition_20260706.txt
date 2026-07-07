@@ -1,0 +1,55 @@
+# h2 768M pause + defer-tax decomposition, 2026-07-06 (mmtk-core 49f91975)
+# pauses (-n2, stop_all_mutators..resume_mutators, whole process incl. prep):
+#   stock avg 377ms max 521ms | B.1 269ms (-29%) max 558ms | Bv2 604ms max 1458ms | R1 641ms max 1520ms (~271 GCs)
+# decomposition: B.1 35.7s == B.1+FORCE_REFBITS 35.7s (recording free); set_fwd packets 6ms(B.1)/6.3s(Bv2)/6.4s(R1) per -n1 run;
+# window-drain inside pause (-n1, 76 overlapped GCs): B.1 31.3s | Bv2 78.8s | R1 84.7s
+=== pauses: stock (h2 768M -n2) ===
+===== DaCapo 23.11-MR2-chopin h2 PASSED in 32390 msec =====
+@avg_us: 377362
+@gcs: 272
+@max_us: 520900
+=== pauses: b1 (h2 768M -n2) ===
+===== DaCapo 23.11-MR2-chopin h2 PASSED in 35794 msec =====
+@avg_us: 268511
+@gcs: 271
+@max_us: 557840
+=== pauses: bv2 (h2 768M -n2) ===
+===== DaCapo 23.11-MR2-chopin h2 PASSED in 88468 msec =====
+@avg_us: 603972
+@gcs: 271
+@max_us: 1458166
+=== pauses: r1 (h2 768M -n2) ===
+===== DaCapo 23.11-MR2-chopin h2 PASSED in 92813 msec =====
+@avg_us: 641481
+@gcs: 270
+@max_us: 1520096
+Finished building target 'images' in configuration 'b0test'
+=== config B: B.1 + forced refbit recording, h2 -n4 ===
+===== DaCapo 23.11-MR2-chopin h2 completed warmup 1 in 44001 msec =====
+===== DaCapo 23.11-MR2-chopin h2 completed warmup 2 in 36038 msec =====
+===== DaCapo 23.11-MR2-chopin h2 completed warmup 3 in 35726 msec =====
+===== DaCapo 23.11-MR2-chopin h2 PASSED in 35712 msec =====
+=== offset-vector packet time: b1 (h2 -n1) ===
+===== DaCapo 23.11-MR2-chopin h2 PASSED in 43414 msec =====
+@packets: 112863
+@total_ms: 6
+=== offset-vector packet time: bv2 (h2 -n1) ===
+===== DaCapo 23.11-MR2-chopin h2 PASSED in 99897 msec =====
+@packets: 112863
+@total_ms: 6336
+=== offset-vector packet time: r1 (h2 -n1) ===
+===== DaCapo 23.11-MR2-chopin h2 PASSED in 107772 msec =====
+@packets: 112863
+@total_ms: 6383
+=== window drain wait inside pause: b1 (h2 -n1) ===
+===== DaCapo 23.11-MR2-chopin h2 PASSED in 44354 msec =====
+@drain_total_ms: 31306
+@drains: 76
+=== window drain wait inside pause: bv2 (h2 -n1) ===
+===== DaCapo 23.11-MR2-chopin h2 PASSED in 102001 msec =====
+@drain_total_ms: 78835
+@drains: 76
+=== window drain wait inside pause: r1 (h2 -n1) ===
+===== DaCapo 23.11-MR2-chopin h2 PASSED in 109106 msec =====
+@drain_total_ms: 84663
+@drains: 77
