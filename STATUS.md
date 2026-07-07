@@ -571,3 +571,35 @@ concurrent scanning = future work); scattered writes stay the loss.
 ctz fwd_word: handler 26,553 cycles/fault @ IPC 1.02 (session arc 16x);
 end-to-end unchanged (off critical path) — headroom.
 Data: results/classA/rigor/.
+
+## Page-COW SATB (idea 4) + compressed cold heap (idea 6) — 2026-07-07
+
+### SATB / M2 (ConcurrentImmix, MMTK_SATB_PAGES; off by default)
+- M1 kernel mechanism VALIDATED: in-kernel pre-write page snapshots,
+  8.9us p50 incl. 2 page copies, 3.5GB/s (uffd equivalent: 30-50us RTT).
+- M2 exact-drain design COMPLETE and oracle-verified (MMTK_SATB_VERIFY
+  differential mode: extracted=2505, garbage=0, unmarked=387).
+- Residual crashes ROOT-CAUSED as an upstream ConcurrentImmix race
+  exposed by WP-fault latency: reproduces with the COMPILED barrier
+  active and MAINLINE uffd WP-async doing the arming (0/3), baseline
+  6/6, register-only 3/3; 1/16-chunk arming still fails (narrow ordering
+  window).  bpf-fault kernel path exonerated (5 adversarial micros +
+  path audit).  Draft report: docs/concurrentimmix-race-report.md.
+  Finding: VM-based barriers (bpf AND uffd) exercise interleavings
+  compiled barriers never hit.
+
+### Compressed cold heap (GenImmix, MMTK_ZHEAP=K) — COMPLETE
+- Mechanism (gc_z_ops): in-kernel page decompression at missing-fault,
+  p50 4.97us (~2us over plain fault), bit-exact 65536/65536; ratio
+  1.4/2.4/4.6x at 30/60/80% zeros; verifier-safe codec (per-group
+  prefix + popcount pure-function indexing).
+- Integration: soft-dirty cold detection (K clean GCs, sweep every Nth),
+  ratio-gated compress + DONTNEED at end_of_gc, LOS + mature coverage.
+- ColdCache (1GB 75%-zero cold + 64MB hot, 3GB heap):
+  stock 3648MB/1317M ops vs zheap 3338MB/1298M ops
+  => -310MB RSS (-8.5%) at -1.5% throughput; 3.92x on selected pages;
+  42 decode faults (stable set).  luindex/xalan/pmd PASS.
+- Boundaries (documented): DaCapo has no durably-cold heap (h2 1.02x
+  ratio = negative result); full-GC retrace materializes the compressed
+  set by design.  Fix progression: 21% -> 1.5% overhead via extent
+  cache (196776 -> 165 faults) + sweep throttle.
