@@ -201,6 +201,12 @@ int gcsatb_wp(uint64_t start, uint64_t len, int enable)
 
 uint8_t *gcsatb_flags(void)     { return satb_arena ? satb_arena + satb_flags_off : NULL; }
 uint8_t *gcsatb_snapshots(void) { return satb_arena; }
+void gcsatb_set_noop(unsigned int on)
+{
+	if (satb_skel)
+		satb_skel->bss->satb_noop = on;
+}
+
 uint64_t gcsatb_snap_count(void)
 {
 	return satb_skel ? satb_skel->bss->satb_snapshots : 0;

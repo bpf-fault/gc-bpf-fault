@@ -105,3 +105,12 @@ gc_z_ops.bpf.o: gc_z_ops.bpf.c vmlinux.h $(LIBBPF_DIR)/libbpf.a
 
 test_zheap: test_zheap.c gc_z_ops.skel.h gc_common.h $(LIBBPF_DIR)/libbpf.a
 	$(CC) $(USER_CFLAGS) -o $@ $< $(USER_LDFLAGS) -static
+
+test_wp_race: test_wp_race.c gc_wp_ops.skel.h gc_common.h $(LIBBPF_DIR)/libbpf.a
+	$(CC) $(USER_CFLAGS) -o $@ $< $(USER_LDFLAGS) -static
+
+test_wp_uaccess: test_wp_uaccess.c gc_wp_ops.skel.h gc_common.h $(LIBBPF_DIR)/libbpf.a
+	$(CC) $(USER_CFLAGS) -o $@ $< $(USER_LDFLAGS) -static
+
+test_wp_coverage: test_wp_coverage.c gc_wp_ops.skel.h gc_common.h $(LIBBPF_DIR)/libbpf.a
+	$(CC) $(USER_CFLAGS) -o $@ $< $(USER_LDFLAGS) -static

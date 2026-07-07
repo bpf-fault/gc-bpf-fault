@@ -34,6 +34,7 @@ unsigned long snapbm_off = 0;    /* arena byte offset of the snap bitmap */
 volatile __u64 satb_snapshots = 0;
 volatile __u64 satb_read_fail = 0;
 volatile __u32 satb_count = 0;   /* debug counters opt-in */
+volatile __u32 satb_noop = 0;    /* bisect: WP fault -> immediate return */
 
 struct {
 	__uint(type, BPF_MAP_TYPE_ARENA);
@@ -61,6 +62,8 @@ int BPF_PROG(handle_wp_fault, struct bpf_fault_ops_ctx *ops_ctx,
 	unsigned long off = ops_ctx->address - heap_base;
 	unsigned long idx, pa;
 
+	if (satb_noop)
+		return 0;      /* isolate kernel WP mechanics from handler work */
 	if (off >= span_len)
 		return 0;
 	idx = off >> PAGE_SHIFT;
