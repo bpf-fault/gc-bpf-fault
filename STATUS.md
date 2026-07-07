@@ -444,3 +444,23 @@ TWO-DIMENSIONAL result:
    workloads at large heaps, reach parity for scattered-write workloads at
    large heaps, and lose at tight heaps (frequent GC) where per-GC WP
    re-arming dominates -- which a batched WP command would mitigate.
+
+## R1 (full in-kernel compaction) FIXED + validated (2026-07-06, session 4)
+Machine was reimaged; environment restored (see SESSION.md session 4: branches
+re-checked-out, /mydata/linux -> /mydata/bpf-fault/linux symlink, b0test JDK
+rebuilt, DaCapo re-downloaded).  The session-3 R1 crash was THREE bugs:
+(1) stage_region_idx ran finish_region (bpf unregister + arena MADV_DONTNEED)
+    while skipping install -> unbuilt staged pages silently kernel-zero-fill
+    and the from-space source is destroyed; fix = eager install (touch) like
+    B v2, the touch drives the in-kernel build.
+(2) R1 live-word bitmap never cleared between cycles -> stale bits emit dead
+    words; fix = per-region clear in calculate_offset_vector.
+(3) emit_compact single 8KiB chunk, no reload -> zero page tails; naive reload
+    -EFAULTs on page-granular arena HOLES (never-materialized dead pages) ->
+    infinite fault/SIGBUS retry loop; fix = page-granular loads, failed read
+    treated as all-dead page (sound: live words are mutator-written).
+VALIDATED: luindex/fop/pmd/avrora @512M + h2 768M -n2 PASS under
+MMTK_COMPACT_INKERNEL=1 (31.6M pages built in-kernel, 10.57e9 refs forwarded
+in-kernel); B v2 unchanged/PASS.  Commits: mmtk-core b3ad57fc, this repo
+93098b8.  KNOWN COST: word-granular emit_compact makes h2 ~6x slower than
+stock -- next arc is run-granular emit (live-bitmap runs, bulk copy).
