@@ -1,0 +1,31 @@
+Version: lucene 9.7.0 (use -p to print nominal benchmark stats)
+===== DaCapo 23.11-MR2-chopin luindex starting warmup 1 =====
+Adding documents from enwiki-anarchism-abydos.md: Adding documents from enwiki-anarchism-abydos.md: 500
+Adding documents from enwiki-abydos-copleston.md: Adding documents from enwiki-abydos-copleston.md: 1000Adding documents from enwiki-abydos-copleston.md: 2000Adding documents from enwiki-abydos-copleston.md: 3000Adding documents from enwiki-abydos-copleston.md: 4000Adding documents from enwiki-abydos-copleston.md: 5000Adding documents from enwiki-abydos-copleston.md: 5500
+Optimizing...
+===== DaCapo 23.11-MR2-chopin luindex completed warmup 1 in 7306 msec =====
+===== DaCapo 23.11-MR2-chopin luindex starting warmup 2 =====
+Adding documents from enwiki-anarchism-abydos.md: Adding documents from enwiki-anarchism-abydos.md: 500
+Adding documents from enwiki-abydos-copleston.md: Adding documents from enwiki-abydos-copleston.md: 1000Adding documents from enwiki-abydos-copleston.md: 2000Adding documents from enwiki-abydos-copleston.md: 3000Adding documents from enwiki-abydos-copleston.md: 4000Adding documents from enwiki-abydos-copleston.md: 5000Adding documents from enwiki-abydos-copleston.md: 5500
+Optimizing...
+===== DaCapo 23.11-MR2-chopin luindex completed warmup 2 in 5598 msec =====
+===== DaCapo 23.11-MR2-chopin luindex starting warmup 3 =====
+Adding documents from enwiki-anarchism-abydos.md: Adding documents from enwiki-anarchism-abydos.md: 500
+Adding documents from enwiki-abydos-copleston.md: Adding documents from enwiki-abydos-copleston.md: 1000Adding documents from enwiki-abydos-copleston.md: 2000Adding documents from enwiki-abydos-copleston.md: 3000Adding documents from enwiki-abydos-copleston.md: 4000Adding documents from enwiki-abydos-copleston.md: 5000Adding documents from enwiki-abydos-copleston.md: 5500
+Optimizing...
+===== DaCapo 23.11-MR2-chopin luindex completed warmup 3 in 4867 msec =====
+===== DaCapo 23.11-MR2-chopin luindex starting warmup 4 =====
+Adding documents from enwiki-anarchism-abydos.md: Adding documents from enwiki-anarchism-abydos.md: 500
+Adding documents from enwiki-abydos-copleston.md: Adding documents from enwiki-abydos-copleston.md: 1000Adding documents from enwiki-abydos-copleston.md: 2000Adding documents from enwiki-abydos-copleston.md: 3000Adding documents from enwiki-abydos-copleston.md: 4000Adding documents from enwiki-abydos-copleston.md: 5000Adding documents from enwiki-abydos-copleston.md: 5500
+Optimizing...
+===== DaCapo 23.11-MR2-chopin luindex completed warmup 4 in 4933 msec =====
+===== DaCapo 23.11-MR2-chopin luindex starting warmup 5 =====
+Adding documents from enwiki-anarchism-abydos.md: Adding documents from enwiki-anarchism-abydos.md: 500
+Adding documents from enwiki-abydos-copleston.md: Adding documents from enwiki-abydos-copleston.md: 1000Adding documents from enwiki-abydos-copleston.md: 2000Adding documents from enwiki-abydos-copleston.md: 3000Adding documents from enwiki-abydos-copleston.md: 4000Adding documents from enwiki-abydos-copleston.md: 5000Adding documents from enwiki-abydos-copleston.md: 5500
+Optimizing...
+===== DaCapo 23.11-MR2-chopin luindex completed warmup 5 in 4885 msec =====
+===== DaCapo 23.11-MR2-chopin luindex starting =====
+Adding documents from enwiki-anarchism-abydos.md: Adding documents from enwiki-anarchism-abydos.md: 500
+Adding documents from enwiki-abydos-copleston.md: Adding documents from enwiki-abydos-copleston.md: 1000Adding documents from enwiki-abydos-copleston.md: 2000Adding documents from enwiki-abydos-copleston.md: 3000Adding documents from enwiki-abydos-copleston.md: 4000Adding documents from enwiki-abydos-copleston.md: 5000Adding documents from enwiki-abydos-copleston.md: 5500
+Optimizing...
+===== DaCapo 23.11-MR2-chopin luindex PASSED in 4859 msec =====

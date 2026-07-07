@@ -527,6 +527,9 @@ static uint8_t *z_arena;
 static uint64_t z_base, z_span, z_flags_off, z_store_off, z_store_end;
 static uint64_t z_cursor;          /* store allocation cursor */
 static uint64_t z_compressed_bytes, z_original_bytes;
+static uint64_t z_max_size = 3072; /* only commit pages that compress to <= this */
+
+void gcz_set_max_size(uint64_t bytes) { z_max_size = bytes; }
 
 int gcz_init(uint64_t start, uint64_t len, uint64_t store_bytes)
 {
@@ -623,6 +626,8 @@ long gcz_compress_page(uint64_t addr)
 		}
 		tags[g] = tag;
 	}
+	if (16 + 64 + n * 8 > z_max_size)
+		return 0;              /* poor ratio: not worth residency */
 	offtab[idx] = (uint32_t)cur;
 	z_arena[z_flags_off + idx] = 0;
 	__sync_synchronize();

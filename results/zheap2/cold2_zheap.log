@@ -1,0 +1,346 @@
+[zheap] active: threshold=2 span=3072MB
+BUILT cold=1024MB hot=64MB
+HOT ops=4000000
+HOT ops=8000000
+HOT ops=12000000
+[zheap] gc=1 newly=0 decomp=0 total_comp=0KB orig=0KB faults=0
+HOT ops=16000000
+HOT ops=20000000
+HOT ops=24000000
+[zheap] gc=2 newly=0 decomp=0 total_comp=0KB orig=0KB faults=0
+HOT ops=28000000
+HOT ops=32000000
+HOT ops=36000000
+[zheap] gc=3 newly=278636 decomp=0 total_comp=284207KB orig=1114544KB faults=0
+HOT ops=40000000
+HOT ops=44000000
+HOT ops=48000000
+[zheap] gc=4 newly=0 decomp=16419 total_comp=284207KB orig=1114544KB faults=16419
+HOT ops=52000000
+HOT ops=56000000
+HOT ops=60000000
+[zheap] gc=5 newly=1 decomp=0 total_comp=284207KB orig=1114548KB faults=16419
+HOT ops=64000000
+HOT ops=68000000
+HOT ops=72000000
+[zheap] gc=6 newly=16418 decomp=1 total_comp=302168KB orig=1180220KB faults=16420
+HOT ops=76000000
+HOT ops=80000000
+HOT ops=84000000
+[zheap] gc=7 newly=3 decomp=16418 total_comp=302169KB orig=1180232KB faults=32838
+HOT ops=88000000
+HOT ops=92000000
+HOT ops=96000000
+[zheap] gc=8 newly=4 decomp=3 total_comp=302169KB orig=1180248KB faults=32841
+HOT ops=100000000
+HOT ops=104000000
+HOT ops=108000000
+HOT ops=112000000
+[zheap] gc=9 newly=16419 decomp=11 total_comp=320129KB orig=1245924KB faults=32852
+HOT ops=116000000
+HOT ops=120000000
+HOT ops=124000000
+[zheap] gc=10 newly=1 decomp=16418 total_comp=320129KB orig=1245928KB faults=49270
+HOT ops=128000000
+HOT ops=132000000
+HOT ops=136000000
+[zheap] gc=11 newly=14 decomp=1 total_comp=320132KB orig=1245984KB faults=49271
+HOT ops=140000000
+HOT ops=144000000
+HOT ops=148000000
+[zheap] gc=12 newly=16418 decomp=8 total_comp=338092KB orig=1311656KB faults=49279
+HOT ops=152000000
+HOT ops=156000000
+HOT ops=160000000
+[zheap] gc=13 newly=1 decomp=16418 total_comp=338092KB orig=1311660KB faults=65697
+HOT ops=164000000
+HOT ops=168000000
+HOT ops=172000000
+[zheap] gc=14 newly=2 decomp=1 total_comp=338094KB orig=1311668KB faults=65698
+HOT ops=176000000
+HOT ops=180000000
+HOT ops=184000000
+[zheap] gc=15 newly=16417 decomp=2 total_comp=356054KB orig=1377336KB faults=65701
+HOT ops=188000000
+HOT ops=192000000
+HOT ops=196000000
+[zheap] gc=16 newly=2 decomp=16417 total_comp=356054KB orig=1377344KB faults=82118
+HOT ops=200000000
+HOT ops=204000000
+HOT ops=208000000
+HOT ops=212000000
+[zheap] gc=17 newly=4 decomp=2 total_comp=356056KB orig=1377360KB faults=82120
+HOT ops=216000000
+HOT ops=220000000
+HOT ops=224000000
+[zheap] gc=18 newly=16418 decomp=4 total_comp=374016KB orig=1443032KB faults=82124
+HOT ops=228000000
+HOT ops=232000000
+HOT ops=236000000
+[zheap] gc=19 newly=2 decomp=16418 total_comp=374016KB orig=1443040KB faults=98542
+HOT ops=240000000
+HOT ops=244000000
+HOT ops=248000000
+[zheap] gc=20 newly=6 decomp=1 total_comp=374018KB orig=1443064KB faults=98543
+HOT ops=252000000
+HOT ops=256000000
+HOT ops=260000000
+[zheap] gc=21 newly=16416 decomp=7 total_comp=391978KB orig=1508728KB faults=98550
+HOT ops=264000000
+HOT ops=268000000
+HOT ops=272000000
+[zheap] gc=22 newly=6 decomp=16416 total_comp=391978KB orig=1508752KB faults=114966
+HOT ops=276000000
+HOT ops=280000000
+HOT ops=284000000
+[zheap] gc=23 newly=8 decomp=6 total_comp=391981KB orig=1508784KB faults=114972
+HOT ops=288000000
+HOT ops=292000000
+HOT ops=296000000
+[zheap] gc=24 newly=16419 decomp=8 total_comp=409941KB orig=1574460KB faults=114980
+HOT ops=300000000
+HOT ops=304000000
+HOT ops=308000000
+[zheap] gc=25 newly=1 decomp=16419 total_comp=409941KB orig=1574464KB faults=131399
+HOT ops=312000000
+HOT ops=316000000
+HOT ops=320000000
+HOT ops=324000000
+[zheap] gc=26 newly=6 decomp=1 total_comp=409943KB orig=1574488KB faults=131400
+HOT ops=328000000
+HOT ops=332000000
+HOT ops=336000000
+[zheap] gc=27 newly=16418 decomp=6 total_comp=427903KB orig=1640160KB faults=131406
+HOT ops=340000000
+HOT ops=344000000
+HOT ops=348000000
+[zheap] gc=28 newly=1 decomp=16424 total_comp=427903KB orig=1640164KB faults=147830
+HOT ops=352000000
+HOT ops=356000000
+HOT ops=360000000
+[zheap] gc=29 newly=2 decomp=2 total_comp=427905KB orig=1640172KB faults=147832
+HOT ops=364000000
+HOT ops=368000000
+HOT ops=372000000
+[zheap] gc=30 newly=16426 decomp=2 total_comp=445866KB orig=1705876KB faults=147834
+HOT ops=376000000
+HOT ops=380000000
+HOT ops=384000000
+[zheap] gc=31 newly=1 decomp=16419 total_comp=445866KB orig=1705880KB faults=164253
+HOT ops=388000000
+HOT ops=392000000
+HOT ops=396000000
+[zheap] gc=32 newly=4 decomp=1 total_comp=445868KB orig=1705896KB faults=164254
+HOT ops=400000000
+HOT ops=404000000
+HOT ops=408000000
+[zheap] gc=33 newly=16417 decomp=4 total_comp=463828KB orig=1771564KB faults=164258
+HOT ops=412000000
+HOT ops=416000000
+HOT ops=420000000
+HOT ops=424000000
+[zheap] gc=34 newly=4 decomp=16417 total_comp=463828KB orig=1771580KB faults=180675
+HOT ops=428000000
+HOT ops=432000000
+HOT ops=436000000
+[zheap] gc=35 newly=2 decomp=4 total_comp=463830KB orig=1771588KB faults=180679
+HOT ops=440000000
+HOT ops=444000000
+HOT ops=448000000
+[zheap] gc=36 newly=16423 decomp=2 total_comp=481790KB orig=1837280KB faults=180681
+HOT ops=452000000
+HOT ops=456000000
+HOT ops=460000000
+[zheap] gc=37 newly=0 decomp=16423 total_comp=481790KB orig=1837280KB faults=197104
+HOT ops=464000000
+HOT ops=468000000
+HOT ops=472000000
+[zheap] gc=38 newly=3 decomp=0 total_comp=481792KB orig=1837292KB faults=197104
+HOT ops=476000000
+HOT ops=480000000
+HOT ops=484000000
+[zheap] gc=39 newly=16420 decomp=3 total_comp=499753KB orig=1902972KB faults=197107
+HOT ops=488000000
+HOT ops=492000000
+HOT ops=496000000
+[zheap] gc=40 newly=2 decomp=16434 total_comp=499753KB orig=1902980KB faults=213541
+HOT ops=500000000
+HOT ops=504000000
+HOT ops=508000000
+[zheap] gc=41 newly=1 decomp=2 total_comp=499755KB orig=1902984KB faults=213543
+HOT ops=512000000
+HOT ops=516000000
+HOT ops=520000000
+HOT ops=524000000
+[zheap] gc=42 newly=16427 decomp=1 total_comp=517713KB orig=1968692KB faults=213544
+HOT ops=528000000
+HOT ops=532000000
+HOT ops=536000000
+[zheap] gc=43 newly=0 decomp=16420 total_comp=517713KB orig=1968692KB faults=229964
+HOT ops=540000000
+HOT ops=544000000
+HOT ops=548000000
+[zheap] gc=44 newly=11 decomp=0 total_comp=517716KB orig=1968736KB faults=229964
+HOT ops=552000000
+HOT ops=556000000
+HOT ops=560000000
+[zheap] gc=45 newly=16416 decomp=4 total_comp=535674KB orig=2034400KB faults=229969
+HOT ops=564000000
+HOT ops=568000000
+HOT ops=572000000
+[zheap] gc=46 newly=2 decomp=16416 total_comp=535674KB orig=2034408KB faults=246385
+HOT ops=576000000
+HOT ops=580000000
+HOT ops=584000000
+[zheap] gc=47 newly=4 decomp=2 total_comp=535677KB orig=2034424KB faults=246387
+HOT ops=588000000
+HOT ops=592000000
+HOT ops=596000000
+[zheap] gc=48 newly=16415 decomp=4 total_comp=553635KB orig=2100084KB faults=246391
+HOT ops=600000000
+HOT ops=604000000
+HOT ops=608000000
+[zheap] gc=49 newly=3 decomp=16415 total_comp=553635KB orig=2100096KB faults=262806
+HOT ops=612000000
+HOT ops=616000000
+HOT ops=620000000
+[zheap] gc=50 newly=2 decomp=3 total_comp=553637KB orig=2100104KB faults=262809
+HOT ops=624000000
+HOT ops=628000000
+HOT ops=632000000
+HOT ops=636000000
+[zheap] gc=51 newly=16419 decomp=2 total_comp=571596KB orig=2165780KB faults=262811
+HOT ops=640000000
+HOT ops=644000000
+HOT ops=648000000
+[zheap] gc=52 newly=1 decomp=16419 total_comp=571596KB orig=2165784KB faults=279230
+HOT ops=652000000
+HOT ops=656000000
+HOT ops=660000000
+[zheap] gc=53 newly=3 decomp=1 total_comp=571598KB orig=2165796KB faults=279231
+HOT ops=664000000
+HOT ops=668000000
+HOT ops=672000000
+[zheap] gc=54 newly=16415 decomp=3 total_comp=589556KB orig=2231456KB faults=279234
+HOT ops=676000000
+HOT ops=680000000
+HOT ops=684000000
+[zheap] gc=55 newly=2 decomp=16421 total_comp=589556KB orig=2231464KB faults=295655
+HOT ops=688000000
+HOT ops=692000000
+HOT ops=696000000
+[zheap] gc=56 newly=4 decomp=3 total_comp=589558KB orig=2231480KB faults=295658
+HOT ops=700000000
+HOT ops=704000000
+HOT ops=708000000
+[zheap] gc=57 newly=16425 decomp=4 total_comp=607517KB orig=2297180KB faults=295662
+HOT ops=712000000
+HOT ops=716000000
+HOT ops=720000000
+[zheap] gc=58 newly=0 decomp=16418 total_comp=607517KB orig=2297180KB faults=312080
+HOT ops=724000000
+HOT ops=728000000
+HOT ops=732000000
+HOT ops=736000000
+[zheap] gc=59 newly=3 decomp=0 total_comp=607519KB orig=2297192KB faults=312080
+HOT ops=740000000
+HOT ops=744000000
+HOT ops=748000000
+[zheap] gc=60 newly=16417 decomp=3 total_comp=625478KB orig=2362860KB faults=312083
+HOT ops=752000000
+HOT ops=756000000
+HOT ops=760000000
+[zheap] gc=61 newly=2 decomp=16417 total_comp=625478KB orig=2362868KB faults=328500
+HOT ops=764000000
+HOT ops=768000000
+HOT ops=772000000
+[zheap] gc=62 newly=6 decomp=1 total_comp=625480KB orig=2362892KB faults=328501
+HOT ops=776000000
+HOT ops=780000000
+HOT ops=784000000
+[zheap] gc=63 newly=16419 decomp=6 total_comp=643439KB orig=2428568KB faults=328507
+HOT ops=788000000
+HOT ops=792000000
+HOT ops=796000000
+[zheap] gc=64 newly=3 decomp=16420 total_comp=643439KB orig=2428580KB faults=344927
+HOT ops=800000000
+HOT ops=804000000
+HOT ops=808000000
+[zheap] gc=65 newly=7 decomp=1 total_comp=643441KB orig=2428608KB faults=344928
+HOT ops=812000000
+HOT ops=816000000
+HOT ops=820000000
+[zheap] gc=66 newly=16416 decomp=9 total_comp=661400KB orig=2494272KB faults=344937
+HOT ops=824000000
+HOT ops=828000000
+HOT ops=832000000
+HOT ops=836000000
+[zheap] gc=67 newly=4 decomp=16416 total_comp=661400KB orig=2494288KB faults=361354
+HOT ops=840000000
+HOT ops=844000000
+HOT ops=848000000
+[zheap] gc=68 newly=3 decomp=3 total_comp=661402KB orig=2494300KB faults=361357
+HOT ops=852000000
+HOT ops=856000000
+HOT ops=860000000
+[zheap] gc=69 newly=16417 decomp=4 total_comp=679361KB orig=2559968KB faults=361361
+HOT ops=864000000
+HOT ops=868000000
+HOT ops=872000000
+[zheap] gc=70 newly=3 decomp=16416 total_comp=679361KB orig=2559980KB faults=377778
+HOT ops=876000000
+HOT ops=880000000
+HOT ops=884000000
+[zheap] gc=71 newly=4 decomp=4 total_comp=679363KB orig=2559996KB faults=377782
+HOT ops=888000000
+HOT ops=892000000
+HOT ops=896000000
+[zheap] gc=72 newly=16416 decomp=4 total_comp=697321KB orig=2625660KB faults=377786
+HOT ops=900000000
+HOT ops=904000000
+HOT ops=908000000
+[zheap] gc=73 newly=0 decomp=16416 total_comp=697321KB orig=2625660KB faults=394202
+HOT ops=912000000
+HOT ops=916000000
+HOT ops=920000000
+[zheap] gc=74 newly=4 decomp=0 total_comp=697323KB orig=2625676KB faults=394202
+HOT ops=924000000
+HOT ops=928000000
+HOT ops=932000000
+[zheap] gc=75 newly=16418 decomp=4 total_comp=715282KB orig=2691348KB faults=394206
+HOT ops=936000000
+HOT ops=940000000
+HOT ops=944000000
+HOT ops=948000000
+[zheap] gc=76 newly=6 decomp=16418 total_comp=715282KB orig=2691372KB faults=410624
+HOT ops=952000000
+HOT ops=956000000
+HOT ops=960000000
+[zheap] gc=77 newly=2 decomp=6 total_comp=715284KB orig=2691380KB faults=410630
+HOT ops=964000000
+HOT ops=968000000
+HOT ops=972000000
+[zheap] gc=78 newly=16418 decomp=2 total_comp=733243KB orig=2757052KB faults=410632
+HOT ops=976000000
+HOT ops=980000000
+HOT ops=984000000
+[zheap] gc=79 newly=3 decomp=16417 total_comp=733243KB orig=2757064KB faults=427049
+HOT ops=988000000
+HOT ops=992000000
+HOT ops=996000000
+[zheap] gc=80 newly=1 decomp=4 total_comp=733245KB orig=2757068KB faults=427053
+HOT ops=1000000000
+HOT ops=1004000000
+HOT ops=1008000000
+[zheap] gc=81 newly=16416 decomp=1 total_comp=751203KB orig=2822732KB faults=427054
+HOT ops=1012000000
+HOT ops=1016000000
+HOT ops=1020000000
+[zheap] gc=82 newly=4 decomp=16423 total_comp=751204KB orig=2822748KB faults=443478
+HOT ops=1024000000
+HOT ops=1028000000
+HOT ops=1032000000
+[zheap] gc=83 newly=5 decomp=3 total_comp=751206KB orig=2822768KB faults=443481
+HOT ops=1036000000
+HOT ops=1040000000
+DONE ops=1040817000 sum=65092539412 check=0

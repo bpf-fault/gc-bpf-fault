@@ -824,3 +824,43 @@ originals, register gc_z_ops missing-fault decompressor.  Access
 transparently decompresses in-kernel (p50 4.97us) -- GC tracing
 included.  Metric: RSS/PSS timeline + benchmark time, stock vs
 cold-compress, h2 at large heap.
+
+## Session 5 (cont. 3): idea 6 integration COMPLETE (2026-07-07)
+
+Compressed cold heap live on GenImmix (MMTK_ZHEAP=K): soft-dirty cold
+detection (coexists with the missing-fault link where a WP link cannot),
+K-clean-GC threshold, ratio-gated userspace compression + MADV_DONTNEED
+at end_of_gc, in-kernel decompression on first access (gc_z_ops).
+
+### Final numbers (ColdCache: 1GB 75%-zero cold LOS data + 64MB hot
+### loop, 90s, 3GB heap, K=2 sweep-every-4):
+  stock  steadyRSS=3648MB  ops=1317M
+  zheap  steadyRSS=3338MB  ops=1298M
+  => -310MB RSS (-8.5%) at -1.5% throughput; 42 decode faults total;
+     1.09GB cold compressed to 284MB (3.92x on selected pages).
+Correctness: luindex/xalan/pmd PASS under MMTK_ZHEAP; cold-data
+checksum identical stock-vs-zheap end-to-end through real GCs.
+
+### Honest boundaries + integration findings (each measured):
+1. DaCapo has no durably-cold heap: compression churns and the arena
+   ADDS residency (h2: ratio 1.02x, +365MB RSS, 3x slower iter before
+   selectivity).  Negative result documented like mremap-install.
+2. LOS invisibility: 64KB+ arrays (the classic cold cache) live in the
+   LOS; sweeping only mature immix chunks missed the whole cold set.
+3. Ratio selectivity (MMTK_ZHEAP_MAXSZ, default commit-if<=2048B):
+   dense pages are not worth arena residency.
+4. Header-deref thrash: get_current_size in the sweep's own LOS
+   enumeration faulted back one page per cold object per GC (measured
+   16,394-page compress/decompress oscillation, 443k faults) ->
+   immutable-extent cache; faults 196,776 -> 165.
+5. clear_refs cost: soft-dirty reset write-protects every PTE ->
+   hot-set refaults each sweep (~20% throughput) -> sweep every 4th GC
+   (MMTK_ZHEAP_EVERY) -> -1.5%.
+6. Full-GC retrace faults the compressed set back by design (tracing
+   reads objects); rare in production generational configs; a future
+   mark-on-compressed-image path could avoid materialization.
+
+The paper's memory-footprint axis is now real: uffd could only match
+this with a 30-50us round-trip + userspace decode per first touch
+(~8x our 4.97us in-kernel decode), and no compiled-code alternative
+exists.

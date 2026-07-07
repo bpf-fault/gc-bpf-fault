@@ -1,0 +1,44 @@
+[zheap] active: threshold=2 span=3072MB
+Version: lucene 9.7.0 (use -p to print nominal benchmark stats)
+[zheap] gc=1 newly=0 decomp=0 total_comp=0KB orig=0KB faults=0
+===== DaCapo 23.11-MR2-chopin luindex starting warmup 1 =====
+Adding documents from enwiki-anarchism-abydos.md: Adding documents from enwiki-anarchism-abydos.md: 500
+Adding documents from enwiki-abydos-copleston.md: Adding documents from enwiki-abydos-copleston.md: 1000Adding documents from enwiki-abydos-copleston.md: 2000Adding documents from enwiki-abydos-copleston.md: 3000Adding documents from enwiki-abydos-copleston.md: 4000Adding documents from enwiki-abydos-copleston.md: 5000Adding documents from enwiki-abydos-copleston.md: 5500
+Optimizing...
+[zheap] gc=2 newly=0 decomp=0 total_comp=0KB orig=0KB faults=0
+===== DaCapo 23.11-MR2-chopin luindex completed warmup 1 in 7177 msec =====
+[zheap] gc=3 newly=94 decomp=0 total_comp=21KB orig=376KB faults=0
+===== DaCapo 23.11-MR2-chopin luindex starting warmup 2 =====
+Adding documents from enwiki-anarchism-abydos.md: Adding documents from enwiki-anarchism-abydos.md: 500
+Adding documents from enwiki-abydos-copleston.md: Adding documents from enwiki-abydos-copleston.md: 1000Adding documents from enwiki-abydos-copleston.md: 2000Adding documents from enwiki-abydos-copleston.md: 3000Adding documents from enwiki-abydos-copleston.md: 4000Adding documents from enwiki-abydos-copleston.md: 5000Adding documents from enwiki-abydos-copleston.md: 5500
+Optimizing...
+[zheap] gc=4 newly=150 decomp=8 total_comp=102KB orig=976KB faults=9
+===== DaCapo 23.11-MR2-chopin luindex completed warmup 2 in 5932 msec =====
+[zheap] gc=5 newly=75 decomp=29 total_comp=134KB orig=1276KB faults=38
+===== DaCapo 23.11-MR2-chopin luindex starting warmup 3 =====
+Adding documents from enwiki-anarchism-abydos.md: Adding documents from enwiki-anarchism-abydos.md: 500
+Adding documents from enwiki-abydos-copleston.md: Adding documents from enwiki-abydos-copleston.md: 1000Adding documents from enwiki-abydos-copleston.md: 2000Adding documents from enwiki-abydos-copleston.md: 3000Adding documents from enwiki-abydos-copleston.md: 4000Adding documents from enwiki-abydos-copleston.md: 5000Adding documents from enwiki-abydos-copleston.md: 5500
+Optimizing...
+[zheap] gc=6 newly=84 decomp=18 total_comp=151KB orig=1612KB faults=56
+===== DaCapo 23.11-MR2-chopin luindex completed warmup 3 in 5532 msec =====
+[zheap] gc=7 newly=96 decomp=10 total_comp=213KB orig=1996KB faults=66
+===== DaCapo 23.11-MR2-chopin luindex starting warmup 4 =====
+Adding documents from enwiki-anarchism-abydos.md: Adding documents from enwiki-anarchism-abydos.md: 500
+Adding documents from enwiki-abydos-copleston.md: Adding documents from enwiki-abydos-copleston.md: 1000Adding documents from enwiki-abydos-copleston.md: 2000Adding documents from enwiki-abydos-copleston.md: 3000Adding documents from enwiki-abydos-copleston.md: 4000Adding documents from enwiki-abydos-copleston.md: 5000Adding documents from enwiki-abydos-copleston.md: 5500
+Optimizing...
+[zheap] gc=8 newly=51 decomp=31 total_comp=243KB orig=2200KB faults=97
+===== DaCapo 23.11-MR2-chopin luindex completed warmup 4 in 5415 msec =====
+[zheap] gc=9 newly=46 decomp=9 total_comp=267KB orig=2384KB faults=106
+===== DaCapo 23.11-MR2-chopin luindex starting warmup 5 =====
+Adding documents from enwiki-anarchism-abydos.md: Adding documents from enwiki-anarchism-abydos.md: 500
+Adding documents from enwiki-abydos-copleston.md: Adding documents from enwiki-abydos-copleston.md: 1000Adding documents from enwiki-abydos-copleston.md: 2000Adding documents from enwiki-abydos-copleston.md: 3000Adding documents from enwiki-abydos-copleston.md: 4000Adding documents from enwiki-abydos-copleston.md: 5000Adding documents from enwiki-abydos-copleston.md: 5500
+Optimizing...
+[zheap] gc=10 newly=65 decomp=17 total_comp=314KB orig=2644KB faults=123
+===== DaCapo 23.11-MR2-chopin luindex completed warmup 5 in 5351 msec =====
+[zheap] gc=11 newly=63 decomp=20 total_comp=344KB orig=2896KB faults=143
+===== DaCapo 23.11-MR2-chopin luindex starting =====
+Adding documents from enwiki-anarchism-abydos.md: Adding documents from enwiki-anarchism-abydos.md: 500
+Adding documents from enwiki-abydos-copleston.md: Adding documents from enwiki-abydos-copleston.md: 1000Adding documents from enwiki-abydos-copleston.md: 2000Adding documents from enwiki-abydos-copleston.md: 3000Adding documents from enwiki-abydos-copleston.md: 4000Adding documents from enwiki-abydos-copleston.md: 5000Adding documents from enwiki-abydos-copleston.md: 5500
+Optimizing...
+[zheap] gc=12 newly=65 decomp=20 total_comp=377KB orig=3156KB faults=163
+===== DaCapo 23.11-MR2-chopin luindex PASSED in 5350 msec =====

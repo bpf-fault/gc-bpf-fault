@@ -1,0 +1,273 @@
+[zheap] active: threshold=2 span=3072MB
+Using scaled threading model. 32 processors detected, 32 threads used to drive the workload, in a possible range of [1,1024]
+Version: h2 2.2.220 derby 10.15.2.0 (use -p to print nominal benchmark stats)
+Preparing the H2 database...
+TPCC configuration: scale: 16, terminals: 32, transactions: 100000
+[zheap] gc=1 newly=0 decomp=0 total_comp=0KB orig=0KB faults=0
+[zheap] gc=2 newly=0 decomp=0 total_comp=0KB orig=0KB faults=0
+[zheap] gc=3 newly=0 decomp=0 total_comp=0KB orig=0KB faults=0
+[zheap] gc=4 newly=0 decomp=0 total_comp=0KB orig=0KB faults=0
+[zheap] gc=5 newly=0 decomp=0 total_comp=0KB orig=0KB faults=0
+[zheap] gc=6 newly=0 decomp=0 total_comp=0KB orig=0KB faults=0
+[zheap] gc=7 newly=0 decomp=0 total_comp=0KB orig=0KB faults=0
+[zheap] gc=8 newly=0 decomp=0 total_comp=0KB orig=0KB faults=0
+[zheap] gc=9 newly=104 decomp=0 total_comp=17KB orig=416KB faults=0
+[zheap] gc=10 newly=0 decomp=0 total_comp=17KB orig=416KB faults=0
+[zheap] gc=11 newly=0 decomp=0 total_comp=17KB orig=416KB faults=0
+[zheap] gc=12 newly=0 decomp=6 total_comp=17KB orig=416KB faults=6
+[zheap] gc=13 newly=984 decomp=0 total_comp=291KB orig=4352KB faults=6
+[zheap] gc=14 newly=92 decomp=14 total_comp=310KB orig=4720KB faults=20
+[zheap] gc=15 newly=78 decomp=8 total_comp=328KB orig=5032KB faults=28
+[zheap] gc=16 newly=103 decomp=14 total_comp=367KB orig=5444KB faults=42
+[zheap] gc=17 newly=105 decomp=19 total_comp=398KB orig=5864KB faults=61
+===== DaCapo 23.11-MR2-chopin h2 starting warmup 1 =====
+Starting 100000 requests...
+[zheap] gc=18 newly=59 decomp=59 total_comp=421KB orig=6100KB faults=120
+5%[zheap] gc=19 newly=79 decomp=9 total_comp=457KB orig=6416KB faults=129
+[zheap] gc=20 newly=205 decomp=17 total_comp=573KB orig=7236KB faults=146
+10%[zheap] gc=21 newly=71 decomp=60 total_comp=604KB orig=7520KB faults=207
+[zheap] gc=22 newly=34 decomp=16 total_comp=638KB orig=7656KB faults=223
+15%[zheap] gc=23 newly=84 decomp=19 total_comp=720KB orig=7992KB faults=242
+20%[zheap] gc=24 newly=24 decomp=53 total_comp=740KB orig=8088KB faults=295
+[zheap] gc=25 newly=62 decomp=17 total_comp=784KB orig=8336KB faults=312
+25%[zheap] gc=26 newly=67 decomp=21 total_comp=855KB orig=8604KB faults=333
+[zheap] gc=27 newly=17 decomp=44 total_comp=878KB orig=8672KB faults=377
+30%[zheap] gc=28 newly=25 decomp=27 total_comp=909KB orig=8772KB faults=404
+[zheap] gc=29 newly=79 decomp=19 total_comp=976KB orig=9088KB faults=425
+35%[zheap] gc=30 newly=50 decomp=45 total_comp=1020KB orig=9288KB faults=470
+[zheap] gc=31 newly=41 decomp=24 total_comp=1058KB orig=9452KB faults=494
+40%[zheap] gc=32 newly=73 decomp=20 total_comp=1127KB orig=9744KB faults=514
+[zheap] gc=33 newly=48 decomp=44 total_comp=1163KB orig=9936KB faults=558
+45%[zheap] gc=34 newly=37 decomp=20 total_comp=1192KB orig=10084KB faults=578
+[zheap] gc=35 newly=44 decomp=27 total_comp=1248KB orig=10260KB faults=605
+50%[zheap] gc=36 newly=46 decomp=39 total_comp=1283KB orig=10444KB faults=644
+[zheap] gc=37 newly=29 decomp=15 total_comp=1319KB orig=10560KB faults=659
+55%[zheap] gc=38 newly=39 decomp=27 total_comp=1367KB orig=10716KB faults=689
+[zheap] gc=39 newly=15 decomp=314 total_comp=1384KB orig=10776KB faults=1004
+60%[zheap] gc=40 newly=50 decomp=45 total_comp=1428KB orig=10976KB faults=1049
+65%[zheap] gc=41 newly=2473 decomp=178 total_comp=2223KB orig=20868KB faults=1227
+[zheap] gc=42 newly=110 decomp=476 total_comp=2269KB orig=21308KB faults=1703
+70%[zheap] gc=43 newly=119 decomp=56 total_comp=2307KB orig=21784KB faults=1759
+[zheap] gc=44 newly=286 decomp=347 total_comp=2515KB orig=22928KB faults=2106
+75%[zheap] gc=45 newly=158 decomp=444 total_comp=2589KB orig=23560KB faults=2551
+[zheap] gc=46 newly=161 decomp=257 total_comp=2647KB orig=24204KB faults=2808
+80%[zheap] gc=47 newly=214 decomp=391 total_comp=2765KB orig=25060KB faults=3199
+85%[zheap] gc=48 newly=194 decomp=100 total_comp=2850KB orig=25836KB faults=3300
+[zheap] gc=49 newly=102 decomp=340 total_comp=2906KB orig=26244KB faults=3640
+90%[zheap] gc=50 newly=156 decomp=231 total_comp=2989KB orig=26868KB faults=3872
+[zheap] gc=51 newly=168 decomp=211 total_comp=3050KB orig=27540KB faults=4083
+95%[zheap] gc=52 newly=130 decomp=368 total_comp=3130KB orig=28060KB faults=4451
+100%
+Completed requests
+	Stock level .............   3973 ( 4.0%)
+	Order status by name ....   2361 ( 2.4%)
+	Order status by ID ......   1609 ( 1.6%)
+	Payment by name .........  25847 (25.8%)
+	Payment by ID ...........  17220 (17.2%)
+	Delivery schedule .......   4029 ( 4.0%)
+	New order ...............  44509 (44.5%)
+	New order rollback ......    452 ( 0.5%)
+===== DaCapo 23.11-MR2-chopin h2 completed warmup 1 in 10699 msec =====
+===== DaCapo processed 100000 requests in 10681 msec, 9362 requests per second =====
+===== DaCapo tail latency, simple: 50% 552 usec, 90% 3799 usec, 99% 153155 usec, 99.9% 201224 usec, 99.99% 262148 usec, max 272775 usec, measured over 100000 events =====
+===== DaCapo tail latency, metered 100ms smoothing: 50% 1183 usec, 90% 5085 usec, 99% 153155 usec, 99.9% 201224 usec, 99.99% 262148 usec, max 272775 usec, measured over 100000 events =====
+===== DaCapo tail latency, metered full smoothing: 50% 20717 usec, 90% 151379 usec, 99% 216215 usec, 99.9% 255461 usec, 99.99% 268333 usec, max 285372 usec, measured over 100000 events =====
+Resetting database to initial state...[zheap] gc=53 newly=189 decomp=108 total_comp=3212KB orig=28816KB faults=4559
+..[zheap] gc=54 newly=125 decomp=323 total_comp=3279KB orig=29316KB faults=4882
+[zheap] gc=55 newly=210 decomp=356 total_comp=3394KB orig=30156KB faults=5238
+..[zheap] gc=56 newly=147 decomp=55 total_comp=3465KB orig=30744KB faults=5293
+[zheap] gc=57 newly=113 decomp=29 total_comp=3520KB orig=31196KB faults=5322
+..[zheap] gc=58 newly=157 decomp=167 total_comp=3606KB orig=31824KB faults=5489
+.....[zheap] gc=59 newly=102 decomp=731 total_comp=3655KB orig=32232KB faults=6220
+[zheap] gc=60 newly=11 decomp=188 total_comp=3669KB orig=32276KB faults=6408
+......
+[zheap] gc=61 newly=686 decomp=28 total_comp=4088KB orig=35020KB faults=6436
+===== DaCapo 23.11-MR2-chopin h2 starting warmup 2 =====
+Starting 100000 requests...
+[zheap] gc=62 newly=83 decomp=72 total_comp=4132KB orig=35352KB faults=6508
+5%[zheap] gc=63 newly=26 decomp=69 total_comp=4151KB orig=35456KB faults=6577
+[zheap] gc=64 newly=323 decomp=28 total_comp=4264KB orig=36748KB faults=6605
+10%[zheap] gc=65 newly=114 decomp=35 total_comp=4308KB orig=37204KB faults=6640
+15%[zheap] gc=66 newly=149 decomp=115 total_comp=4347KB orig=37800KB faults=6755
+[zheap] gc=67 newly=112 decomp=206 total_comp=4400KB orig=38248KB faults=6961
+20%[zheap] gc=68 newly=189 decomp=45 total_comp=4474KB orig=39004KB faults=7006
+[zheap] gc=69 newly=136 decomp=137 total_comp=4532KB orig=39548KB faults=7143
+25%[zheap] gc=70 newly=154 decomp=75 total_comp=4600KB orig=40164KB faults=7218
+[zheap] gc=71 newly=160 decomp=30 total_comp=4667KB orig=40804KB faults=7248
+30%[zheap] gc=72 newly=146 decomp=385 total_comp=4726KB orig=41388KB faults=7633
+35%[zheap] gc=73 newly=178 decomp=48 total_comp=4793KB orig=42100KB faults=7681
+[zheap] gc=74 newly=150 decomp=80 total_comp=4877KB orig=42700KB faults=7761
+40%[zheap] gc=75 newly=146 decomp=43 total_comp=4931KB orig=43284KB faults=7804
+[zheap] gc=76 newly=140 decomp=40 total_comp=4997KB orig=43844KB faults=7844
+45%[zheap] gc=77 newly=177 decomp=82 total_comp=5072KB orig=44552KB faults=7926
+[zheap] gc=78 newly=149 decomp=118 total_comp=5140KB orig=45148KB faults=8044
+50%[zheap] gc=79 newly=160 decomp=53 total_comp=5216KB orig=45788KB faults=8097
+[zheap] gc=80 newly=155 decomp=67 total_comp=5299KB orig=46408KB faults=8164
+55%[zheap] gc=81 newly=165 decomp=75 total_comp=5375KB orig=47068KB faults=8239
+[zheap] gc=82 newly=155 decomp=122 total_comp=5459KB orig=47688KB faults=8361
+60%[zheap] gc=83 newly=149 decomp=203 total_comp=5548KB orig=48284KB faults=8564
+[zheap] gc=84 newly=162 decomp=49 total_comp=5632KB orig=48932KB faults=8613
+65%[zheap] gc=85 newly=177 decomp=54 total_comp=5728KB orig=49640KB faults=8667
+[zheap] gc=86 newly=165 decomp=76 total_comp=5824KB orig=50300KB faults=8743
+70%[zheap] gc=87 newly=183 decomp=53 total_comp=5917KB orig=51032KB faults=8796
+[zheap] gc=88 newly=169 decomp=1319 total_comp=6019KB orig=51708KB faults=10115
+75%[zheap] gc=89 newly=185 decomp=90 total_comp=6122KB orig=52448KB faults=10205
+[zheap] gc=90 newly=1454 decomp=127 total_comp=7027KB orig=58264KB faults=10332
+80%[zheap] gc=91 newly=195 decomp=135 total_comp=7122KB orig=59044KB faults=10467
+85%[zheap] gc=92 newly=195 decomp=236 total_comp=7232KB orig=59824KB faults=10703
+[zheap] gc=93 newly=235 decomp=102 total_comp=7381KB orig=60764KB faults=10805
+90%[zheap] gc=94 newly=176 decomp=155 total_comp=7486KB orig=61468KB faults=10961
+[zheap] gc=95 newly=199 decomp=166 total_comp=7620KB orig=62264KB faults=11127
+95%[zheap] gc=96 newly=199 decomp=158 total_comp=7727KB orig=63060KB faults=11285
+[zheap] gc=97 newly=223 decomp=221 total_comp=7824KB orig=63952KB faults=11506
+100%
+Completed requests
+	Stock level .............   3973 ( 4.0%)
+	Order status by name ....   2361 ( 2.4%)
+	Order status by ID ......   1609 ( 1.6%)
+	Payment by name .........  25847 (25.8%)
+	Payment by ID ...........  17220 (17.2%)
+	Delivery schedule .......   4029 ( 4.0%)
+	New order ...............  44509 (44.5%)
+	New order rollback ......    452 ( 0.5%)
+===== DaCapo 23.11-MR2-chopin h2 completed warmup 2 in 11604 msec =====
+===== DaCapo processed 100000 requests in 11599 msec, 8621 requests per second =====
+===== DaCapo tail latency, simple: 50% 509 usec, 90% 3290 usec, 99% 201288 usec, 99.9% 223001 usec, 99.99% 293492 usec, max 311643 usec, measured over 100000 events =====
+===== DaCapo tail latency, metered 100ms smoothing: 50% 1105 usec, 90% 4251 usec, 99% 201288 usec, 99.9% 223001 usec, 99.99% 293492 usec, max 311643 usec, measured over 100000 events =====
+===== DaCapo tail latency, metered full smoothing: 50% 663 usec, 90% 8497 usec, 99% 201288 usec, 99.9% 223001 usec, 99.99% 293492 usec, max 311643 usec, measured over 100000 events =====
+Resetting database to initial state.....[zheap] gc=98 newly=209 decomp=875 total_comp=7949KB orig=64788KB faults=12382
+[zheap] gc=99 newly=143 decomp=939 total_comp=8013KB orig=65360KB faults=13321
+..[zheap] gc=100 newly=130 decomp=149 total_comp=8121KB orig=65880KB faults=13470
+[zheap] gc=101 newly=151 decomp=48 total_comp=8205KB orig=66484KB faults=13518
+.[zheap] gc=102 newly=147 decomp=332 total_comp=8271KB orig=67072KB faults=13850
+......[zheap] gc=103 newly=130 decomp=24 total_comp=8326KB orig=67592KB faults=13874
+[zheap] gc=104 newly=111 decomp=381 total_comp=8382KB orig=68036KB faults=14255
+.[zheap] gc=105 newly=116 decomp=181 total_comp=8428KB orig=68500KB faults=14436
+.....
+[zheap] gc=106 newly=71 decomp=15 total_comp=8529KB orig=68784KB faults=14451
+===== DaCapo 23.11-MR2-chopin h2 starting warmup 3 =====
+Starting 100000 requests...
+[zheap] gc=107 newly=34 decomp=53 total_comp=8543KB orig=68920KB faults=14504
+5%[zheap] gc=108 newly=14 decomp=37 total_comp=8545KB orig=68976KB faults=14541
+[zheap] gc=109 newly=140 decomp=32 total_comp=8615KB orig=69536KB faults=14573
+10%[zheap] gc=110 newly=167 decomp=113 total_comp=8685KB orig=70204KB faults=14686
+[zheap] gc=111 newly=120 decomp=74 total_comp=8724KB orig=70684KB faults=14760
+15%[zheap] gc=112 newly=113 decomp=37 total_comp=8766KB orig=71136KB faults=14797
+[zheap] gc=113 newly=108 decomp=89 total_comp=8822KB orig=71568KB faults=14886
+20%[zheap] gc=114 newly=141 decomp=133 total_comp=8876KB orig=72132KB faults=15019
+25%[zheap] gc=115 newly=156 decomp=36 total_comp=8932KB orig=72756KB faults=15055
+[zheap] gc=116 newly=138 decomp=101 total_comp=8993KB orig=73308KB faults=15156
+30%[zheap] gc=117 newly=147 decomp=71 total_comp=9050KB orig=73896KB faults=15227
+[zheap] gc=118 newly=118 decomp=385 total_comp=9116KB orig=74368KB faults=15612
+35%[zheap] gc=119 newly=142 decomp=78 total_comp=9184KB orig=74936KB faults=15690
+[zheap] gc=120 newly=225 decomp=86 total_comp=9246KB orig=75836KB faults=15776
+40%[zheap] gc=121 newly=168 decomp=309 total_comp=9325KB orig=76508KB faults=16085
+[zheap] gc=122 newly=174 decomp=106 total_comp=9403KB orig=77204KB faults=16191
+45%[zheap] gc=123 newly=153 decomp=172 total_comp=9468KB orig=77816KB faults=16363
+50%[zheap] gc=124 newly=141 decomp=93 total_comp=9544KB orig=78380KB faults=16456
+[zheap] gc=125 newly=185 decomp=60 total_comp=9638KB orig=79120KB faults=16516
+55%[zheap] gc=126 newly=191 decomp=179 total_comp=9713KB orig=79884KB faults=16695
+[zheap] gc=127 newly=152 decomp=149 total_comp=9794KB orig=80492KB faults=16844
+60%[zheap] gc=128 newly=172 decomp=142 total_comp=9883KB orig=81180KB faults=16986
+[zheap] gc=129 newly=188 decomp=94 total_comp=9971KB orig=81932KB faults=17080
+65%[zheap] gc=130 newly=175 decomp=119 total_comp=10055KB orig=82632KB faults=17199
+[zheap] gc=131 newly=164 decomp=270 total_comp=10152KB orig=83288KB faults=17469
+70%[zheap] gc=132 newly=179 decomp=247 total_comp=10250KB orig=84004KB faults=17716
+[zheap] gc=133 newly=201 decomp=719 total_comp=10346KB orig=84808KB faults=18435
+75%[zheap] gc=134 newly=182 decomp=141 total_comp=10433KB orig=85536KB faults=18576
+[zheap] gc=135 newly=738 decomp=136 total_comp=10928KB orig=88488KB faults=18712
+80%[zheap] gc=136 newly=176 decomp=80 total_comp=11009KB orig=89192KB faults=18793
+[zheap] gc=137 newly=161 decomp=111 total_comp=11097KB orig=89836KB faults=18904
+85%[zheap] gc=138 newly=172 decomp=135 total_comp=11225KB orig=90524KB faults=19039
+[zheap] gc=139 newly=203 decomp=137 total_comp=11332KB orig=91336KB faults=19176
+90%[zheap] gc=140 newly=167 decomp=295 total_comp=11421KB orig=92004KB faults=19471
+[zheap] gc=141 newly=164 decomp=442 total_comp=11516KB orig=92660KB faults=19913
+95%[zheap] gc=142 newly=178 decomp=200 total_comp=11641KB orig=93372KB faults=20113
+100%
+Completed requests
+	Stock level .............   3973 ( 4.0%)
+	Order status by name ....   2361 ( 2.4%)
+	Order status by ID ......   1609 ( 1.6%)
+	Payment by name .........  25847 (25.8%)
+	Payment by ID ...........  17220 (17.2%)
+	Delivery schedule .......   4029 ( 4.0%)
+	New order ...............  44509 (44.5%)
+	New order rollback ......    452 ( 0.5%)
+===== DaCapo 23.11-MR2-chopin h2 completed warmup 3 in 11686 msec =====
+===== DaCapo processed 100000 requests in 11683 msec, 8559 requests per second =====
+===== DaCapo tail latency, simple: 50% 505 usec, 90% 3254 usec, 99% 206437 usec, 99.9% 223948 usec, 99.99% 309778 usec, max 321239 usec, measured over 100000 events =====
+===== DaCapo tail latency, metered 100ms smoothing: 50% 1135 usec, 90% 4135 usec, 99% 206437 usec, 99.9% 223948 usec, 99.99% 309778 usec, max 321239 usec, measured over 100000 events =====
+===== DaCapo tail latency, metered full smoothing: 50% 1025 usec, 90% 83328 usec, 99% 206437 usec, 99.9% 223948 usec, 99.99% 309778 usec, max 321239 usec, measured over 100000 events =====
+Resetting database to initial state...[zheap] gc=143 newly=151 decomp=279 total_comp=11729KB orig=93976KB faults=20392
+..[zheap] gc=144 newly=155 decomp=812 total_comp=11787KB orig=94596KB faults=21204
+[zheap] gc=145 newly=126 decomp=251 total_comp=11887KB orig=95100KB faults=21455
+..[zheap] gc=146 newly=77 decomp=454 total_comp=11954KB orig=95408KB faults=21909
+.[zheap] gc=147 newly=114 decomp=38 total_comp=11993KB orig=95864KB faults=21947
+......[zheap] gc=148 newly=140 decomp=42 total_comp=12068KB orig=96424KB faults=21989
+[zheap] gc=149 newly=119 decomp=63 total_comp=12120KB orig=96900KB faults=22052
+[zheap] gc=150 newly=116 decomp=965 total_comp=12173KB orig=97364KB faults=23017
+......
+[zheap] gc=151 newly=14 decomp=19 total_comp=12191KB orig=97420KB faults=23036
+===== DaCapo 23.11-MR2-chopin h2 starting =====
+Starting 100000 requests...
+[zheap] gc=152 newly=798 decomp=42 total_comp=12655KB orig=100612KB faults=23078
+5%[zheap] gc=153 newly=37 decomp=25 total_comp=12669KB orig=100760KB faults=23105
+[zheap] gc=154 newly=136 decomp=24 total_comp=12713KB orig=101304KB faults=23129
+10%[zheap] gc=155 newly=139 decomp=102 total_comp=12772KB orig=101860KB faults=23231
+[zheap] gc=156 newly=106 decomp=57 total_comp=12816KB orig=102284KB faults=23288
+15%[zheap] gc=157 newly=135 decomp=25 total_comp=12870KB orig=102824KB faults=23313
+[zheap] gc=158 newly=169 decomp=129 total_comp=12941KB orig=103500KB faults=23442
+20%[zheap] gc=159 newly=178 decomp=67 total_comp=12994KB orig=104212KB faults=23509
+[zheap] gc=160 newly=81 decomp=96 total_comp=13042KB orig=104536KB faults=23605
+25%[zheap] gc=161 newly=202 decomp=66 total_comp=13123KB orig=105344KB faults=23671
+[zheap] gc=162 newly=134 decomp=62 total_comp=13178KB orig=105880KB faults=23733
+30%[zheap] gc=163 newly=135 decomp=48 total_comp=13242KB orig=106420KB faults=23781
+35%[zheap] gc=164 newly=131 decomp=164 total_comp=13309KB orig=106944KB faults=23945
+[zheap] gc=165 newly=112 decomp=52 total_comp=13363KB orig=107392KB faults=23997
+40%[zheap] gc=166 newly=166 decomp=117 total_comp=13448KB orig=108056KB faults=24114
+[zheap] gc=167 newly=131 decomp=77 total_comp=13524KB orig=108580KB faults=24191
+45%[zheap] gc=168 newly=131 decomp=61 total_comp=13602KB orig=109104KB faults=24252
+[zheap] gc=169 newly=227 decomp=41 total_comp=13698KB orig=110012KB faults=24293
+50%[zheap] gc=170 newly=182 decomp=126 total_comp=13786KB orig=110740KB faults=24419
+[zheap] gc=171 newly=151 decomp=50 total_comp=13864KB orig=111344KB faults=24469
+55%[zheap] gc=172 newly=170 decomp=259 total_comp=13959KB orig=112024KB faults=24728
+[zheap] gc=173 newly=166 decomp=81 total_comp=14053KB orig=112688KB faults=24810
+60%[zheap] gc=174 newly=195 decomp=153 total_comp=14137KB orig=113468KB faults=24964
+[zheap] gc=175 newly=198 decomp=58 total_comp=14230KB orig=114260KB faults=25022
+65%[zheap] gc=176 newly=161 decomp=71 total_comp=14320KB orig=114904KB faults=25093
+[zheap] gc=177 newly=188 decomp=75 total_comp=14427KB orig=115656KB faults=25168
+70%[zheap] gc=178 newly=159 decomp=87 total_comp=14521KB orig=116292KB faults=25255
+[zheap] gc=179 newly=182 decomp=1309 total_comp=14629KB orig=117020KB faults=26565
+75%[zheap] gc=180 newly=162 decomp=87 total_comp=14728KB orig=117668KB faults=26652
+[zheap] gc=181 newly=1416 decomp=183 total_comp=15599KB orig=123332KB faults=26835
+80%[zheap] gc=182 newly=173 decomp=165 total_comp=15677KB orig=124024KB faults=27000
+[zheap] gc=183 newly=177 decomp=114 total_comp=15762KB orig=124732KB faults=27114
+85%[zheap] gc=184 newly=165 decomp=191 total_comp=15872KB orig=125392KB faults=27305
+90%[zheap] gc=185 newly=180 decomp=218 total_comp=15957KB orig=126112KB faults=27523
+[zheap] gc=186 newly=160 decomp=191 total_comp=16045KB orig=126752KB faults=27714
+95%[zheap] gc=187 newly=177 decomp=148 total_comp=16157KB orig=127460KB faults=27862
+[zheap] gc=188 newly=172 decomp=122 total_comp=16238KB orig=128148KB faults=27984
+100%
+Completed requests
+	Stock level .............   3973 ( 4.0%)
+	Order status by name ....   2361 ( 2.4%)
+	Order status by ID ......   1609 ( 1.6%)
+	Payment by name .........  25847 (25.8%)
+	Payment by ID ...........  17220 (17.2%)
+	Delivery schedule .......   4029 ( 4.0%)
+	New order ...............  44509 (44.5%)
+	New order rollback ......    452 ( 0.5%)
+===== DaCapo 23.11-MR2-chopin h2 PASSED in 12026 msec =====
+===== DaCapo processed 100000 requests in 12022 msec, 8318 requests per second =====
+===== DaCapo tail latency, simple: 50% 503 usec, 90% 3262 usec, 99% 207244 usec, 99.9% 230136 usec, 99.99% 309570 usec, max 322313 usec, measured over 100000 events =====
+===== DaCapo tail latency, metered 100ms smoothing: 50% 1063 usec, 90% 4267 usec, 99% 207244 usec, 99.9% 230136 usec, 99.99% 309570 usec, max 322313 usec, measured over 100000 events =====
+===== DaCapo tail latency, metered full smoothing: 50% 622 usec, 90% 6784 usec, 99% 207244 usec, 99.9% 230136 usec, 99.99% 309570 usec, max 322313 usec, measured over 100000 events =====
+Resetting database to initial state.....[zheap] gc=189 newly=164 decomp=501 total_comp=16312KB orig=128804KB faults=28485
+[zheap] gc=190 newly=133 decomp=767 total_comp=16378KB orig=129336KB faults=29252
+..[zheap] gc=191 newly=135 decomp=426 total_comp=16493KB orig=129876KB faults=29678
+[zheap] gc=192 newly=170 decomp=73 total_comp=16592KB orig=130556KB faults=29751
+.[zheap] gc=193 newly=154 decomp=37 total_comp=16669KB orig=131172KB faults=29788
+......[zheap] gc=194 newly=124 decomp=334 total_comp=16744KB orig=131668KB faults=30122
+[zheap] gc=195 newly=123 decomp=317 total_comp=16810KB orig=132160KB faults=30439
+.[zheap] gc=196 newly=116 decomp=103 total_comp=16856KB orig=132624KB faults=30542
+.....
