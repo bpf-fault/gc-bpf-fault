@@ -724,3 +724,42 @@ critical path post-atomics) — banked as window-CPU headroom.
    Mitigation = concurrent/incremental dirty scanning — future work
    (Class B's window machinery is the obvious donor).
 Data: results/classA/rigor/.  ctz correctness 4/4; Class A suite green.
+
+## Session 5 (cont.): ideas 4 and 6 — SATB parked with analysis; compression validated (2026-07-07)
+
+### Idea 4 (page-COW SATB concurrent marking)
+- **M1 mechanism VALIDATED** (micro/test_satb): in-kernel pre-write page
+  snapshots at WP-fault time, p50 8.9us incl. 2 page copies, 3.5GB/s,
+  bit-exact mark-start content.  Two arena lessons: kernel stores to
+  unpopulated arena pages are DROPPED (pre-touch mandatory); no arena
+  atomics (byte flags instead).  The primitive is bpf-only (uffd-WP =
+  30-50us round-trip per snapshot).
+- **M2 integration PARKED as WIP** (ConcurrentImmix, MMTK_SATB_PAGES,
+  off by default; luindex/pmd pass, xalan/lusearch fail).  Five bugs
+  fixed en route (drainer livelock; unmapped-metadata ACCERR; concurrent
+  candidate tracing vs in-flight allocation -> deferred trace; freed-
+  chunk stale VO bits; drainer/FinalMark cursor race -> handshake).
+  ROOT CAUSE that remains: conservative candidates can resurrect
+  INTACT-DEAD objects whose children point into reused memory —
+  conservative identification feeding an EXACT tracer is unsound.
+  Sound design requires the allocation frontier at LINE granularity
+  (per-line young filter); estimated as the single remaining piece.
+  docs/satb-pages-design.md has the full analysis.  This is itself a
+  contribution: it precisely characterizes what VM-based SATB needs
+  from an exact VM.
+
+### Idea 6 (compressed cold heap) — mechanism VALIDATED (gc-bpf-fault 1cfe08d)
+In-kernel page decompression at missing-fault time (gc_z_ops +
+test_zheap): 65536/65536 bit-exact decodes, **p50 4.97us per
+decode-fault (~2us over a plain fault)**, ratio 1.4x/2.4x/4.6x at
+30/60/80% zero words.  Codec is verifier-safe by construction (per-group
+prefix + popcount indexing = pure-function offsets, the emit_group
+lesson reapplied).  Adds a memory-footprint axis to the paper: cold
+regions at ~2.4x compression with first-touch decode ~8x cheaper than
+the uffd equivalent.  GC integration (cold-region selection, packed-
+store management) = future work; the mechanism claim stands alone.
+
+### State
+All committed: mmtk-core 06c0b68e (SATB WIP off-by-default), binding
+a3bb9ef, gc-bpf-fault 1cfe08d + docs.  All previously-green paths
+(Class A, B.1, Bv2, R1) unaffected (SATB is env-gated).  Machine idle.
