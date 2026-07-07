@@ -439,3 +439,55 @@ Data: results/classB/h2_pause_defer_decomposition_20260706.txt.
 - bpftrace v0.20.2 installed from apt (works on 6.17.0-bpf-fault+;
   uprobes verified).  b0test JDK current; s2test = session-2 bisect build.
 - Machine idle; no background tasks.
+
+## Session 4 (cont. 3): Class B heap sweep + metered latency — the honest map (2026-07-06 late night)
+
+Sweep (scripts/classB_sweep2.sh, data results/classB/sweep2/): h2 -n4 at
+768M/1536M/3072M and xalan 1G, each under stock/B.1/Bv2/R1, capturing
+DaCapo "simple" tail latency of the converged iteration.
+
+### Results (h2: last-iter time / p99.9 tail)
+  768M:  stock 32.4s/391ms | B.1 35.4s/418ms | Bv2 87.4s/1111ms | R1 92.6s/1188ms
+  1536M: stock 10.2s/385ms | B.1 12.8s/423ms | Bv2 25.8s/1080ms | R1 26.9s/1146ms
+  3072M: stock  6.2s/372ms | B.1  8.5s/403ms | Bv2 13.7s/1007ms | R1 13.7s/1118ms
+  xalan 1G: stock 1173ms | B.1 1311 (+12%) | Bv2 1318 (+12%) | R1 1264 (+8%)
+  xalan interleaved x3 (verification): R1 < B.1 in 3/3 pairs (~1-3%).
+
+### Findings
+1. **Tail latency is the metric that matters, and NO Class B variant beats
+   stock's tail on h2 at any heap.**  The p99+ tail IS the worst GC pauses;
+   stock's ~370-390ms p99.9 barely moves with heap size (same pause, rarer).
+   B.1's -29% AVG pause never reaches the tail because the pause is
+   mark-dominated and concurrent max pause is slightly WORSE (steal/window
+   variance).  Cutting the tail requires concurrent MARKING — out of scope
+   for the Compressor family.
+2. **Slack hypothesis refuted on h2**: defer's ~1s tail persists at 3G.
+   The window is sized by the (constant) live set, and h2's allocation
+   rate re-triggers GC before the window drains at every tested heap.
+   Defer/R1 lose 2.2-2.7x on time on h2 in ALL regimes.
+3. **Ref density is the defer dimension** (analogous to Class A's write
+   locality): on low-ref xalan the defer tax vanishes (Bv2 == B.1) and
+   **R1 is the best fault-driven variant** — consistently 1-3% under B.1
+   (3/3 interleaved) — the in-kernel page build is cheaper than the
+   userspace slide-copy once forward work is small.  First regime where
+   R1 strictly wins; also the bpf-only capability (uffd cannot build
+   pages in-kernel).
+4. B.1's honest position: +10-37% time, tail ~= stock (slightly worse).
+   Its -29% avg pause is real but only helps pause-SENSITIVE metrics
+   (e.g., allocation stalls), not request tails.
+
+### Where this leaves the paper
+- Class A: two-dimensional crossover (heap size x write locality) — DONE.
+- Class B: two-dimensional too (ref density x GC frequency), but the
+  tail-latency claim does NOT materialize for the Compressor family; the
+  honest claims are (a) avg-pause reduction at bounded throughput cost
+  (B.1), (b) the in-kernel-build capability at zero-to-negative cost in
+  the low-ref regime (R1), (c) quantified kernel gaps (bulk-install:
+  ~97s/run of fault round-trips on h2; batched WP for Class A).
+- Next mechanisms if pursued: kernel bulk-install command (biggest lever,
+  quantified), hybrid stage-forward+defer-on-steal (kills defer tax,
+  keeps steal correctness), concurrent marking (out of scope).
+
+### State
+- Committed: gc-bpf-fault 7770570 + this docs commit; mmtk-core 49f91975.
+  Machine idle, trees clean.  b0test current; s2test = bisect build.

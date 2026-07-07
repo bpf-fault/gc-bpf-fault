@@ -15,3 +15,9 @@ RESULT xalan heap=1G cfg=b1 time_ms=1311 nolat
 RESULT xalan heap=1G cfg=bv2 time_ms=1318 nolat
 RESULT xalan heap=1G cfg=r1 time_ms=1264 nolat
 SWEEP2_DONE
+xalan run1 b1: 1290ms
+xalan run1 r1: 1280ms
+xalan run2 b1: 1328ms
+xalan run2 r1: 1315ms
+xalan run3 b1: 1349ms
+xalan run3 r1: 1303ms
