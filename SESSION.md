@@ -325,3 +325,70 @@ luindex/fop/avrora show no visible regression (few GCs at 512M).
 - No background tasks; machine idle.  Kernel 6.17.0-bpf-fault+ running.
 - Next: R1 perf arc (run-granular emit), then the A/B/R1 comparison table
   (h2 pauses + throughput), then paper writeup.
+
+## Session 4 (cont., 2026-07-06 evening): R1 perf arc + 6x B.1 regression found & fixed
+
+### R1 emit optimization (task: "get performance better")
+Word-granular emit_compact (1 bpf_loop dispatch + arena byte load per
+from-space word, live or dead; ~50M dispatches/GC on h2) replaced by
+64-word live-bitmap GROUP emit (gc-bpf-fault 37c7314 + fba6ef9):
+- dead group = one u64 load; mixed group = inline bit-scan; fully-live
+  group = direct-offset fast path (no popcount).
+- **BPF verifier lesson (the hard part)**: a loop-carried accumulator
+  (outw++) is path-precise verifier state — every live/dead branch forks
+  states that never re-merge -> E2BIG at 1M insns. barrier_var does NOT
+  help (compiler barrier only; the verifier still tracks values).  The fix
+  is fwd_word's shape: NO loop-carried registers — output offset computed
+  as a pure function outw0 + popcount(lw & bits_below(b)); page-boundary
+  overflow group (≤1/fault) takes a per-bit bpf_loop slow path whose state
+  lives in ctx MEMORY (havocked per callback, verified once).  Also moved
+  the per-chunk loader into a bpf_loop so the branchy emit callsite is
+  verified once, not 256x (open-coded outer loops re-walk callee bodies).
+Effect: h2 -n2 iter 188s -> 138s; pmd 11.9 -> 9.0s.
+
+### 6x B.1 regression: bisected to session 3, fixed (mmtk-core 0701dee5)
+Baseline measurements exposed that B.1 (no-defer) h2 768M -n4 last-iter
+was 202.7s vs session 2's 33.4s.  Bisect: bench_compact micro reproduces
+June (kernel/env fine); a JDK built at session-2 mmtk state (mmtk-core
+bbf01d40 + mmtk-openjdk 9fd0e8d, conf s2test) reproduces 33.4s EXACTLY ->
+session 3's mmtk changes were the cause.  Root cause: fce6f495 made
+stage_region_idx record the B v2 reference bitmap UNCONDITIONALLY —
+set_ref_bit per reference slot (~42M/GC on h2) incl. a globally contended
+telemetry atomic (REFBITS_POPULATED) — pure waste for B.1, which never
+reads the bitmap.  Session 3 only compared B v2 variants to each other and
+never re-ran B.1, so it went unnoticed.  Fix: record/clear ref bits only
+when defer_forward(); count telemetry only under MMTK_REFBITS_DEBUG.
+
+### Honest 4-config comparison (post-fix, h2 768M -n4 / pmd 512M -n4, last iter)
+  h2:  stock 32.3s | B.1 35.7s (+10%) | Bv2 86.1s (+167%) | R1 92.5s (+186%)
+  pmd: stock 2.77s | B.1 3.24s (+17%) | Bv2 4.54s (+64%)  | R1 4.89s (+77%)
+Reading:
+1. B.1 +10% reproduces session 2 — concurrent compaction's honest tax.
+2. DEFER-FORWARD (fault-time forwarding) costs ~2.4x extra on ref-dense h2:
+   the per-slot refbit recording at stage + random forward-table lookups at
+   install are intrinsic to defer, not implementation slop.  This reframes
+   B v2/R1: their price is the defer tax, in exchange for pages whose
+   references are fixed up in-kernel at materialization (no userspace
+   touch of the page at all — the R1 property the paper wants).
+3. R1 (full in-kernel build) == B v2 within ~7-8% on both workloads: the
+   in-kernel compaction copy adds ~nothing over the userspace-staged copy —
+   the mechanism itself is sound and cheap; defer is the cost driver.
+Data: results/classB/h2_n4_comparison_20260706.txt.
+Correctness: B.1/Bv2/R1 luindex+fop PASS post-fix (plus earlier 5-benchmark
+R1 sweep incl. h2).
+
+### Known R1 caveat (document in paper)
+record_ref_bits_old silently skips objects without slot-enqueuing support
+(scan_object_and_trace_edges has no slot addresses).  Never triggered on
+DaCapo/HotSpot, but it is a correctness hole if a VM has such objects in
+the compressor space; B v2's staged path forwards those eagerly instead.
+
+### State
+- Committed: mmtk-core 0701dee5, gc-bpf-fault fba6ef9 (branches:
+  gc-bpf-fault / master).  b0test JDK = current (all fixes); s2test JDK =
+  session-2 bisect build (keep for reference or delete).
+- Next: (a) defer-tax attribution (stage-time refbit recording vs
+  install-time table lookups — bpftrace/perf), (b) R1 vs Bv2 pause
+  comparison (measure_pauses.sh) — R1 should shorten the *stage* phase
+  (no copy), (c) possibly batched WP / install-side prefetch as kernel
+  items, (d) paper writeup.
