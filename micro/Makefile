@@ -93,3 +93,9 @@ bench_kompress2: bench_kompress2.c gc_kompress2.skel.h gc_common.h $(LIBBPF_DIR)
 
 test_mremap_install: test_mremap_install.c gc_compact_ops.skel.h gc_common.h $(LIBBPF_DIR)/libbpf.a
 	$(CC) $(USER_CFLAGS) -o $@ $< $(USER_LDFLAGS) -static
+
+gc_satb_ops.bpf.o: gc_satb_ops.bpf.c vmlinux.h $(LIBBPF_DIR)/libbpf.a
+	clang-20 $(BPF_CFLAGS) -mcpu=v3 -I$(INCLUDE_DIR) -I$(CURDIR) -c $< -o $@
+
+test_satb: test_satb.c gc_satb_ops.skel.h gc_common.h $(LIBBPF_DIR)/libbpf.a
+	$(CC) $(USER_CFLAGS) -o $@ $< $(USER_LDFLAGS) -static
