@@ -763,3 +763,50 @@ store management) = future work; the mechanism claim stands alone.
 All committed: mmtk-core 06c0b68e (SATB WIP off-by-default), binding
 a3bb9ef, gc-bpf-fault 1cfe08d + docs.  All previously-green paths
 (Class A, B.1, Bv2, R1) unaffected (SATB is env-gated).  Machine idle.
+
+## Session 5 (cont. 2): M2 endgame — root cause found, kernel exonerated (2026-07-07)
+
+User directive: "Don't park M2. keep going."  Outcome: the exact drain
+design is DONE and oracle-verified; the residual crashes are NOT ours.
+
+### The exact drain (replaces conservative scanning entirely)
+VO-bitmap snapshot at InitialMark = mark-start allocation map AND
+liveness-at-last-GC certificate (membership => object + children memory
+intact).  FinalMark walks snapshot-map object starts overlapping each
+flagged page (+ spanning head via 64MB reverse search), iterates fields
+via live layout, reads slot VALUES from snapshots where pages were
+written.  Zero conservative candidates => exact marking never marks
+non-objects => no VO poisoning (the CopyFromMarkBits feedback loop that
+sank the conservative design).  Differential oracle (MMTK_SATB_VERIFY,
+compiled barrier on + page path classifying): extracted=2505 garbage=0
+unmarked=387.  Extractor: verified clean.
+
+### The corruption hunt (13 fix iterations -> systematic bisect)
+Fix chain en route: drainer livelock; unmapped-metadata reads (x2);
+deferred trace; freed-chunk VO; cursor handshake; validating closure;
+VO self-poisoning -> conservative->exact pivot; LOS to_space-only and
+alloc-nursery arming gaps; treadmill assert ordering; stale alloc-map
+slices; 64MB spanning head; unbounded in_alloc_map read (5.5GB OOB).
+
+Bisect (all verify-mode: page machinery passive):
+  baseline 6/6 PASS; attach-only 3/3 PASS; register-only 3/3 PASS;
+  bpf WP armed 0/6 (even with a NO-OP handler);
+  MAINLINE uffd WP-async armed 0/3  <-- kernel path exonerated.
+Micros (all PASS): 16T same-page atomic + plain-store races w/ re-arm,
+DONTNEED interleave, read(2) copy_to_user into armed pages, WP_ENABLE
+coverage 4096/4096, THP/mTHP disabled.  Kernel audit of register/
+change_protection/resolution/install: mainline-equivalent.
+
+### CONCLUSION
+Write-protect fault latency on first page writes (~10us vs ~1ns)
+exposes a latent race in upstream ConcurrentImmix (experimental).  It
+reproduces with the COMPILED barrier doing all SATB work and mainline
+uffd doing the arming: nothing of ours in the loop.  Paper angle: VM-
+based barriers (bpf and uffd alike) exercise concurrent-GC
+interleavings compiled barriers never hit; plan robustness under fault
+timing is a real requirement.  Class A (GenImmix) and Class B
+(Compressor) correctness are unaffected (STW plans; extensive sweeps).
+
+### M2 status: design complete + verified; blocked on upstream plan race.
+Options: chase the ConcurrentImmix race upstream; or A/B the barrier on
+a hardened plan; or proceed with idea 6 integration + paper.
