@@ -121,13 +121,17 @@ static int fwd_word(__u32 w, void *vctx)
 	rw = *(__u64 __arena *)(arena + c->page_refbm + (w << 3));
 	if (rw == 0)
 		return 0;                           /* no references in this group */
-	for (b = 0; b < 64; b++) {
+	/* ctz-iterate SET bits only (~9 refs per non-empty group on h2 vs 64
+	 * loop iterations).  rw itself is the loop-consumed iterator -- an
+	 * evolving unknown scalar the verifier prunes, unlike a loop-carried
+	 * accumulator (the E2BIG lesson). */
+	for (b = 0; b < 64 && rw; b++) {
+		unsigned int bit = __builtin_ctzll(rw);
 		unsigned int off;
 		__u32 v, nv;
 
-		if (!(rw & (1ULL << b)))
-			continue;
-		off = ((w << 6) | b) << 2;          /* slot (w*64+b) * 4 */
+		rw &= rw - 1;
+		off = ((w << 6) | bit) << 2;        /* slot (w*64+bit) * 4 */
 		barrier_var(off);
 		off &= (PAGE_SIZE - 4);             /* bound to 0..4092 for verifier */
 		v = *(__u32 *)(c->page + off);
