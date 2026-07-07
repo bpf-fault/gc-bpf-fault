@@ -59,8 +59,18 @@ unsigned int  defer_fwd = 0;     /* 1 = forward references in-kernel */
 unsigned long livebm_off = 0;    /* arena byte offset of the live-word bitmap */
 unsigned long firstsrc_off = 0;  /* arena byte offset of the per-page first-src index */
 unsigned int  inkernel = 0;      /* 1 = build pages from un-slid from-space */
+/* Transducer forward (cache-resident alternative to the flat table) */
+unsigned long ov2_off = 0;       /* arena byte offset of per-512B-block new base */
+unsigned int  fwd_transducer = 0; /* 1 = forward via ov2 + live-bit popcount */
+unsigned int  fwd_check = 0;     /* 1 = cross-check against the flat table */
+/* Count forwarded refs only when debugging: the per-ref atomic on a global
+ * is ~150 contended RMWs per installed page across all GC workers -- it was
+ * measured as ~430k cycles/fault at IPC 0.07 (vs 3.2k for the plain copy),
+ * i.e. the entire in-kernel defer tax. */
+unsigned int  count_refs = 0;
 
 volatile __u64 b0_fault_count = 0;
+volatile __u64 b0_fwd_mismatch = 0;
 volatile __u64 b0_staged_installs = 0;
 volatile __u64 b0_refs_forwarded = 0;
 volatile __u64 b0_compact_words = 0;
@@ -96,11 +106,12 @@ struct fwd_ctx {
 /* Forward all reference slots in one 64-slot group (one bpf_loop iteration,
  * so dispatch is 16/page not 1024/page).  The forward is a direct arena
  * lookup, so the inner 64-bit loop stays simple for the verifier. */
+static __always_inline __u32 forward_narrow(__u32 v);
+
 static int fwd_word(__u32 w, void *vctx)
 {
 	struct fwd_ctx *c = vctx;
 	__u8 __arena *arena = (__u8 __arena *)arena_base(&fwd_arena);
-	__u32 __arena *table = (__u32 __arena *)arena;
 	__u64 rw;
 	int b;
 
@@ -113,7 +124,6 @@ static int fwd_word(__u32 w, void *vctx)
 	for (b = 0; b < 64; b++) {
 		unsigned int off;
 		__u32 v, nv;
-		unsigned long old;
 
 		if (!(rw & (1ULL << b)))
 			continue;
@@ -121,34 +131,61 @@ static int fwd_word(__u32 w, void *vctx)
 		barrier_var(off);
 		off &= (PAGE_SIZE - 4);             /* bound to 0..4092 for verifier */
 		v = *(__u32 *)(c->page + off);
-		if (v == 0)
-			continue;
-		old = coops_base + ((unsigned long)v << coops_shift);
-		if (old < space_base || old - space_base >= span_len)
-			continue;                   /* not a compressor-space ref */
-		nv = table[(old - space_base) >> 3];
+		/* forward_narrow handles null / out-of-space / flat-vs-transducer */
+		nv = forward_narrow(v);
 		if (nv == 0)
 			continue;                   /* no live forward: leave as-is */
 		*(__u32 *)(c->page + off) = nv;
-		__sync_fetch_and_add(&b0_refs_forwarded, 1);
+		if (count_refs)
+			__sync_fetch_and_add(&b0_refs_forwarded, 1);
 	}
 	return 0;
 }
 
-/* Forward one compressed-oop (narrow) value via the arena forward table.
- * Returns the new narrow value, or 0 for "leave unchanged" (null / out of the
- * compressor space / no live forward). */
+/* Forward one compressed-oop (narrow) value.  Returns the new narrow value,
+ * or 0 for "leave unchanged" (null / out of the compressor space / no live
+ * forward).
+ *
+ * Two implementations:
+ * - flat table: one u32 load indexed by old word — but the table spans
+ *   span/2 bytes (384MB at 768M heap), so nearly every ref is a cache miss.
+ * - transducer (fwd_transducer): new = ov2[block(old)] +
+ *   8 * popcount(live bits below old within its 512B block) — two loads in
+ *   a ~span/32 working set (cache-resident) plus a popcount, branch-free.
+ *   ov2 and the live bitmap are emitted by the GC in the same pass that
+ *   used to fill the flat table. */
 static __always_inline __u32 forward_narrow(__u32 v)
 {
-	__u32 __arena *table = (__u32 __arena *)arena_base(&fwd_arena);
-	unsigned long old;
+	__u8 __arena *arena = (__u8 __arena *)arena_base(&fwd_arena);
+	__u32 __arena *table = (__u32 __arena *)arena;
+	unsigned long old, rel;
+	__u32 nv;
 
 	if (v == 0)
 		return 0;
 	old = coops_base + ((unsigned long)v << coops_shift);
 	if (old < space_base || old - space_base >= span_len)
 		return 0;
-	return table[(old - space_base) >> 3];
+	rel = old - space_base;
+	if (fwd_transducer) {
+		/* block = 512B = 64 words = one u64 of the live bitmap */
+		unsigned long b = rel >> 9;
+		__u64 base_new = *(__u64 __arena *)(arena + ov2_off + (b << 3));
+		__u64 lw = *(__u64 __arena *)(arena + livebm_off + (b << 3));
+		__u32 w = (rel >> 3) & 63;
+		unsigned long naddr;
+
+		naddr = base_new +
+			((unsigned long)__builtin_popcountll(lw & ((1ULL << w) - 1)) << 3);
+		nv = (__u32)((naddr - coops_base) >> coops_shift);
+		if (fwd_check) {
+			__u32 flat = table[rel >> 3];
+			if (flat && flat != nv)
+				__sync_fetch_and_add(&b0_fwd_mismatch, 1);
+		}
+		return nv;
+	}
+	return table[rel >> 3];
 }
 
 #define R1_REGION_WORDS (1u << 17)       /* 1 MiB region / 8 bytes */
@@ -195,7 +232,8 @@ static __always_inline __u64 fwd_refs_in_word(__u64 word, __u64 rbits2)
 			word = (word & ~0xffffffffULL) | nv;
 		else
 			word = (word & 0xffffffffULL) | ((__u64)nv << 32);
-		__sync_fetch_and_add(&b0_refs_forwarded, 1);
+		if (count_refs)
+			__sync_fetch_and_add(&b0_refs_forwarded, 1);
 	}
 	return word;
 }
@@ -225,7 +263,8 @@ static int emit_bit(__u32 b, void *vctx)
 	o = c->outw & (PAGE_SIZE / 8 - 1);
 	*(__u64 *)(c->page + o * 8) = word;
 	c->outw++;
-	__sync_fetch_and_add(&b0_compact_words, 1);
+	if (count_refs)
+		__sync_fetch_and_add(&b0_compact_words, 1);
 	return 0;
 }
 
@@ -317,7 +356,8 @@ static int emit_group(__u32 g, void *vctx)
 	}
 	c->outw = outw + pc;
 	c->srcw = gbase + 64 < end ? gbase + 64 : end;
-	__sync_fetch_and_add(&b0_compact_words, pc);
+	if (count_refs)
+		__sync_fetch_and_add(&b0_compact_words, pc);
 	return c->outw >= PAGE_SIZE / 8 ? 1 : 0;
 }
 

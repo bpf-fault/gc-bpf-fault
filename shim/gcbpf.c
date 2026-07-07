@@ -125,6 +125,7 @@ static uint64_t b0_span;
 static uint64_t b0_fwdtable; /* userspace base of the forward-table arena */
 static uint64_t b0_refbits;  /* userspace base of the reference bitmap (in arena) */
 static uint64_t b0_livebits; /* userspace base of the live-word bitmap (R1) */
+static uint64_t b0_ov2;      /* userspace base of the per-512B-block new-address table */
 static uint64_t b0_first_src;/* userspace base of the per-page first-src index (R1) */
 
 /* Returns the arena base address, or 0 on failure. */
@@ -176,7 +177,8 @@ uint64_t gcb0_init(uint64_t space_base, uint64_t span_len)
 	size_t refbm_off    = RUP(span_len / 2);
 	size_t livebm_off   = refbm_off  + RUP(span_len / 32);
 	size_t firstsrc_off = livebm_off + RUP(span_len / 64);
-	size_t arena_bytes  = firstsrc_off + RUP(span_len / 128);
+	size_t ov2_off      = firstsrc_off + RUP(span_len / 128);
+	size_t arena_bytes  = ov2_off + RUP(span_len / 64);
 #undef RUP
 	{
 		if (bpf_map__set_max_entries(b0_skel->maps.fwd_arena, arena_bytes / page)) {
@@ -191,6 +193,7 @@ uint64_t gcb0_init(uint64_t space_base, uint64_t span_len)
 	b0_skel->bss->refbm_off = refbm_off;
 	b0_skel->bss->livebm_off = livebm_off;
 	b0_skel->bss->firstsrc_off = firstsrc_off;
+	b0_skel->bss->ov2_off = ov2_off;
 	/* mmap the arena so the GC can write the forward table + reference
 	 * bitmap; the BPF prog reads them directly via arena pointers (no
 	 * probe_read).  Arenas must map at their user_vm_start (= map_extra)
@@ -207,6 +210,7 @@ uint64_t gcb0_init(uint64_t space_base, uint64_t span_len)
 		b0_refbits = (uint64_t)a + refbm_off;
 		b0_livebits = (uint64_t)a + livebm_off;
 		b0_first_src = (uint64_t)a + firstsrc_off;
+		b0_ov2 = (uint64_t)a + ov2_off;
 	}
 
 	map_bytes = (pages * sizeof(uint64_t) + page - 1) & ~(page - 1);
@@ -283,6 +287,36 @@ uint64_t gcb0_livebits_base(void)
 uint64_t gcb0_first_src_base(void)
 {
 	return b0_first_src;
+}
+
+uint64_t gcb0_ov2_base(void)
+{
+	return b0_ov2;
+}
+
+/* Transducer forward: fwd(old) = ov2[block] + 8*popcount(live bits below
+ * old in its 512B block) -- two cache-resident arena loads instead of one
+ * load into the cache-hostile flat table.  check=1 additionally computes
+ * the flat-table value and counts mismatches (validation). */
+void gcb0_set_fwd_transducer(unsigned int on, unsigned int check)
+{
+	if (!b0_skel)
+		return;
+	b0_skel->bss->fwd_transducer = on;
+	b0_skel->bss->fwd_check = check;
+}
+
+/* Enable in-handler ref/word counters (debug only: contended atomics). */
+void gcb0_set_count_refs(unsigned int on)
+{
+	if (!b0_skel)
+		return;
+	b0_skel->bss->count_refs = on;
+}
+
+uint64_t gcb0_fwd_mismatch(void)
+{
+	return b0_skel ? b0_skel->bss->b0_fwd_mismatch : 0;
 }
 
 /* Flip a region: move its physical pages into the arena slot and (if
