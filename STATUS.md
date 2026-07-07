@@ -464,3 +464,26 @@ MMTK_COMPACT_INKERNEL=1 (31.6M pages built in-kernel, 10.57e9 refs forwarded
 in-kernel); B v2 unchanged/PASS.  Commits: mmtk-core b3ad57fc, this repo
 93098b8.  KNOWN COST: word-granular emit_compact makes h2 ~6x slower than
 stock -- next arc is run-granular emit (live-bitmap runs, bulk copy).
+
+## R1 perf arc + B.1 regression fix (2026-07-06 evening, session 4 cont.)
+- R1 emit: word-granular -> 64-word live-bitmap GROUP emit (dead group = 1
+  load; fully-live = direct offsets; mixed = popcount pure-function offsets).
+  Verifier lesson: loop-carried accumulators explode verification (E2BIG);
+  pure-function offsets / ctx-memory state are the fix (fwd_word's shape).
+- Found + fixed a 6x B.1 regression introduced in session 3 (unconditional
+  per-slot refbit recording + contended telemetry atomic in the staging hot
+  path; B.1 never reads the bitmap).  Bisected via a session-2-state JDK
+  build (s2test) that reproduced June's 33.4s exactly; kernel/env exonerated
+  (bench_compact micro also reproduces June).
+- HONEST TABLE (h2 768M -n4 / pmd 512M -n4, last iter, post-fix):
+    h2:  stock 32.3 | B.1 35.7 (+10%) | Bv2 86.1 (+167%) | R1 92.5 (+186%)
+    pmd: stock 2.77 | B.1 3.24 (+17%) | Bv2 4.54 (+64%)  | R1 4.89 (+77%)
+  => B.1's +10% (session 2) reproduces.  Defer-forward costs ~2.4x extra on
+  ref-dense h2 (per-slot refbit recording + fault-time random fwd-table
+  lookups) — intrinsic to defer, and R1 inherits it by construction.  R1's
+  full in-kernel build == Bv2 within ~7-8%: the in-kernel copy itself is
+  free; defer is the cost driver.
+- Commits: mmtk-core 0701dee5, gc-bpf-fault 37c7314+fba6ef9.  Data:
+  results/classB/h2_n4_comparison_20260706.txt.
+- R1 caveat for the paper: record_ref_bits_old skips non-slot-enqueuing
+  objects (never fires on HotSpot/DaCapo; Bv2 forwards those eagerly).
