@@ -99,3 +99,9 @@ gc_satb_ops.bpf.o: gc_satb_ops.bpf.c vmlinux.h $(LIBBPF_DIR)/libbpf.a
 
 test_satb: test_satb.c gc_satb_ops.skel.h gc_common.h $(LIBBPF_DIR)/libbpf.a
 	$(CC) $(USER_CFLAGS) -o $@ $< $(USER_LDFLAGS) -static
+
+gc_z_ops.bpf.o: gc_z_ops.bpf.c vmlinux.h $(LIBBPF_DIR)/libbpf.a
+	clang-20 $(BPF_CFLAGS) -mcpu=v3 -I$(INCLUDE_DIR) -I$(CURDIR) -c $< -o $@
+
+test_zheap: test_zheap.c gc_z_ops.skel.h gc_common.h $(LIBBPF_DIR)/libbpf.a
+	$(CC) $(USER_CFLAGS) -o $@ $< $(USER_LDFLAGS) -static
