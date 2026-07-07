@@ -521,3 +521,20 @@ Full map (scripts/classB_sweep2.sh, results/classB/sweep2/):
   quantified kernel gaps (bulk-install ~97s/run of fault round-trips on h2,
   batched WP for Class A). Tail-latency wins need concurrent marking (out
   of scope for Compressor).
+
+## HEADLINE: bpf Bv2/R1 beat stock AND uffd on time and tail (2026-07-07)
+The in-kernel defer tax was a CONTENDED GLOBAL ATOMIC per forwarded
+reference in the handler (~150/page x 16 workers; bpftool prog profile:
+430,900 cycles/fault @ IPC 0.07 vs 3,234 for B.1's copy).  Gated behind
+debug (gc-bpf-fault d961c93 + mmtk-core 716b62f1; also fixed fwd_word to
+share forward_narrow, added optional transducer forward that skips the
+6.3s/run STW table fill).  h2 768M -n4 last-iter / p99.9 tail:
+  stock 32.4s/372ms | bpf B.1 35.4/418 | uffd B.1 35.6/421 |
+  uffd defer 36.1/442 | **bpf Bv2 28.7/336 | bpf R1 28.7/338**
+=> bpf defer: -11% time and -10% tail vs STOCK; -20%/-24% vs UFFD; the
+concurrent-compaction win reaches the tail, and the result is bpf-only
+(uffd-defer pays userspace forwarding; uffd cannot do R1).  12/12
+correctness + h2 + xalan PASS.  Third occurrence of the shared-atomic-on-
+hot-path bug class — check those first.
+Remaining for paper-grade: multi-invocation stats, heap sweep + pause
+probe on fixed Bv2/R1, handler re-profile.
