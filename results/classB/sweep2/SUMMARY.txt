@@ -1,0 +1,17 @@
+RESULT h2 heap=768M cfg=stock time_ms=32384  DaCapo tail latency, simple: 50% 393 usec, 90% 2833 usec, 99% 362551 usec, 99.9% 390795 usec, 99.99% 397824 usec, max 400390 usec, measured over 100000 events 
+RESULT h2 heap=768M cfg=b1 time_ms=35429  DaCapo tail latency, simple: 50% 579 usec, 90% 4414 usec, 99% 385505 usec, 99.9% 418324 usec, 99.99% 434505 usec, max 441872 usec, measured over 100000 events 
+RESULT h2 heap=768M cfg=bv2 time_ms=87396  DaCapo tail latency, simple: 50% 584 usec, 90% 4468 usec, 99% 1024204 usec, 99.9% 1111494 usec, 99.99% 1131528 usec, max 1140367 usec, measured over 100000 events 
+RESULT h2 heap=768M cfg=r1 time_ms=92579  DaCapo tail latency, simple: 50% 589 usec, 90% 4475 usec, 99% 1076895 usec, 99.9% 1188159 usec, 99.99% 1200431 usec, max 1218134 usec, measured over 100000 events 
+RESULT h2 heap=1536M cfg=stock time_ms=10221  DaCapo tail latency, simple: 50% 387 usec, 90% 2597 usec, 99% 10261 usec, 99.9% 384512 usec, 99.99% 396083 usec, max 404983 usec, measured over 100000 events 
+RESULT h2 heap=1536M cfg=b1 time_ms=12836  DaCapo tail latency, simple: 50% 606 usec, 90% 4009 usec, 99% 16641 usec, 99.9% 423204 usec, 99.99% 448323 usec, max 458610 usec, measured over 100000 events 
+RESULT h2 heap=1536M cfg=bv2 time_ms=25782  DaCapo tail latency, simple: 50% 608 usec, 90% 4022 usec, 99% 17705 usec, 99.9% 1079905 usec, 99.99% 1142505 usec, max 1152604 usec, measured over 100000 events 
+RESULT h2 heap=1536M cfg=r1 time_ms=26907  DaCapo tail latency, simple: 50% 610 usec, 90% 4122 usec, 99% 17883 usec, 99.9% 1145820 usec, 99.99% 1208842 usec, max 1224923 usec, measured over 100000 events 
+RESULT h2 heap=3072M cfg=stock time_ms=6198  DaCapo tail latency, simple: 50% 378 usec, 90% 2571 usec, 99% 8826 usec, 99.9% 372250 usec, 99.99% 416491 usec, max 419516 usec, measured over 100000 events 
+RESULT h2 heap=3072M cfg=b1 time_ms=8468  DaCapo tail latency, simple: 50% 623 usec, 90% 3920 usec, 99% 12801 usec, 99.9% 403204 usec, 99.99% 462430 usec, max 475428 usec, measured over 100000 events 
+RESULT h2 heap=3072M cfg=bv2 time_ms=13731  DaCapo tail latency, simple: 50% 622 usec, 90% 3928 usec, 99% 13308 usec, 99.9% 1006616 usec, 99.99% 1111773 usec, max 1123142 usec, measured over 100000 events 
+RESULT h2 heap=3072M cfg=r1 time_ms=13652  DaCapo tail latency, simple: 50% 617 usec, 90% 3917 usec, 99% 12597 usec, 99.9% 1117621 usec, 99.99% 1244954 usec, max 1258759 usec, measured over 100000 events 
+RESULT xalan heap=1G cfg=stock time_ms=1173 nolat
+RESULT xalan heap=1G cfg=b1 time_ms=1311 nolat
+RESULT xalan heap=1G cfg=bv2 time_ms=1318 nolat
+RESULT xalan heap=1G cfg=r1 time_ms=1264 nolat
+SWEEP2_DONE
