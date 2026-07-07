@@ -107,6 +107,106 @@ uint64_t gcbpf_fault_count(void)
 }
 
 /* ------------------------------------------------------------------ */
+/*  SATB page snapshots: page-COW barrier for concurrent marking       */
+/* ------------------------------------------------------------------ */
+
+#include "gc_satb_ops.skel.h"
+
+static struct gc_satb_ops_bpf *satb_skel;
+static struct bpf_link *satb_link;
+static uint8_t *satb_arena;        /* [snapshot pages | byte flags] */
+static uint64_t satb_base, satb_span, satb_flags_off;
+
+/* Load the snapshot handler and mmap+pre-touch the arena.  Pre-touching
+ * is mandatory: kernel-side stores to unpopulated arena pages are
+ * silently dropped (exception fixups).  The arena stays resident across
+ * mark cycles (v1). */
+int gcsatb_init(uint64_t start, uint64_t len)
+{
+	long page = sysconf(_SC_PAGESIZE);
+	size_t flags_bytes = len >> 12;
+	size_t arena_bytes;
+
+	libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
+	satb_skel = gc_satb_ops_bpf__open();
+	if (!satb_skel) {
+		fprintf(stderr, "gcsatb: open failed\n");
+		return -1;
+	}
+	satb_skel->rodata->heap_base = start;
+	satb_skel->rodata->span_len = len;
+	arena_bytes = (len + flags_bytes + page - 1) & ~(size_t)(page - 1);
+	if (bpf_map__set_max_entries(satb_skel->maps.snap_arena,
+				     arena_bytes / page)) {
+		fprintf(stderr, "gcsatb: arena size failed\n");
+		return -1;
+	}
+	if (gc_satb_ops_bpf__load(satb_skel)) {
+		fprintf(stderr, "gcsatb: load failed (root?)\n");
+		return -1;
+	}
+	satb_skel->bss->snapbm_off = len;
+	{
+		uint64_t va = 1ull << 45;
+		satb_arena = mmap((void *)va, arena_bytes,
+				  PROT_READ | PROT_WRITE,
+				  MAP_SHARED | MAP_FIXED,
+				  bpf_map__fd(satb_skel->maps.snap_arena), 0);
+		if (satb_arena == MAP_FAILED) {
+			perror("gcsatb: mmap arena");
+			satb_arena = NULL;
+			return -1;
+		}
+	}
+	for (size_t i = 0; i < arena_bytes; i += page)
+		satb_arena[i] = 0;
+	satb_base = start;
+	satb_span = len;
+	satb_flags_off = len;
+	return 0;
+}
+
+int gcsatb_register(uint64_t start, uint64_t len)
+{
+	if (!satb_skel)
+		return -1;
+	if (!satb_link) {
+		satb_link = bpf_map__attach_fault_ops(satb_skel->maps.gc_satb_ops,
+						      (void *)start, len,
+						      BPF_FAULT_FLAG_WP);
+		if (!satb_link) {
+			perror("gcsatb: attach");
+			return -1;
+		}
+		return 0;
+	}
+	if (bpf_link__fault_register(bpf_link__fd(satb_link), start, len)) {
+		perror("gcsatb: register");
+		return -1;
+	}
+	return 0;
+}
+
+int gcsatb_wp(uint64_t start, uint64_t len, int enable)
+{
+	if (!satb_link)
+		return -1;
+	if (bpf_link_fault_cmd(bpf_link__fd(satb_link), start, len,
+			       enable ? BPF_FAULT_WP_ENABLE : 0)) {
+		perror("gcsatb: wp");
+		return -1;
+	}
+	return 0;
+}
+
+uint8_t *gcsatb_flags(void)     { return satb_arena ? satb_arena + satb_flags_off : NULL; }
+uint8_t *gcsatb_snapshots(void) { return satb_arena; }
+uint64_t gcsatb_snap_count(void)
+{
+	return satb_skel ? satb_skel->bss->satb_snapshots : 0;
+}
+
+/* ------------------------------------------------------------------ */
 /*  Class B: fault-driven Compressor compaction (gc_b0_ops)            */
 /* ------------------------------------------------------------------ */
 
