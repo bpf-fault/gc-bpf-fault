@@ -810,3 +810,17 @@ timing is a real requirement.  Class A (GenImmix) and Class B
 ### M2 status: design complete + verified; blocked on upstream plan race.
 Options: chase the ConcurrentImmix race upstream; or A/B the barrier on
 a hardened plan; or proceed with idea 6 integration + paper.
+
+### Sensitivity probe (2026-07-07): frac=1/16 armed chunks -> still 2/2 FAIL
+A handful of delayed stores suffices; the upstream race is a narrow
+ordering window, not a progress-balance effect.  Draft upstream report:
+docs/concurrentimmix-race-report.md.
+
+### NEXT ARC: idea 6 GC integration (stable plans, unaffected by the race)
+GenImmix + Class A dirty tracking supplies cold-page identification for
+free: pages that stay CLEAN (WP-armed, never faulted) for K consecutive
+GCs are cold -> compress to arena (userspace, 215ms/256MB), DONTNEED
+originals, register gc_z_ops missing-fault decompressor.  Access
+transparently decompresses in-kernel (p50 4.97us) -- GC tracing
+included.  Metric: RSS/PSS timeline + benchmark time, stock vs
+cold-compress, h2 at large heap.
