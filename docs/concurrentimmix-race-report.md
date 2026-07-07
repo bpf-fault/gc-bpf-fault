@@ -1,69 +1,50 @@
-# ConcurrentImmix: heap corruption under write-protect-fault latency (draft upstream report)
+# ConcurrentImmix under write-protect arming: investigation record (revised)
 
-## Summary
+## Revision notice
 
-`MMTK_PLAN=ConcurrentImmix` (mmtk-core, compiled SATB barrier, OpenJDK 21
-binding) exhibits heap corruption — dangling references, overwritten
-reference fields — when the immix space is write-protected at
-InitialMark via **stock userfaultfd WP-async** (`UFFD_FEATURE_WP_ASYNC`,
-kernel ≥ 6.7) so that first writes to each page take a ~10µs in-kernel
-fault instead of ~1ns.  No custom kernel and no handler logic is
-involved: WP-async resolves faults entirely in-kernel; the only effect
-is write latency on the first post-arm write per page.
+An earlier draft of this report claimed an upstream ConcurrentImmix race
+"exposed by WP-fault latency", based on failures reproducing under
+mainline userfaultfd WP-async with the compiled barrier active.  A
+drain-silenced A/B matrix subsequently RE-ATTRIBUTED the evidence:
 
-The same configuration WITHOUT arming passes deterministically
-(6/6 observed).  With arming: 0/9 across xalan/lusearch/luindex
-(DaCapo 23.11, `-n 3`, 512M heap), typically crashing within seconds of
-the first concurrent cycle.  Crash signatures vary run to run (SIGSEGV
-in `ConcurrentHashMap.get`/`transfer` following a dangling reference;
-`oop_iterate` over a corrupted object; faults on metadata ranges) —
-consistent with a lost SATB edge or a pause/resume window race, not
-with any single deterministic defect.
+1. **All bpf-config corruption was our own FinalMark drain** (the M2
+   page-SATB sweeper): its liveness certificate admitted objects lazily
+   swept and recycled during the cycle, and two accessors lacked bounds.
+   With the drain silenced, write-protect arming of the whole heap
+   during concurrent marking passes 7/7 with the compiled barrier —
+   kernel bpf-fault WP path exonerated end-to-end.
+2. **All uffd-config failures were harness bugs**: UFFDIO_REGISTER
+   EBUSY asserts (cross-cycle re-registration; bpf/uffd VMA-ctx
+   conflict).  The mainline uffd path was never implicated.
 
-## Reproducer
+## What remains true and upstream-relevant
 
-1. OpenJDK 21 + mmtk-openjdk + mmtk-core with ConcurrentImmix.
-2. At `Plan::prepare(InitialMark)` (mutators stopped), register the
-   immix space's chunks with a userfaultfd configured with
-   `UFFD_FEATURE_WP_ASYNC` and apply `UFFDIO_WRITEPROTECT` (mode WP).
-   Disarm (`mode 0`) at FinalMark release.  ~60 lines; no fault handler
-   thread needed.
-3. `MMTK_PLAN=ConcurrentImmix java -XX:+UseThirdPartyHeap -Xms512m
-   -Xmx512m dacapo xalan -n 3` → validation failure or SIGSEGV within
-   the first iterations.
+**FinalMark can lose SATB packets to the Concurrent bucket.**  At the
+FinalMark stop, mutator barrier flushes run inside `stop_all_mutators`
+— BEFORE `notify_mutators_paused` clears the marking state — so
+`flush_satb` routes them to `WorkBucketStage::Concurrent` (observed: 32
+packets in one xalan FinalMark).  `ConcurrentTraceObjects::flush`
+routes children the same way.  The FinalMark pause never drains the
+Concurrent bucket; `on_gc_finished` then re-opens it, and the packets
+execute AFTER the pause with the marking state cleared, racing lazy
+sweeping and running mutators.  Any load that delays marking (or
+enlarges the marking-time backlog) widens exposure.
 
-## Evidence that the fault mechanism is not the cause
+Fix (in this tree, `MMTK_SATB_NOFIX=1` reverts for A/B):
+- `flush_satb` / `flush_weak_refs` / `ConcurrentTraceObjects::flush`
+  route to Closure once `current_pause() == FinalMark`.
+- `notify_mutators_paused(FinalMark)` migrates any Concurrent-bucket
+  backlog into Closure (`WorkBucket::drain_to`).
 
-- Identical corruption with an eBPF-based WP mechanism whose handler is
-  a NO-OP, and with the full snapshot handler.
-- Register-only (VMA flags set, no PTE write-protection): passes.
-- Adversarial micros against the WP path all pass outside the JVM:
-  16-thread same-page plain-store and atomic-RMW races across re-arm
-  rounds; MADV_DONTNEED interleave; `read(2)` (`copy_to_user`) into
-  armed pages with surrounding-content verification; full-range
-  write-protect coverage checks (4096/4096 faults observed).
-- THP and mTHP disabled throughout.
+We did not observe this defect *firing* as corruption in our workloads
+(the observed corruption re-attributed as above), but the mis-routing
+is structural and verified by event tracing.
 
-## Hypothesis
+## Methodology lesson
 
-Slowing the first write to each page by ~4 orders of magnitude shifts
-mutator/collector interleavings enough to expose a latent race in the
-concurrent-marking machinery (e.g., around barrier activation at the
-InitialMark boundary, unlog-bit bulk-set vs mutator resume, or
-SATB-buffer flush vs FinalMark).  Fault counts show corruption follows
-the FIRST arming closely (≈21 armed-page faults observed before crash).
-
-## Sensitivity
-
-Arming only **1/16 of chunks** still corrupts (2/2 fail, as does 1/4)
-— broad slowdown is NOT required; a handful of delayed stores anywhere
-in the heap suffices.  The window is an ordering assumption that any
-single delayed store can violate, not a progress-balance effect.
-
-## Why this matters beyond this configuration
-
-Any VM-assisted write barrier (userfaultfd-based dirty tracking, CRIU
-pre-copy, NUMA migration bursts, memory tiering) introduces exactly
-this class of write-latency perturbation.  A concurrent GC that is only
-correct when stores complete in nanoseconds is fragile against the
-whole family of virtual-memory tools.
+The differential oracle (compiled barrier active + passive page
+machinery) correctly cleared the extraction logic, but the verify-mode
+drain kept its own crashes in the failure signal, and the contaminated
+uffd cross-check then pointed at the plan.  Separating layers required
+silencing every piece of our machinery (drain off, no-op handler,
+register-only, pulse/final arm phases) and re-running the full matrix.

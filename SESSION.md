@@ -864,3 +864,30 @@ The paper's memory-footprint axis is now real: uffd could only match
 this with a 30-50us round-trip + userspace decode per first touch
 (~8x our 4.97us in-kernel decode), and no compiled-code alternative
 exists.
+
+## Session 5 (cont. 4): "fix the ConcurrentImmix race" — resolved by re-attribution (2026-07-07)
+
+Phase-controlled bisect (pulse/initial/final arm phases + sleep-only +
+comm-capture + scheduler event tracing) followed by a DRAIN-SILENCED
+matrix produced the grand re-attribution — see mmtk-core ec64c307 and
+the rewritten docs/concurrentimmix-race-report.md:
+  * kernel bpf-fault WP: exonerated (passive arming 7/7 with compiled
+    barrier once our drain was out of the signal);
+  * mainline uffd: never implicated (our EBUSY harness asserts);
+  * ConcurrentImmix: one REAL structural defect found + fixed as
+    hardening (FinalMark loses Concurrent-bucket SATB packets:
+    stop-time flushes + trace children mis-routed; pause never drains
+    the bucket; packets execute post-pause with marking off) — verified
+    by event trace (32 packets rerouted), though not the firing bug in
+    our workloads;
+  * the firing bug was OUR M2 drain: lazy-sweep hole in the liveness
+    certificate (fixed: snapshot AND current-VO filter — mark-start-live
+    objects cannot be lazily swept mid-cycle) + unbounded accessors
+    (bounds-hardened) + one REMAINING extraction-stage deref in cycle 2+
+    (stage markers localize it: between "flagged" and "extracted" of the
+    second GC cycle; real mode still red, first cycle drains clean:
+    32 pages -> 4916 nodes -> wholesale 13).
+
+Verify-mode page-SATB (passive arming + compiled barrier) is now GREEN
+4/4 on the previously 0/6 config.  NEXT: the cycle-2 extraction deref,
+then real-mode suite, then compiled-vs-page A/B.

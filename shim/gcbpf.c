@@ -207,6 +207,23 @@ void gcsatb_set_noop(unsigned int on)
 		satb_skel->bss->satb_noop = on;
 }
 
+void gcsatb_dump_comms(void)
+{
+	struct { char comm[16]; } key = {}, next;
+	uint64_t val;
+	int fd;
+
+	if (!satb_skel)
+		return;
+	fd = bpf_map__fd(satb_skel->maps.satb_comms);
+	while (bpf_map_get_next_key(fd, &key, &next) == 0) {
+		if (bpf_map_lookup_elem(fd, &next, &val) == 0)
+			fprintf(stderr, "[satbcomms] %-16.16s %llu\n",
+				next.comm, (unsigned long long)val);
+		key = next;
+	}
+}
+
 uint64_t gcsatb_snap_count(void)
 {
 	return satb_skel ? satb_skel->bss->satb_snapshots : 0;

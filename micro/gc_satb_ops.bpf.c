@@ -36,6 +36,14 @@ volatile __u64 satb_read_fail = 0;
 volatile __u32 satb_count = 0;   /* debug counters opt-in */
 volatile __u32 satb_noop = 0;    /* bisect: WP fault -> immediate return */
 
+struct comm_key { char comm[16]; };
+struct {
+	__uint(type, BPF_MAP_TYPE_HASH);
+	__uint(max_entries, 64);
+	__type(key, struct comm_key);
+	__type(value, __u64);
+} satb_comms SEC(".maps");
+
 struct {
 	__uint(type, BPF_MAP_TYPE_ARENA);
 	__uint(map_flags, BPF_F_MMAPABLE);
@@ -62,6 +70,18 @@ int BPF_PROG(handle_wp_fault, struct bpf_fault_ops_ctx *ops_ctx,
 	unsigned long off = ops_ctx->address - heap_base;
 	unsigned long idx, pa;
 
+	{
+		/* who writes armed pages? (finding the pause-context writer) */
+		struct comm_key k = {};
+		__u64 one = 1, *v;
+
+		bpf_get_current_comm(k.comm, sizeof(k.comm));
+		v = bpf_map_lookup_elem(&satb_comms, &k);
+		if (v)
+			__sync_fetch_and_add(v, 1);
+		else
+			bpf_map_update_elem(&satb_comms, &k, &one, BPF_ANY);
+	}
 	if (satb_noop)
 		return 0;      /* isolate kernel WP mechanics from handler work */
 	if (off >= span_len)
