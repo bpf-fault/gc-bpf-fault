@@ -1,0 +1,48 @@
+### phase 1: pauses (fixed bv2/r1, h2 768M -n2)
+=== pauses: bv2 ===
+===== DaCapo 23.11-MR2-chopin h2 PASSED in 28847 msec =====
+@avg_us: 230660
+@gcs: 272
+@max_us: 451311
+=== pauses: r1 ===
+===== DaCapo 23.11-MR2-chopin h2 PASSED in 28568 msec =====
+@avg_us: 235575
+@gcs: 272
+@max_us: 450815
+### phase 2: 5 interleaved invocations, 6 configs, h2 768M -n4
+RESULT run=1 cfg=stock time_ms=32882 p999_us=396965
+RESULT run=1 cfg=b1 time_ms=35945 p999_us=432631
+RESULT run=1 cfg=bv2 time_ms=28657 p999_us=337534
+RESULT run=1 cfg=r1 time_ms=28788 p999_us=336543
+RESULT run=1 cfg=uffd_b1 time_ms=36811 p999_us=439238
+RESULT run=1 cfg=uffd_defer time_ms=36036 p999_us=435163
+RESULT run=2 cfg=stock time_ms=33090 p999_us=399847
+RESULT run=2 cfg=b1 time_ms=36095 p999_us=434878
+RESULT run=2 cfg=bv2 time_ms=28451 p999_us=333975
+RESULT run=2 cfg=r1 time_ms=28728 p999_us=336541
+RESULT run=2 cfg=uffd_b1 time_ms=36576 p999_us=432642
+RESULT run=2 cfg=uffd_defer time_ms=36001 p999_us=434118
+RESULT run=3 cfg=stock time_ms=34942 p999_us=420988
+RESULT run=3 cfg=b1 time_ms=36233 p999_us=435542
+RESULT run=3 cfg=bv2 time_ms=28557 p999_us=333185
+RESULT run=3 cfg=r1 time_ms=28879 p999_us=339032
+RESULT run=3 cfg=uffd_b1 time_ms=35925 p999_us=428888
+RESULT run=3 cfg=uffd_defer time_ms=36141 p999_us=434927
+RESULT run=4 cfg=stock time_ms=34123 p999_us=405667
+RESULT run=4 cfg=b1 time_ms=36349 p999_us=429746
+RESULT run=4 cfg=bv2 time_ms=28815 p999_us=334708
+RESULT run=4 cfg=r1 time_ms=29110 p999_us=339030
+RESULT run=4 cfg=uffd_b1 time_ms=37020 p999_us=437684
+RESULT run=4 cfg=uffd_defer time_ms=36539 p999_us=440027
+RESULT run=5 cfg=stock time_ms=33311 p999_us=403986
+RESULT run=5 cfg=b1 time_ms=37295 p999_us=448258
+RESULT run=5 cfg=bv2 time_ms=28625 p999_us=332929
+RESULT run=5 cfg=r1 time_ms=29071 p999_us=337434
+RESULT run=5 cfg=uffd_b1 time_ms=36429 p999_us=432697
+RESULT run=5 cfg=uffd_defer time_ms=36116 p999_us=444063
+### phase 3: heap-sweep rows for fixed bv2/r1
+RESULT heap=1536M cfg=bv2 time_ms=11016 p999_us=329321
+RESULT heap=1536M cfg=r1 time_ms=11227 p999_us=340134
+RESULT heap=3072M cfg=bv2 time_ms=7740 p999_us=332283
+RESULT heap=3072M cfg=r1 time_ms=7781 p999_us=369736
+RIGOR_DONE

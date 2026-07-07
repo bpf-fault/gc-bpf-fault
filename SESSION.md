@@ -633,3 +633,35 @@ cacheline atomics FIRST — this bug class has now cost us 3 rounds.
 handler throughput).  Remaining ~29k insns/page = fwd_word scanning all
 1024 slots via 16 groups (ctz-iteration over set bits is the known next
 trim, ~2x, not yet needed for the headline).
+
+## Session 4 FINAL: paper-grade rigor suite (2026-07-07 03:30)
+
+### h2 768M -n4, MEDIAN OF 5 INTERLEAVED INVOCATIONS (time / p99.9 tail)
+  stock STW:   33.31s / 404ms   [32.9..34.9]
+  bpf  B.1:    36.23s / 435ms
+  uffd B.1:    36.58s / 433ms
+  uffd defer:  36.12s / 435ms
+  **bpf Bv2:   28.63s / 334ms   [28.5..28.8]  (-14% time, -17% tail vs stock;
+                                               -21% / -23% vs uffd-defer)**
+  **bpf R1:    28.88s / 337ms**
+STW pauses (uprobe, h2 768M -n2): stock 377/521ms avg/max | B.1 269/558 |
+  **Bv2 231/451 | R1 236/451** — best avg AND best max.
+Heap sweep (fixed defer): 1536M Bv2 11.0s/329ms (stock 10.2/385: +8% time,
+  -15% tail) | 3072M Bv2 7.7s/332ms (stock 6.2/372: +25% time, -11% tail).
+  At 768M defer wins BOTH metrics; at larger heaps it trades some
+  throughput for consistent tail wins — the classic concurrent-GC
+  tradeoff, now actually delivered.
+
+### The Class B paper story, final form
+1. Fault-driven concurrent compaction with DEFERRED in-kernel forwarding
+   (bpf_fault) beats the STW baseline on throughput (-14%), request tail
+   (-17%), avg pause (-39%) and max pause (-13%) on compaction-heavy h2 —
+   and beats the production userfaultfd policy by -21%/-23%.
+2. The capability is bpf-ONLY: uffd cannot forward in-kernel (uffd-defer
+   pays userspace per-page forwarding: 36.1s) and cannot build pages
+   in-kernel at all (R1).
+3. Supersedes sweep2's interim "no variant beats stock tail" conclusion —
+   that was measured with the handler atomics bug.
+4. The mechanism ordering (bpf < uffd) now shows END-TO-END, not just in
+   micro benchmarks.
+Data: results/classB/rigor/.  All correctness green (12/12 + h2 + xalan).
