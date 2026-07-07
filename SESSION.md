@@ -665,3 +665,33 @@ Heap sweep (fixed defer): 1536M Bv2 11.0s/329ms (stock 10.2/385: +8% time,
 4. The mechanism ordering (bpf < uffd) now shows END-TO-END, not just in
    micro benchmarks.
 Data: results/classB/rigor/.  All correctness green (12/12 + h2 + xalan).
+
+## Session 5 (2026-07-07 morning): Class A dirty-chunk re-arming + counter gating
+
+### Counter gating (4th atomic-bug-class instance; gc-bpf-fault 9a0e0bc)
+Class A WP handler counted every fault on a contended global; Class B
+handler still had 2/fault.  Gated: **Class B bv2 h2 -n4: 28.6 -> 26.2s
+(now -21% vs stock)**; Class A lusearch@38M 13.1 -> 11.9s.
+
+### Dirty-chunk re-arming (mmtk-core e989ca8a) — the Class A story rewritten
+Nursery GCs keep mature protection ACROSS GCs; only chunks that lost it
+(dirty pages, promotion blocks via a copy-allocator acquire hook) are
+re-armed.  O(dirty) per GC instead of O(mature).  Full-heap GCs
+fall back to the full walk.  Lock-free bitmaps throughout.
+  h2@4G:  Barrier 3.79s vs Bpf 4.11s — **+54% -> +8.4%** (near-parity on
+          the former worst case)
+  xalan:  @1664M **-15%** (crossover moved below 128x; was +4% there),
+          @26M pathological heap 8.0 -> 5.3s (-34%)
+  lusearch: unchanged — scattered writes ARE the page-granularity
+          boundary (documented, not hidden)
+Correctness 12/12 across all three backends + full-heap transitions.
+
+### Class A claims, updated
+1. vs uffd/segv: bpf strictly dominates everywhere (unchanged).
+2. vs compiled barrier: wins for write-clustered workloads from ~128x
+   min-heap down to BELOW 8x after dirty-chunk re-arming; near-parity
+   (+8%) on dense-write h2 at large heap; scattered-write lusearch
+   remains the honest loss regime.
+3. Two userspace-policy lessons for the paper: (a) re-arm cost must be
+   O(write working set), not O(mature); (b) the atomic-contention bug
+   class (4 instances now) — audit per-item hot paths first.
