@@ -408,7 +408,8 @@ int BPF_PROG(handle_page_fault, struct bpf_fault_ops_ctx *ops_ctx,
 	__u64 *st;
 	int err = 0;
 
-	__sync_fetch_and_add(&b0_fault_count, 1);
+	if (count_refs)
+		__sync_fetch_and_add(&b0_fault_count, 1);
 	if (off >= span_len)
 		return 0;
 
@@ -421,7 +422,8 @@ int BPF_PROG(handle_page_fault, struct bpf_fault_ops_ctx *ops_ctx,
 		struct r1_scratch *s = bpf_map_lookup_elem(&r1_scratch_map, &zero);
 		struct r1_ctx c;
 
-		__sync_fetch_and_add(&b0_staged_installs, 1);
+		if (count_refs)
+			__sync_fetch_and_add(&b0_staged_installs, 1);
 		if (!s)
 			return 0;
 		srcw0 = fs_arena[idx];
@@ -451,7 +453,8 @@ int BPF_PROG(handle_page_fault, struct bpf_fault_ops_ctx *ops_ctx,
 	} else if (st && *st == B0_STAGED) {
 		err = bpf_probe_read_user(page, PAGE_SIZE,
 					  (void *)(arena_base + off));
-		__sync_fetch_and_add(&b0_staged_installs, 1);
+		if (count_refs)
+			__sync_fetch_and_add(&b0_staged_installs, 1);
 		if (!err && defer_fwd) {
 			struct fwd_ctx c;
 			unsigned long fa =

@@ -87,6 +87,7 @@ static int bpf_setup(void)
 		fprintf(stderr, "bpf: set_max_entries failed\n");
 		return -1;
 	}
+	bpf_skel->bss->wp_count_faults = 1;   /* micro wants fault stats */
 	if (gc_wp_ops_bpf__load(bpf_skel)) {
 		fprintf(stderr, "bpf: load failed\n");
 		return -1;

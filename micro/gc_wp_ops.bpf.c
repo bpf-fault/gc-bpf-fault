@@ -20,6 +20,10 @@ char _license[] SEC("license") = "GPL";
 const volatile unsigned long heap_base = 0;
 
 volatile __u64 wp_fault_count = 0;
+/* Count faults only when a consumer asks (micro benchmarks): the global
+ * atomic is contended across every faulting mutator thread -- the same
+ * bug class measured at 430k cycles/fault in the Class B handler. */
+volatile __u32 wp_count_faults = 0;
 
 struct {
 	__uint(type, BPF_MAP_TYPE_ARRAY);
@@ -40,7 +44,8 @@ int BPF_PROG(handle_wp_fault, struct bpf_fault_ops_ctx *ops_ctx,
 	w = bpf_map_lookup_elem(&dirty_bitmap, &word);
 	if (w)
 		__sync_fetch_and_or(w, 1ULL << (idx & 63));
-	__sync_fetch_and_add(&wp_fault_count, 1);
+	if (wp_count_faults)
+		__sync_fetch_and_add(&wp_fault_count, 1);
 	return 0;
 }
 
