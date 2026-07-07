@@ -538,3 +538,13 @@ correctness + h2 + xalan PASS.  Third occurrence of the shared-atomic-on-
 hot-path bug class — check those first.
 Remaining for paper-grade: multi-invocation stats, heap sweep + pause
 probe on fixed Bv2/R1, handler re-profile.
+
+## FINAL Class B table — median of 5 (2026-07-07, results/classB/rigor/)
+h2 768M -n4 (time / p99.9 tail):
+  stock 33.31s/404ms | bpf B.1 36.23/435 | uffd B.1 36.58/433 |
+  uffd defer 36.12/435 | **bpf Bv2 28.63/334 | bpf R1 28.88/337**
+Pauses: Bv2 231ms avg/451 max, R1 236/451 (stock 377/521, B.1 269/558).
+Sweep: 1536M Bv2 +8% time/-15% tail vs stock; 3072M +25%/-11%.
+=> bpf deferred in-kernel forwarding beats stock AND the uffd/ART policy
+on every metric at 768M, and trades throughput for tail at larger heaps.
+bpf-only capability; supersedes the pre-fix sweep2 tail conclusion.
