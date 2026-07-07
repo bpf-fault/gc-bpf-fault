@@ -558,3 +558,16 @@ bpf-only capability; supersedes the pre-fix sweep2 tail conclusion.
   xalan crossover < 128x (was ~256x), -15% @1664M, -34% at the 2x
   pathological heap; lusearch (scattered) unchanged = the honest
   page-granularity boundary.  12/12 correctness, 3 backends.
+
+## Class A rigor (median of 3) + ctz trim (2026-07-07)
+  xalan@1664M: Barrier 1557 | Bpf 1290 (-17%) | Uffd 1274
+  h2@4G: Barrier 3718/18ms | Bpf 4013 (+7.9%)/48ms | Uffd 4765 (+28%)/84ms
+  lusearch@1216M: Barrier 1891/2.7ms | Bpf 3288 (+74%)/35ms
+Claims: bpf <= uffd everywhere (decisive when faults frequent; converges
+where re-arming is rare — the policy fix shrinks the mechanism gap);
+beats compiled barrier on clustered writes >=128x; near-parity dense
+throughput with an honest nursery-tail caveat (dirty scan in pause;
+concurrent scanning = future work); scattered writes stay the loss.
+ctz fwd_word: handler 26,553 cycles/fault @ IPC 1.02 (session arc 16x);
+end-to-end unchanged (off critical path) — headroom.
+Data: results/classA/rigor/.
