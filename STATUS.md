@@ -548,3 +548,13 @@ Sweep: 1536M Bv2 +8% time/-15% tail vs stock; 3072M +25%/-11%.
 => bpf deferred in-kernel forwarding beats stock AND the uffd/ART policy
 on every metric at 768M, and trades throughput for tail at larger heaps.
 bpf-only capability; supersedes the pre-fix sweep2 tail conclusion.
+
+## Class A dirty-chunk re-arming + Class B counter gating (2026-07-07 am)
+- Class B: gating the last per-fault handler counters -> bv2 h2 -n4
+  26.2s (-21% vs stock 33.3s; was 28.6).
+- Class A (mmtk-core e989ca8a): nursery GCs re-arm only chunks that lost
+  protection (dirty + promotion blocks via acquire hook; lock-free
+  bitmaps; full-heap GCs keep the full walk).  h2@4G +54% -> +8.4%;
+  xalan crossover < 128x (was ~256x), -15% @1664M, -34% at the 2x
+  pathological heap; lusearch (scattered) unchanged = the honest
+  page-granularity boundary.  12/12 correctness, 3 backends.
