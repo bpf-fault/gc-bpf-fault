@@ -1,0 +1,1040 @@
+Using scaled threading model. 32 processors detected, 32 threads used to drive the workload, in a possible range of [1,1024]
+Version: h2 2.2.220 derby 10.15.2.0 (use -p to print nominal benchmark stats)
+Preparing the H2 database...
+TPCC configuration: scale: 16, terminals: 32, transactions: 100000
+[r1] compact_words(total)=7144564 prefail=16
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=14339 refs_fwd=4463085 fault_count=14372
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=20062830 prefail=3317
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=39937 refs_fwd=12756967 fault_count=39970
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=38335011 prefail=6631
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=75994 refs_fwd=24546590 fault_count=76061
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=61634447 prefail=9920
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=121862 refs_fwd=39629699 fault_count=121929
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=89459208 prefail=13222
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=176582 refs_fwd=57634776 fault_count=176685
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=120579526 prefail=16583
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=237726 refs_fwd=77414457 fault_count=237829
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=151817536 prefail=19983
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=299115 refs_fwd=97677884 fault_count=299255
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=187586267 prefail=23313
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=369341 refs_fwd=120495273 fault_count=369481
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=227445433 prefail=26641
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=447565 refs_fwd=145618334 fault_count=447745
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=271033989 prefail=29963
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=533058 refs_fwd=172843552 fault_count=533238
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=314977248 prefail=33288
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=619248 refs_fwd=200585649 fault_count=619467
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=353038829 prefail=36617
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=693948 refs_fwd=226120217 fault_count=694167
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=393680305 prefail=40268
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=773671 refs_fwd=253068289 fault_count=773926
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=434700929 prefail=44249
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=854149 refs_fwd=280288830 fault_count=854404
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=476381825 prefail=48210
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=935922 refs_fwd=307979669 fault_count=936213
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=519616984 prefail=52108
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=1020728 refs_fwd=336684959 fault_count=1021019
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=566295700 prefail=55787
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=1112266 refs_fwd=367286292 fault_count=1112602
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=618307173 prefail=59110
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=1214225 refs_fwd=400650698 fault_count=1214561
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=674923208 prefail=62435
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=1325161 refs_fwd=436406228 fault_count=1325538
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=734310779 prefail=67717
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=1441506 refs_fwd=474185294 fault_count=1441883
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=793605442 prefail=71664
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=1557679 refs_fwd=511953436 fault_count=1558097
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=851721537 prefail=75616
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=1671562 refs_fwd=549414442 fault_count=1671980
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=908673980 prefail=79568
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=1783147 refs_fwd=586586656 fault_count=1783601
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=962120821 prefail=83699
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=1887905 refs_fwd=621719446 fault_count=1888359
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=1020093603 prefail=87192
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=2001493 refs_fwd=659096009 fault_count=2001986
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=1081982759 prefail=90653
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=2122740 refs_fwd=698413648 fault_count=2123233
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=1146816272 prefail=95987
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=2249729 refs_fwd=739518277 fault_count=2250258
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=1211649742 prefail=99939
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=2376718 refs_fwd=780622890 fault_count=2377247
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=1276072000 prefail=103891
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=2502896 refs_fwd=821624893 fault_count=2503463
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=1339533070 prefail=107841
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=2627199 refs_fwd=862386258 fault_count=2627766
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=1402003420 prefail=111790
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=2749563 refs_fwd=902900729 fault_count=2750169
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=1459605032 prefail=165059
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=2862435 refs_fwd=941368253 fault_count=2863041
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+===== DaCapo 23.11-MR2-chopin h2 starting warmup 1 =====
+Starting 100000 requests...
+[r1] compact_words(total)=1518026012 prefail=169078
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=2976901 refs_fwd=980378570 fault_count=2978219
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=1576695991 prefail=173023
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=3091853 refs_fwd=1019553737 fault_count=3093171
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=1635581505 prefail=177007
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=3207222 refs_fwd=1058867549 fault_count=3209166
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+5%[r1] compact_words(total)=1694567649 prefail=180956
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=3322800 refs_fwd=1098201401 fault_count=3324744
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=1753856889 prefail=184938
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=3438959 refs_fwd=1137776820 fault_count=3441452
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=1813364072 prefail=188887
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=3555547 refs_fwd=1177516362 fault_count=3558040
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=1872985866 prefail=192846
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=3672369 refs_fwd=1217279665 fault_count=3675405
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+10%[r1] compact_words(total)=1932745627 prefail=196797
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=3789451 refs_fwd=1257107736 fault_count=3792487
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=1992781919 prefail=200750
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=3907074 refs_fwd=1297146720 fault_count=3910655
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=2052928116 prefail=204700
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=4024914 refs_fwd=1337224234 fault_count=4028495
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+15%[r1] compact_words(total)=2113248391 prefail=208653
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=4143095 refs_fwd=1377390691 fault_count=4147197
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=2173728007 prefail=212606
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=4261596 refs_fwd=1417654632 fault_count=4265698
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=2234475284 prefail=216551
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=4380599 refs_fwd=1458123258 fault_count=4385247
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=2295298797 prefail=220505
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=4499769 refs_fwd=1498596738 fault_count=4504417
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+20%[r1] compact_words(total)=2356461863 prefail=224560
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=4619587 refs_fwd=1539355853 fault_count=4624922
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=2417697058 prefail=228503
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=4739555 refs_fwd=1580106330 fault_count=4744890
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=2479098204 prefail=232690
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=4859844 refs_fwd=1620942172 fault_count=4865781
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=2540569354 prefail=236633
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=4980259 refs_fwd=1661770298 fault_count=4986196
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+25%[r1] compact_words(total)=2602350005 prefail=240623
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=5101291 refs_fwd=1702856148 fault_count=5107846
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=2664126425 prefail=244570
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=5222318 refs_fwd=1743849842 fault_count=5228873
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=2726115877 prefail=248611
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=5343758 refs_fwd=1784991567 fault_count=5350856
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=2788487076 prefail=252561
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=5465941 refs_fwd=1826488516 fault_count=5473039
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+30%[r1] compact_words(total)=2850905828 prefail=256514
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=5588206 refs_fwd=1867943740 fault_count=5595861
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=2913270400 prefail=260449
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=5710377 refs_fwd=1909422480 fault_count=5718032
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=2976002397 prefail=264411
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=5833257 refs_fwd=1951229099 fault_count=5841409
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=3038626902 prefail=268349
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=5955934 refs_fwd=1992816915 fault_count=5964086
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=3101375017 prefail=272321
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=6078844 refs_fwd=2034452358 fault_count=6087585
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+35%[r1] compact_words(total)=3164333729 prefail=276271
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=6202170 refs_fwd=2076251153 fault_count=6210911
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=3227402717 prefail=280226
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=6325712 refs_fwd=2118082696 fault_count=6335181
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=3290649322 prefail=284166
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=6449609 refs_fwd=2160041005 fault_count=6459078
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=3354032903 prefail=288165
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=6573765 refs_fwd=2202061289 fault_count=6583941
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+40%[r1] compact_words(total)=3417602222 prefail=292102
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=6698277 refs_fwd=2244208717 fault_count=6708453
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=3481428121 prefail=296051
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=6823306 refs_fwd=2286560710 fault_count=6834066
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=3545319755 prefail=299989
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=6948462 refs_fwd=2328909362 fault_count=6959222
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=3609359715 prefail=303944
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=7073909 refs_fwd=2371338812 fault_count=7085351
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+45%[r1] compact_words(total)=3673567552 prefail=307896
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=7199675 refs_fwd=2413879676 fault_count=7211117
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=3737951225 prefail=311850
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=7325790 refs_fwd=2456530846 fault_count=7337778
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=3802523223 prefail=315783
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=7452277 refs_fwd=2499327794 fault_count=7464265
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=3867100469 prefail=319733
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=7578762 refs_fwd=2542032891 fault_count=7591306
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=3931828461 prefail=323682
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=7705557 refs_fwd=2584836780 fault_count=7718101
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+50%[r1] compact_words(total)=3996762248 prefail=327620
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=7832749 refs_fwd=2627794046 fault_count=7845886
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=4061855858 prefail=331559
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=7960240 refs_fwd=2670866516 fault_count=7973377
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=4127069322 prefail=335494
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=8087959 refs_fwd=2713988779 fault_count=8101816
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=4192547826 prefail=339432
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=8216202 refs_fwd=2757342580 fault_count=8230059
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+55%[r1] compact_words(total)=4258231861 prefail=343413
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=8344850 refs_fwd=2800841790 fault_count=8359253
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=4323909679 prefail=347354
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=8473481 refs_fwd=2844267559 fault_count=8487884
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=4389717791 prefail=351458
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=8602374 refs_fwd=2887751853 fault_count=8617386
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=4455625081 prefail=355402
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=8731467 refs_fwd=2931283694 fault_count=8746479
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+60%[r1] compact_words(total)=4521666508 prefail=359349
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=8860818 refs_fwd=2975042399 fault_count=8876345
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=4587728616 prefail=363291
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=8990210 refs_fwd=3018749681 fault_count=9005737
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=4654099356 prefail=367249
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=9120211 refs_fwd=3062732341 fault_count=9136273
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=4720702193 prefail=371198
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=9250658 refs_fwd=3106926031 fault_count=9266720
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=4787155311 prefail=375294
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=9380806 refs_fwd=3150849022 fault_count=9397613
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+65%[r1] compact_words(total)=4853783951 prefail=379233
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=9511303 refs_fwd=3194907293 fault_count=9528110
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=4920515622 prefail=383269
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=9642007 refs_fwd=3239002389 fault_count=9659458
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=4987602887 prefail=387212
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=9773402 refs_fwd=3283440754 fault_count=9790853
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=5054588533 prefail=391174
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=9904610 refs_fwd=3327677739 fault_count=9922764
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=5121713632 prefail=395086
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=10036082 refs_fwd=3371994175 fault_count=10054236
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+70%[r1] compact_words(total)=5188981146 prefail=399116
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=10167838 refs_fwd=3416388966 fault_count=10186462
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=5256481017 prefail=403065
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=10300038 refs_fwd=3460986475 fault_count=10318662
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=5323992742 prefail=407015
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=10432246 refs_fwd=3505509288 fault_count=10451552
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=5391940328 prefail=410961
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=10565337 refs_fwd=3550469974 fault_count=10584643
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=5459904968 prefail=414956
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=10698444 refs_fwd=3595364445 fault_count=10718196
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+75%[r1] compact_words(total)=5527868947 prefail=418903
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=10831565 refs_fwd=3640193745 fault_count=10851317
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=5595965641 prefail=422854
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=10964934 refs_fwd=3685102226 fault_count=10985302
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=5664243167 prefail=426796
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=11098663 refs_fwd=3730148076 fault_count=11119031
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=5732653562 prefail=430743
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=11232658 refs_fwd=3775262740 fault_count=11253694
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=5801132284 prefail=434683
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=11366778 refs_fwd=3820397172 fault_count=11387814
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+80%[r1] compact_words(total)=5869820880 prefail=438756
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=11501311 refs_fwd=3865683950 fault_count=11522903
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=5938470300 prefail=442691
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=11635750 refs_fwd=3910869294 fault_count=11657342
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=6007310725 prefail=446722
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=11770563 refs_fwd=3956193937 fault_count=11792802
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=6076294427 prefail=450664
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=11905648 refs_fwd=4001619133 fault_count=11927887
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=6145423601 prefail=454611
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=12041034 refs_fwd=4047139693 fault_count=12063879
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+85%[r1] compact_words(total)=6214450039 prefail=458558
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=12176218 refs_fwd=4092611124 fault_count=12199063
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=6283648770 prefail=462502
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=12311740 refs_fwd=4138209930 fault_count=12335217
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=6353028463 prefail=466449
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=12447602 refs_fwd=4183948943 fault_count=12471079
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=6422547831 prefail=470395
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=12583752 refs_fwd=4229783611 fault_count=12607756
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=6492140094 prefail=474331
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=12720027 refs_fwd=4275632329 fault_count=12744031
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+90%[r1] compact_words(total)=6561903430 prefail=478330
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=12856647 refs_fwd=4321598246 fault_count=12881370
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=6631790659 prefail=482278
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=12993504 refs_fwd=4367661614 fault_count=13018227
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=6701684804 prefail=486234
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=13130384 refs_fwd=4413653034 fault_count=13155637
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=6771762642 prefail=490182
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=13267617 refs_fwd=4459805031 fault_count=13292870
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=6841921716 prefail=494155
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=13404995 refs_fwd=4505966785 fault_count=13430852
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=6912224249 prefail=498100
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=13542667 refs_fwd=4552239896 fault_count=13568524
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+95%[r1] compact_words(total)=6982714662 prefail=502083
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=13680708 refs_fwd=4598658764 fault_count=13707036
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=7053235643 prefail=506027
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=13818796 refs_fwd=4645053694 fault_count=13845124
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=7123868095 prefail=510049
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=13957111 refs_fwd=4691504514 fault_count=13984047
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=7194688323 prefail=513999
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=14095809 refs_fwd=4738110274 fault_count=14122745
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=7265430047 prefail=517971
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=14234363 refs_fwd=4784566619 fault_count=14261732
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+100%
+Completed requests
+	Stock level .............   3973 ( 4.0%)
+	Order status by name ....   2361 ( 2.4%)
+	Order status by ID ......   1609 ( 1.6%)
+	Payment by name .........  25847 (25.8%)
+	Payment by ID ...........  17220 (17.2%)
+	Delivery schedule .......   4029 ( 4.0%)
+	New order ...............  44509 (44.5%)
+	New order rollback ......    452 ( 0.5%)
+===== DaCapo 23.11-MR2-chopin h2 completed warmup 1 in 214241 msec =====
+===== DaCapo processed 100000 requests in 214225 msec, 466 requests per second =====
+===== DaCapo tail latency, simple: 50% 614 usec, 90% 4947 usec, 99% 2405646 usec, 99.9% 2641395 usec, 99.99% 2655977 usec, max 2667053 usec, measured over 100000 events =====
+===== DaCapo tail latency, metered 100ms smoothing: 50% 753 usec, 90% 10461 usec, 99% 2405646 usec, 99.9% 2641395 usec, 99.99% 2655977 usec, max 2667053 usec, measured over 100000 events =====
+===== DaCapo tail latency, metered full smoothing: 50% 655 usec, 90% 6045 usec, 99% 2405646 usec, 99.9% 2641395 usec, 99.99% 2655977 usec, max 2667053 usec, measured over 100000 events =====
+Resetting database to initial state...[r1] compact_words(total)=7334268711 prefail=522230
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=14369191 refs_fwd=4829641521 fault_count=14396560
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=7406549679 prefail=525698
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=14510741 refs_fwd=4876600043 fault_count=14538153
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+..[r1] compact_words(total)=7481322987 prefail=529364
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=14657163 refs_fwd=4925119119 fault_count=14684575
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=7558688802 prefail=533069
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=14808643 refs_fwd=4975424976 fault_count=14836091
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=7638083898 prefail=536570
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=14964091 refs_fwd=5026828568 fault_count=14991539
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=7719274247 prefail=540056
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=15123032 refs_fwd=5079209263 fault_count=15150533
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=7801937757 prefail=543546
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=15284859 refs_fwd=5132412249 fault_count=15312360
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=7885997605 prefail=547040
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=15449417 refs_fwd=5186373989 fault_count=15476962
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=7971276275 prefail=550537
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=15616345 refs_fwd=5240998287 fault_count=15643890
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=8057621267 prefail=554025
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=15785340 refs_fwd=5296194530 fault_count=15812924
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=8144897389 prefail=557516
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=15956161 refs_fwd=5351891630 fault_count=15983745
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=8233002658 prefail=560993
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=16128616 refs_fwd=5408034541 fault_count=16156244
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=8321737017 prefail=564485
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=16302295 refs_fwd=5464524761 fault_count=16329923
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+.[r1] compact_words(total)=8409337042 prefail=568027
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=16473769 refs_fwd=5519492070 fault_count=16501437
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=8497589025 prefail=571354
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=16646499 refs_fwd=5574809581 fault_count=16674167
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+.[r1] compact_words(total)=8583681763 prefail=574675
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=16815017 refs_fwd=5627849621 fault_count=16842722
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=8668922503 prefail=577977
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=16981866 refs_fwd=5680450753 fault_count=17009571
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=8753399133 prefail=581274
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=17147222 refs_fwd=5732665187 fault_count=17174972
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=8836990067 prefail=584578
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=17310847 refs_fwd=5784391734 fault_count=17338597
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=8919603310 prefail=587866
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=17472577 refs_fwd=5835582206 fault_count=17500364
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=9001131791 prefail=591166
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=17632169 refs_fwd=5886176812 fault_count=17659956
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=9081463022 prefail=594470
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=17789424 refs_fwd=5936116323 fault_count=17817250
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=9160472555 prefail=597776
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=17944106 refs_fwd=5985332940 fault_count=17971932
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=9237964056 prefail=601062
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=18095823 refs_fwd=6033731252 fault_count=18123689
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+.[r1] compact_words(total)=9296564980 prefail=604536
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=18210639 refs_fwd=6073020706 fault_count=18238505
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=9359987652 prefail=607896
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=18334886 refs_fwd=6115212897 fault_count=18362789
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+......[r1] compact_words(total)=9419460906 prefail=611834
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=18451417 refs_fwd=6155995074 fault_count=18479320
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=9483647246 prefail=615331
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=18577131 refs_fwd=6199642258 fault_count=18605071
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=9551309134 prefail=618833
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=18709646 refs_fwd=6244956245 fault_count=18737586
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=9621997020 prefail=622327
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=18848067 refs_fwd=6292159964 fault_count=18876046
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=9695362802 prefail=625815
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=18991730 refs_fwd=6341035991 fault_count=19019709
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+.[r1] compact_words(total)=9766741836 prefail=629307
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=19131501 refs_fwd=6386292316 fault_count=19159520
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=9837264633 prefail=632615
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=19269617 refs_fwd=6431120088 fault_count=19297636
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+.....
+===== DaCapo 23.11-MR2-chopin h2 starting =====
+Starting 100000 requests...
+[r1] compact_words(total)=9893218619 prefail=645440
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=19379285 refs_fwd=6468443509 fault_count=19407975
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=9949754939 prefail=648739
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=19490066 refs_fwd=6506100188 fault_count=19518756
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=10006636068 prefail=652078
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=19601532 refs_fwd=6544025802 fault_count=19630798
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=10063761297 prefail=655370
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=19713460 refs_fwd=6582143056 fault_count=19742726
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+5%[r1] compact_words(total)=10121081979 prefail=658721
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=19825780 refs_fwd=6620351321 fault_count=19855563
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=10178447739 prefail=662023
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=19938210 refs_fwd=6658518425 fault_count=19967993
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=10236061492 prefail=665323
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=20051098 refs_fwd=6696856418 fault_count=20081437
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+10%[r1] compact_words(total)=10293898022 prefail=668631
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=20164423 refs_fwd=6735360153 fault_count=20194762
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=10351879296 prefail=672107
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=20278035 refs_fwd=6773918815 fault_count=20308930
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=10409959363 prefail=675415
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=20391840 refs_fwd=6812491787 fault_count=20422735
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=10468317978 prefail=678739
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=20506186 refs_fwd=6851267175 fault_count=20537675
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+15%[r1] compact_words(total)=10526962989 prefail=682045
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=20621093 refs_fwd=6890277688 fault_count=20652582
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=10585631302 prefail=685357
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=20736040 refs_fwd=6929202867 fault_count=20768175
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=10644537514 prefail=688652
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=20851448 refs_fwd=6968304445 fault_count=20883583
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+20%[r1] compact_words(total)=10703611684 prefail=691954
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=20967200 refs_fwd=7007490459 fault_count=20999938
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=10762840092 prefail=695255
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=21083253 refs_fwd=7046759818 fault_count=21115991
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=10822237371 prefail=698542
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=21199642 refs_fwd=7086119670 fault_count=21232937
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=10881815252 prefail=701835
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=21316384 refs_fwd=7125593259 fault_count=21349679
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+25%[r1] compact_words(total)=10941485281 prefail=705245
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=21433279 refs_fwd=7165187852 fault_count=21467196
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=11001334902 prefail=708550
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=21550542 refs_fwd=7204896029 fault_count=21584459
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=11061559419 prefail=711846
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=21668537 refs_fwd=7244941686 fault_count=21702886
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=11121634370 prefail=715136
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=21786242 refs_fwd=7284727212 fault_count=21820591
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+30%[r1] compact_words(total)=11182092170 prefail=718447
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=21904695 refs_fwd=7324855027 fault_count=21939596
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=11242564970 prefail=721728
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=22023171 refs_fwd=7364902548 fault_count=22058072
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=11303288885 prefail=725120
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=22142145 refs_fwd=7405140119 fault_count=22177607
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=11364074303 prefail=728420
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=22261241 refs_fwd=7445368296 fault_count=22296703
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+35%[r1] compact_words(total)=11425232298 prefail=731724
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=22381063 refs_fwd=7485919078 fault_count=22417014
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=11486350656 prefail=735022
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=22500804 refs_fwd=7526334168 fault_count=22536755
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=11547731740 prefail=738359
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=22621044 refs_fwd=7566946451 fault_count=22657564
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=11609248076 prefail=741661
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=22741554 refs_fwd=7607634070 fault_count=22778074
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+40%[r1] compact_words(total)=11670991653 prefail=745038
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=22862505 refs_fwd=7648483851 fault_count=22899624
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=11732848623 prefail=748343
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=22983698 refs_fwd=7689378732 fault_count=23020817
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=11794969968 prefail=751637
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=23105403 refs_fwd=7730477147 fault_count=23143192
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=11857086727 prefail=754942
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=23227101 refs_fwd=7771492917 fault_count=23264890
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+45%[r1] compact_words(total)=11919360422 prefail=758251
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=23349106 refs_fwd=7812594719 fault_count=23387567
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=11981876748 prefail=761547
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=23471570 refs_fwd=7853892504 fault_count=23510031
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=12044497316 prefail=764849
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=23594244 refs_fwd=7895208236 fault_count=23633265
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=12107223917 prefail=768150
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=23717116 refs_fwd=7936565340 fault_count=23756137
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+50%[r1] compact_words(total)=12170181169 prefail=771566
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=23840438 refs_fwd=7978089606 fault_count=23879961
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=12233313189 prefail=774861
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=23964114 refs_fwd=8019744273 fault_count=24003637
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=12296696832 prefail=778174
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=24088278 refs_fwd=8061590923 fault_count=24128396
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=12360114840 prefail=781481
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=24212506 refs_fwd=8103395895 fault_count=24252624
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+55%[r1] compact_words(total)=12423619001 prefail=784790
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=24336895 refs_fwd=8145209494 fault_count=24377676
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=12487408404 prefail=788088
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=24461842 refs_fwd=8187277844 fault_count=24502623
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=12551310101 prefail=791390
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=24587001 refs_fwd=8229380362 fault_count=24628328
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=12615277651 prefail=794697
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=24712307 refs_fwd=8271484513 fault_count=24753634
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+60%[r1] compact_words(total)=12679308414 prefail=798065
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=24837728 refs_fwd=8313762157 fault_count=24879611
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=12743450023 prefail=801360
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=24963383 refs_fwd=8356093638 fault_count=25005266
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=12807689545 prefail=804672
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=25089220 refs_fwd=8398446553 fault_count=25131684
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=12872054792 prefail=807970
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=25215300 refs_fwd=8440870503 fault_count=25257764
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+65%[r1] compact_words(total)=12936658915 prefail=811275
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=25341835 refs_fwd=8483475167 fault_count=25385002
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=13001338979 prefail=814577
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=25468524 refs_fwd=8526094348 fault_count=25511691
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=13066242408 prefail=817880
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=25595664 refs_fwd=8568884203 fault_count=25639529
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=13131174525 prefail=821183
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=25722856 refs_fwd=8611631793 fault_count=25766721
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+70%[r1] compact_words(total)=13196437004 prefail=824515
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=25850684 refs_fwd=8654673200 fault_count=25895216
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=13261752694 prefail=827818
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=25978613 refs_fwd=8697695114 fault_count=26023145
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=13327204546 prefail=831195
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=26106815 refs_fwd=8740776629 fault_count=26151966
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=13392837457 prefail=834496
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=26235356 refs_fwd=8784001352 fault_count=26280507
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=13458626625 prefail=837810
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=26364220 refs_fwd=8827319206 fault_count=26409896
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+75%[r1] compact_words(total)=13524473339 prefail=841111
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=26493198 refs_fwd=8870631630 fault_count=26538874
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=13590557306 prefail=844413
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=26622633 refs_fwd=8914134321 fault_count=26668893
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=13656713118 prefail=847721
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=26752214 refs_fwd=8957643754 fault_count=26798474
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=13722983815 prefail=851040
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=26882033 refs_fwd=9001195643 fault_count=26928825
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=13789504198 prefail=854344
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=27012325 refs_fwd=9044966827 fault_count=27059117
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+80%[r1] compact_words(total)=13856279969 prefail=857665
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=27143131 refs_fwd=9088953565 fault_count=27190518
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=13923073068 prefail=860964
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=27273953 refs_fwd=9132880903 fault_count=27321340
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=13989999018 prefail=864257
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=27405038 refs_fwd=9176876579 fault_count=27452993
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=14057042067 prefail=867559
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=27536346 refs_fwd=9220941422 fault_count=27584301
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+85%[r1] compact_words(total)=14124267227 prefail=870868
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=27668005 refs_fwd=9265124355 fault_count=27716628
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=14191499476 prefail=874166
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=27799671 refs_fwd=9309256988 fault_count=27848294
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=14258880252 prefail=877471
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=27931636 refs_fwd=9353476953 fault_count=27980942
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=14326329570 prefail=880769
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=28063755 refs_fwd=9397708797 fault_count=28113061
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=14393949194 prefail=884066
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=28196192 refs_fwd=9442211819 fault_count=28246096
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=14461609754 prefail=887368
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=28328717 refs_fwd=9486693586 fault_count=28378621
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+90%[r1] compact_words(total)=14529447382 prefail=890703
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=28461566 refs_fwd=9531294908 fault_count=28512071
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=14597452698 prefail=893998
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=28594761 refs_fwd=9576033233 fault_count=28645266
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=14665488993 prefail=897395
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=28728021 refs_fwd=9620718064 fault_count=28779195
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=14733567627 prefail=900697
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=28861354 refs_fwd=9665390666 fault_count=28912528
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+95%[r1] compact_words(total)=14801794064 prefail=904096
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=28994977 refs_fwd=9710152215 fault_count=29046807
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=14870246414 prefail=907403
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=29129032 refs_fwd=9755110277 fault_count=29180862
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=14938697536 prefail=910707
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=29263100 refs_fwd=9799990983 fault_count=29315494
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=15007260570 prefail=914010
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=29397374 refs_fwd=9844930827 fault_count=29449768
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=15075905031 prefail=917354
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=29531812 refs_fwd=9889890085 fault_count=29584519
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+100%
+Completed requests
+	Stock level .............   3973 ( 4.0%)
+	Order status by name ....   2361 ( 2.4%)
+	Order status by ID ......   1609 ( 1.6%)
+	Payment by name .........  25847 (25.8%)
+	Payment by ID ...........  17220 (17.2%)
+	Delivery schedule .......   4029 ( 4.0%)
+	New order ...............  44509 (44.5%)
+	New order rollback ......    452 ( 0.5%)
+===== DaCapo 23.11-MR2-chopin h2 PASSED in 188157 msec =====
+===== DaCapo processed 100000 requests in 187939 msec, 532 requests per second =====
+===== DaCapo tail latency, simple: 50% 589 usec, 90% 4702 usec, 99% 2255749 usec, 99.9% 2476736 usec, 99.99% 2502590 usec, max 2509996 usec, measured over 100000 events =====
+===== DaCapo tail latency, metered 100ms smoothing: 50% 778 usec, 90% 18477 usec, 99% 2255749 usec, 99.9% 2476736 usec, 99.99% 2502590 usec, max 2509996 usec, measured over 100000 events =====
+===== DaCapo tail latency, metered full smoothing: 50% 655 usec, 90% 6479 usec, 99% 2255749 usec, 99.9% 2476736 usec, 99.99% 2502590 usec, max 2509996 usec, measured over 100000 events =====
+Resetting database to initial state...[r1] compact_words(total)=15145292588 prefail=921026
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=29667712 refs_fwd=9935342699 fault_count=29720419
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+.[r1] compact_words(total)=15217483191 prefail=924493
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=29809076 refs_fwd=9982066245 fault_count=29861819
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+.[r1] compact_words(total)=15292645218 prefail=928083
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=29956233 refs_fwd=10030879735 fault_count=30008976
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=15370259887 prefail=931798
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=30108176 refs_fwd=10081317314 fault_count=30160959
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=15449857713 prefail=935291
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=30264009 refs_fwd=10132838592 fault_count=30316792
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=15531171207 prefail=938794
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=30423191 refs_fwd=10185290012 fault_count=30476008
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=15613999513 prefail=942282
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=30585338 refs_fwd=10238560610 fault_count=30638155
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=15698148869 prefail=945772
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=30750062 refs_fwd=10292539661 fault_count=30802915
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=15783473087 prefail=949266
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=30917072 refs_fwd=10347158170 fault_count=30969925
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=15869844740 prefail=952764
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=31086132 refs_fwd=10402339300 fault_count=31139024
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=15957129460 prefail=956255
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=31256984 refs_fwd=10458011509 fault_count=31309876
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=16045163210 prefail=959743
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=31429278 refs_fwd=10514109258 fault_count=31482210
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+[r1] compact_words(total)=16133821987 prefail=963242
+[r1dbg] off=0x1000000 srcw0=2098255 scratch0=0x0 live0=0x0 set=1
+[r1cnt] staged_installs=31602796 refs_fwd=10570552106 fault_count=31655728
+[r1page] off=0x1000000 w=1 6c20 63ff6c0a72d8 0 e 4100008000000000 4030d4204030d5a8 4081849000000000 
+.
