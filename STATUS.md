@@ -503,3 +503,21 @@ stock -- next arc is run-granular emit (live-bitmap runs, bulk copy).
   fwd-table prefetch, hybrid stage-forward + defer-on-steal (needs an
   idempotency marker).
 - Data: results/classB/h2_pause_defer_decomposition_20260706.txt.
+
+## Class B heap sweep + metered latency (2026-07-06 late night)
+Full map (scripts/classB_sweep2.sh, results/classB/sweep2/):
+- h2 (ref-dense): NO Class B variant beats stock's p99.9 tail at any heap
+  (stock ~370-390ms; B.1 slightly worse; Bv2/R1 ~1s). B.1's -29% avg pause
+  never reaches the tail (mark-dominated pause; concurrent max slightly
+  worse). Slack hypothesis refuted: defer's tail persists at 3G (window
+  sized by constant live set; h2 realloc rate re-triggers GC first).
+- xalan (low-ref): defer tax vanishes (Bv2==B.1 +12%); **R1 is the best
+  fault variant (+8%, beats B.1 in 3/3 interleaved runs by 1-3%)** — the
+  in-kernel build is cheaper than userspace staging when forward work is
+  small, and is a bpf-only capability.
+- Class B is two-dimensional like Class A: ref density x GC frequency.
+- Honest paper claims: (a) B.1 avg-pause -29% at +10-37% time, tail ~= stock;
+  (b) R1 capability at zero-to-negative cost in low-ref regime; (c)
+  quantified kernel gaps (bulk-install ~97s/run of fault round-trips on h2,
+  batched WP for Class A). Tail-latency wins need concurrent marking (out
+  of scope for Compressor).
