@@ -513,3 +513,169 @@ uint64_t gcb0_staged_installs(void)
 {
 	return b0_skel ? b0_skel->bss->b0_staged_installs : 0;
 }
+
+/* ------------------------------------------------------------------ */
+/*  Idea 6: compressed cold heap (gc_z_ops)                            */
+/*  Arena layout: [offtab 4B/page][hot flags 1B/page][packed store]    */
+/* ------------------------------------------------------------------ */
+
+#include "gc_z_ops.skel.h"
+
+static struct gc_z_ops_bpf *z_skel;
+static struct bpf_link *z_link;
+static uint8_t *z_arena;
+static uint64_t z_base, z_span, z_flags_off, z_store_off, z_store_end;
+static uint64_t z_cursor;          /* store allocation cursor */
+static uint64_t z_compressed_bytes, z_original_bytes;
+
+int gcz_init(uint64_t start, uint64_t len, uint64_t store_bytes)
+{
+	long page = sysconf(_SC_PAGESIZE);
+	size_t npages = len >> 12;
+	size_t offtab_bytes = (npages * 4 + page - 1) & ~(size_t)(page - 1);
+	size_t flags_bytes = (npages + page - 1) & ~(size_t)(page - 1);
+	size_t arena_bytes = offtab_bytes + flags_bytes + store_bytes;
+
+	libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
+	z_skel = gc_z_ops_bpf__open();
+	if (!z_skel)
+		return -1;
+	z_skel->rodata->heap_base = start;
+	z_skel->rodata->span_len = len;
+	arena_bytes = (arena_bytes + page - 1) & ~(size_t)(page - 1);
+	if (bpf_map__set_max_entries(z_skel->maps.z_arena, arena_bytes / page))
+		return -1;
+	if (gc_z_ops_bpf__load(z_skel)) {
+		fprintf(stderr, "gcz: load failed (root?)\n");
+		return -1;
+	}
+	z_skel->bss->offtab_off = 0;
+	z_skel->bss->zflags_off = offtab_bytes;
+	z_arena = mmap((void *)(1ull << 46), arena_bytes,
+		       PROT_READ | PROT_WRITE, MAP_SHARED | MAP_FIXED,
+		       bpf_map__fd(z_skel->maps.z_arena), 0);
+	if (z_arena == MAP_FAILED) {
+		perror("gcz: mmap arena");
+		z_arena = NULL;
+		return -1;
+	}
+	/* offtab = all 0xff (not compressed); rest zero; pre-touch all */
+	memset(z_arena, 0xff, offtab_bytes);
+	for (size_t i = offtab_bytes; i < arena_bytes; i += page)
+		z_arena[i] = 0;
+	z_base = start;
+	z_span = len;
+	z_flags_off = offtab_bytes;
+	z_store_off = offtab_bytes + flags_bytes;
+	z_store_end = arena_bytes;
+	z_cursor = z_store_off;
+	return 0;
+}
+
+int gcz_register(uint64_t start, uint64_t len)
+{
+	if (!z_skel)
+		return -1;
+	if (!z_link) {
+		z_link = bpf_map__attach_fault_ops(z_skel->maps.gc_z_ops,
+						   (void *)start, len, 0);
+		if (!z_link) {
+			perror("gcz: attach");
+			return -1;
+		}
+		return 0;
+	}
+	if (bpf_link__fault_register(bpf_link__fd(z_link), start, len)) {
+		perror("gcz: register");
+		return -1;
+	}
+	return 0;
+}
+
+/* Compress one PRESENT heap page into the store and release it.
+ * Returns compressed size, 0 if the store is full, -1 on error. */
+long gcz_compress_page(uint64_t addr)
+{
+	const uint64_t *src = (const uint64_t *)addr;
+	size_t idx = (addr - z_base) >> 12;
+	uint32_t *offtab = (uint32_t *)z_arena;
+	uint16_t *prefix;
+	uint64_t *tags, *payload, cur;
+	size_t n = 0;
+
+	if (!z_arena || addr < z_base || addr >= z_base + z_span)
+		return -1;
+	cur = (z_cursor + 7) & ~7ull;
+	if (cur + 16 + 64 + 4096 > z_store_end)
+		return 0;              /* store full: skip */
+	prefix = (uint16_t *)(z_arena + cur);
+	tags = (uint64_t *)(z_arena + cur + 16);
+	payload = (uint64_t *)(z_arena + cur + 16 + 64);
+	for (int g = 0; g < 8; g++) {
+		uint64_t tag = 0;
+		prefix[g] = (uint16_t)n;
+		for (int b = 0; b < 64; b++) {
+			uint64_t w = src[g * 64 + b];
+			if (w) {
+				tag |= 1ull << b;
+				payload[n++] = w;
+			}
+		}
+		tags[g] = tag;
+	}
+	offtab[idx] = (uint32_t)cur;
+	z_arena[z_flags_off + idx] = 0;
+	__sync_synchronize();
+	if (madvise((void *)addr, 4096, MADV_DONTNEED)) {
+		offtab[idx] = 0xffffffff;   /* roll back */
+		return -1;
+	}
+	z_cursor = cur + 16 + 64 + n * 8;
+	z_compressed_bytes += 16 + 64 + n * 8;
+	z_original_bytes += 4096;
+	return (long)(16 + 64 + n * 8);
+}
+
+/* Page decompressed since last call? (kernel sets flag on decode) */
+int gcz_take_hot(uint64_t addr)
+{
+	size_t idx = (addr - z_base) >> 12;
+	if (!z_arena)
+		return 0;
+	if (z_arena[z_flags_off + idx]) {
+		z_arena[z_flags_off + idx] = 0;
+		((uint32_t *)z_arena)[idx] = 0xffffffff; /* entry stale */
+		return 1;
+	}
+	return 0;
+}
+
+/* Invalidate a page's compressed image (page freed/decompressed). */
+void gcz_invalidate(uint64_t addr)
+{
+	if (!z_arena || addr < z_base || addr >= z_base + z_span)
+		return;
+	((uint32_t *)z_arena)[(addr - z_base) >> 12] = 0xffffffff;
+}
+
+int gcz_is_compressed(uint64_t addr)
+{
+	if (!z_arena || addr < z_base || addr >= z_base + z_span)
+		return 0;
+	return ((uint32_t *)z_arena)[(addr - z_base) >> 12] != 0xffffffff;
+}
+
+void gcz_reset_store(void)
+{
+	if (z_arena)
+		z_cursor = z_store_off;
+}
+
+uint64_t gcz_stats(uint64_t *orig, uint64_t *faults)
+{
+	if (orig)
+		*orig = z_original_bytes;
+	if (faults && z_skel)
+		*faults = z_skel->bss->z_decoded;
+	return z_compressed_bytes;
+}

@@ -34,6 +34,7 @@ char _license[] SEC("license") = "GPL";
 const volatile unsigned long heap_base = 0;
 const volatile unsigned long span_len = 0;
 unsigned long offtab_off = 0;    /* arena byte offset of the offset table */
+unsigned long zflags_off = 0;    /* arena byte offset of decompressed flags */
 
 volatile __u64 z_faults = 0;
 volatile __u64 z_decoded = 0;
@@ -99,6 +100,9 @@ int BPF_PROG(handle_page_fault, struct bpf_fault_ops_ctx *ops_ctx,
 	c.img = arena + img_off;
 	bpf_loop(8, z_group, &c, 0);
 	__sync_fetch_and_add(&z_decoded, 1);
+	/* tell userspace this page is hot again (GC clears per cycle) */
+	if (zflags_off)
+		*(__u8 __arena *)(arena + zflags_off + idx) = 1;
 	return 0;
 }
 

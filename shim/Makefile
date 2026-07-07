@@ -42,7 +42,7 @@ gc_satb_ops.bpf.o: ../micro/gc_satb_ops.bpf.c vmlinux.h $(LIBBPF_DIR)/libbpf.a
 %.skel.h: %.bpf.o $(BPFTOOL)
 	$(BPFTOOL) gen skeleton $< > $@
 
-libgcbpf.so: gcbpf.c gc_wp_ops.skel.h gc_b0_ops.skel.h gc_satb_ops.skel.h $(LIBBPF_DIR)/libbpf.a
+libgcbpf.so: gcbpf.c gc_wp_ops.skel.h gc_b0_ops.skel.h gc_satb_ops.skel.h gc_z_ops.skel.h $(LIBBPF_DIR)/libbpf.a
 	$(CC) -g -O2 -Wall -fPIC -shared -I$(INCLUDE_DIR) -o $@ $< \
 		$(LIBBPF_DIR)/libbpf.a -lelf -lz -lzstd -lpthread
 
@@ -50,3 +50,6 @@ clean:
 	rm -rf libgcbpf.so *.bpf.o *.skel.h vmlinux.h $(BUILD_DIR)
 
 .PHONY: all clean
+
+gc_z_ops.bpf.o: ../micro/gc_z_ops.bpf.c vmlinux.h $(LIBBPF_DIR)/libbpf.a
+	clang-20 $(BPF_CFLAGS) -mcpu=v3 -I$(INCLUDE_DIR) -I$(CURDIR) -c $< -o $@
