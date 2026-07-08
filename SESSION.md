@@ -1086,3 +1086,17 @@ CLEAN-MACHINE SCOREBOARD (fixpoint design, x3): luindex 3/3,
 lusearch 3/3 (was 0/3 under contamination!), xalan 2/3, pmd 1/3
 = 9/12.  Remaining: xalan 1 crash + pmd 2 fails to characterize on the
 clean protocol.
+
+## Session 5 (cont. 11): M2 GREEN under noref (2026-07-08)
+
+pmd@640m failures = OOM/timeout = OVER-RETENTION (page-granular SATB
+floating garbage; honest documented cost, needs heap headroom).
+xalan residual crashes (~40%) = REFERENCE PROCESSING: with
+MMTK_NO_REFERENCE_TYPES + MMTK_NO_FINALIZER, xalan goes 4/4.  Page-COW
+SATB v1 therefore requires the no-reference-types config (same
+precedent as Compressor): the page mechanism cannot observe
+Reference.get() loads, and the reference-processor interplay with
+sentinel-time rescue needs a design pass to lift the restriction.
+
+M2 STATUS: GREEN under noref config.  Running: x5 stability suite +
+compiled-vs-page A/B (times/snap counts) + h2 768M extended.
