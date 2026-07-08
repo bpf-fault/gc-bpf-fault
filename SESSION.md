@@ -993,3 +993,31 @@ REMAINING SUSPECTS (next-session entry, in order):
      for late-added Closure packets).
   3. LOS arming edges (runs computed at InitialMark; LOS objects that
      GROW their run set mid-cycle?).
+
+## Session 5 (cont. 8): oracle chain + plateau (2026-07-07 latest)
+
+The [vt] tracer turned leak-hunting into one-run precision: each
+closure-scanned object prints with its narrow-klass before iteration,
+so every crash self-identifies its leak class.  Three plugged in
+sequence (mmtk-core + binding commits):
+  24. narrow=1 ASCII degenerate -> word-alignment + first-page guard;
+  25. heap-data narrows decoding into unrelated mappings in [base,+4GB)
+      -> window confined to the contiguous reservation containing base
+      (one 40-min suite wasted on an UNAPPLIED patch -- lesson: verify
+      patches with asserts, use Edit for previously-modified regions);
+  26. kind-tag aliasing inside committed segments -> two-field
+      consistency (kind x layout_helper sign), quadratic filter.
+Also disconfirmed in vivo: silent kernel arena-store drops (read-back
+verify in the handler: dropped=0 across full runs).
+
+SCOREBOARD (x3): luindex 3/3 stable; xalan up to 2/3 then hovering
+1-2/3; pmd 0-2/3; lusearch 0/3.  PLATEAU REACHED: the remaining leak
+class is stale-VO objects with REAL, intact-looking klass words --
+no klass oracle can reject real klasses -- crashing in
+get_object_size/line-marking, i.e. HALF-REUSED stale objects (header
+region overlapping newer allocation).  DECISIVE NEXT QUESTION (fresh
+session, immix source): does recycled-line allocation clear the VO
+bits of prior dead objects in those lines, and does ConcurrentImmix
+sweep eagerly at Release or lazily?  If stale VO bits legitimately
+survive into the next cycle, the alloc-snapshot needs to be
+intersected with swept-state, or sweeping made eager for page mode.
