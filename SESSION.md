@@ -932,3 +932,30 @@ The current build is PARTIALLY GREEN with a residual race (not
 deterministic failure): the multi-run protocol is now mandatory for
 attribution.  Prior single-run "regressions" (e.g. luindex on the
 unified-closure build) were likely race noise, not causal.
+
+## Session 5 (cont. 6): real-mode convergence, closing scoreboard (2026-07-07 night)
+
+Fixes 20-23 (mmtk-core, committed): in-span slot gates in BOTH
+iterators (extraction + validating closure) -- garbage oop-maps yield
+wild slot addresses and iterate_fields faults internally reading the
+oop map, so gates protect the s.load()s while the OBJECT-level bogosity
+remains; non-moving pin for page mode (defrag evacuation vs drain
+address iteration); boundary-head guard (BOTH observed deterministic
+crashes were vo=true am=true "objects" at exactly pstart-8 with garbage
+klass; genuine 16-byte objects there are header-only with no ref
+fields, so skipping is lossless in the common case).
+
+SCOREBOARD (x2 each): luindex 2/2, xalan 1/2 (FIRST real-mode xalan
+pass), lusearch 0/2, pmd 0/2.  ~23 characterized bugs total.
+
+OPEN LEADS for next session (entry point):
+1. Bogus boundary-VO root cause: what sets vo(+alloc-map) bits at
+   page_end-8 positions that hold garbage klass words at drain time?
+   (Suspects: lazy line-recycle VO hygiene; VO-vs-mark CopyFromMarkBits
+   timing for blocks never re-touched by the allocator; filler objects.)
+2. Klass-range validation upcall from the binding (compressed class
+   space bounds) = airtight object-validity predicate, replaces the
+   heuristic guards; ~20 lines in mmtk-openjdk + one Rust hook.
+3. Residual race on lusearch/pmd (mode unknown -- gather crash-vs-
+   validation stats first with the multi-run protocol).
+4. Weak-ref exonerated for xalan/lusearch (noref made no difference).
