@@ -1042,3 +1042,31 @@ Release.  Consequences:
     rescued objects marked in a SEPARATE bitmap consulted by sweep, so
     leaks cannot poison VO) -- heavier, but breaks the poison loop by
     construction.
+
+## Session 5 (cont. 9): the pendulum synthesis -- xalan 3/3 (2026-07-07 final)
+
+EXACT extraction restored under the full validity oracle (mmtk-core
+da28534c): the original exact era's "bogus VO heads" are now understood
+as the poison loop (conservative-era leaked marks -> VO := MARK), which
+predated every oracle guard.  With alive() = current-VO + full klass
+oracle, exact slot values eliminate text-data candidates by design.
+
+ORACLE CHAIN (final form): aligned + alloc-map/space + current-VO +
+contiguous-region klass window + vptr-in-libjvm START detection +
+kind x layout_helper consistency.  Leak families killed, each caught
+in the act by the [vt]/[xt] tracers: narrow=1 degenerates; heap-data
+narrows into unrelated mappings; kind-tag interior aliasing; small-
+narrow (0x1770/0x303030 ASCII) aliasing.
+
+SCOREBOARD (x3): xalan 3/3 (FIRST EVER), luindex 2/3, pmd 1/3,
+lusearch 0/3.  ~30 characterized bugs.
+
+NEXT-SESSION ENTRY: lusearch's remaining leak = NEW family: wild jump
+to libmmtk_openjdk.so+0x76365 (SEGV_ACCERR, si_addr == PC, non-exec
+section?) during [xt] extraction of small objects around 0x531b88xx --
+distinct from all klass-alias families (its dispatch target is libmmtk
+not libjvm).  Suspects: oop_iterate dispatch table in the BINDING for a
+klass whose kind/layout passed but whose oop-map iterator hits a
+binding-side fn-pointer path; or slot-closure re-entrancy.  The [xt]
+loop finds it in one run.  Also queued: luindex 1/3 flake, pmd
+variance, then extended correctness + compiled-vs-page A/B.
