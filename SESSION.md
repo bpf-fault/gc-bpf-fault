@@ -1021,3 +1021,24 @@ bits of prior dead objects in those lines, and does ConcurrentImmix
 sweep eagerly at Release or lazily?  If stale VO bits legitimately
 survive into the next cycle, the alloc-snapshot needs to be
 intersected with swept-state, or sweeping made eager for page mode.
+
+### VO-hygiene question SETTLED (source): sweep is EAGER (SweepChunk per
+chunk in Release) and on_region_swept does VO := MARK for occupied
+blocks / bzero for free ones -- the VO map is CLEAN after every
+Release.  Consequences:
+  * "stale VO under lazy sweep" theories: DEAD.  Every vo=true garbage
+    object my tracer catches was MARKED by us (or a leak) in a prior
+    cycle -- VO := MARK immortalizes any drain-mark leak as persistent
+    poison (re-marked each cycle while its page stays hot).
+  * The plateau therefore = the remaining oracle leak seeds, nothing
+    else.  The oracle must be airtight (floating-garbage marking of
+    REAL intact-dead objects is safe; marking NON-objects is what
+    poisons).
+  * NEXT PROBE (one run): provenance-tagged [vt] -- tag each
+    trace_object call site (rescued-seed / closure-child / wholesale)
+    so the crashing object names its SEEDER; then plug that one leak.
+  * Alternative structural fix if oracle-perfection stalls: decouple
+    drain retention from the mark bit that feeds VO := MARK (e.g.,
+    rescued objects marked in a SEPARATE bitmap consulted by sweep, so
+    leaks cannot poison VO) -- heavier, but breaks the poison loop by
+    construction.
