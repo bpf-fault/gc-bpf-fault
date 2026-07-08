@@ -603,3 +603,21 @@ Data: results/classA/rigor/.
   ratio = negative result); full-GC retrace materializes the compressed
   set by design.  Fix progression: 21% -> 1.5% overhead via extent
   cache (196776 -> 165 faults) + sweep throttle.
+
+## Page-COW SATB (M2) — DELIVERED (2026-07-08)
+- Real mode GREEN: 20/20 stability (luindex/xalan/lusearch @512M,
+  pmd @640M; x5 each; noref config; leak-proof clean protocol).
+- Design: exact extraction via sentinel FIXPOINT (extract only from
+  alloc-snapshot AND live objects; inductively complete for mark-start
+  reachability; klass validity oracle on rescue-target values only;
+  oracle leaks decay by construction).  ~30 characterized bugs.
+- v1 requirements (documented): MMTK_NO_REFERENCE_TYPES+NO_FINALIZER
+  (page mode cannot observe Reference.get(); ref-processor interplay
+  future work), non-moving immix (defrag races the drain), floating-
+  garbage heap headroom (pmd needed 640M vs 512M).
+- A/B vs compiled SATB (5-run medians, last-iter): pmd PAR (-2%);
+  xalan +83%; lusearch +220% -- correctness landed, performance needs
+  the optimization arc (concurrent drain, narrower arming, retention
+  trimming).
+- h2 excluded from noref matrix (requires reference types; fails both
+  configs identically).
