@@ -35,6 +35,7 @@ volatile __u64 satb_snapshots = 0;
 volatile __u64 satb_read_fail = 0;
 volatile __u32 satb_count = 0;   /* debug counters opt-in */
 volatile __u32 satb_noop = 0;    /* bisect: WP fault -> immediate return */
+volatile __u64 satb_dropped = 0; /* arena read-back verify failures */
 
 struct comm_key { char comm[16]; };
 struct {
@@ -112,6 +113,11 @@ int BPF_PROG(handle_wp_fault, struct bpf_fault_ops_ctx *ops_ctx,
 		}
 		for (i = 0; i < PAGE_SIZE / 8; i++)
 			dst[i] = s->w[i];
+		/* read-back verify: kernel stores to unpopulated arena pages
+		 * are dropped silently (exception fixups); detect in vivo. */
+		if (dst[0] != s->w[0] || dst[255] != s->w[255] ||
+		    dst[511] != s->w[511])
+			__sync_fetch_and_add(&satb_dropped, 1);
 	}
 	*(__u8 __arena *)(arena + snapbm_off + idx) = 1;
 	if (satb_count)

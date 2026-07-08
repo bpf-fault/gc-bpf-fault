@@ -229,6 +229,11 @@ uint64_t gcsatb_snap_count(void)
 	return satb_skel ? satb_skel->bss->satb_snapshots : 0;
 }
 
+uint64_t gcsatb_dropped(void)
+{
+	return satb_skel ? satb_skel->bss->satb_dropped : 0;
+}
+
 /* ------------------------------------------------------------------ */
 /*  Class B: fault-driven Compressor compaction (gc_b0_ops)            */
 /* ------------------------------------------------------------------ */
