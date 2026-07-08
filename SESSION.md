@@ -959,3 +959,37 @@ OPEN LEADS for next session (entry point):
 3. Residual race on lusearch/pmd (mode unknown -- gather crash-vs-
    validation stats first with the multi-run protocol).
 4. Weak-ref exonerated for xalan/lusearch (noref made no difference).
+
+## Session 5 (cont. 7): design synthesis + gap isolation (2026-07-07 late)
+
+Design converged to the SYNTHESIS (mmtk-core 1db3650, binding 4a37ddd):
+conservative dword extraction of snapshot pages (NO object-layout walks
+-- every crash class traced to iterating possibly-bogus objects) + a
+per-hop validated closure with an exact validity oracle (aligned;
+alloc-map/space; current VO; klass window over the self-refreshing
+committed class-space segments; KlassKind tag via binding upcall).
+
+SCOREBOARD (x3 each): luindex 3/3 (deterministic green), pmd 1/3,
+xalan/lusearch 0/3 (deterministic Java-level under-retention).
+
+SYSTEMATICALLY DISCONFIRMED for the residual gap (each tested):
+  - weak/soft references (noref: no change)
+  - defrag evacuation (non-moving pin: no change for these)
+  - closure over-filtering (counters: ~0 rejects on ~100k traced/pause)
+  - non-heap slot mutation (FinalMark full root RESCAN: no change;
+    reverted)
+  - klass-oracle over/under (single-segment vs multi-segment vs +tag
+    A/B'd; tag restored luindex determinism)
+
+REMAINING SUSPECTS (next-session entry, in order):
+  1. SILENT SNAPSHOT LOSS: kernel arena-store drops (the M1 lesson) in
+     the in-JVM setting -- verify snapshot CONTENT in vivo: handler-side
+     write-verify (read-back compare in BPF) or userspace CRC of a
+     freshly-flagged page vs its live content before first mutation.
+     A dropped arena store = silently zero/stale snapshot = exactly a
+     deterministic, workload-scaling retention gap.
+  2. Drain-vs-FinalMark-tracing ordering within Closure (the drain's
+     rescues arrive while tracing runs; check bucket/sentinel semantics
+     for late-added Closure packets).
+  3. LOS arming edges (runs computed at InitialMark; LOS objects that
+     GROW their run set mid-cycle?).
