@@ -1070,3 +1070,19 @@ klass whose kind/layout passed but whose oop-map iterator hits a
 binding-side fn-pointer path; or slot-closure re-entrancy.  The [xt]
 loop finds it in one run.  Also queued: luindex 1/3 flake, pmd
 variance, then extended correctness + compiled-vs-page A/B.
+
+## Session 5 (cont. 10): the stray-JVM confound + clean 9/12 (2026-07-08)
+
+CONFOUND DISCOVERED AND PURGED: `timeout N sudo java` kills the sudo
+wrapper but NOT the root java under it -- every timed-out/aborted run
+since early in the session leaked a root JVM.  24 stray JVMs (plus two
+11-hour-old zombie suite loops) were running CONCURRENTLY with all
+recent measurements: memory/CPU pressure explains much of the observed
+flakiness (fail-pass-pass patterns).  All flaky-attribution data before
+this point is suspect.  Leak-proof runner now: `sudo timeout -k 5 300
+env ... java` + post-run pkill.
+
+CLEAN-MACHINE SCOREBOARD (fixpoint design, x3): luindex 3/3,
+lusearch 3/3 (was 0/3 under contamination!), xalan 2/3, pmd 1/3
+= 9/12.  Remaining: xalan 1 crash + pmd 2 fails to characterize on the
+clean protocol.
