@@ -1100,3 +1100,35 @@ sentinel-time rescue needs a design pass to lift the restriction.
 
 M2 STATUS: GREEN under noref config.  Running: x5 stability suite +
 compiled-vs-page A/B (times/snap counts) + h2 768M extended.
+
+## Session 5 FINAL: M2 delivered — stability 20/20 + A/B measured (2026-07-08)
+
+### TASK 2 — STABILITY (x5 each, noref config, clean protocol): 20/20
+  luindex 5/5, xalan 5/5, lusearch 5/5, pmd@640m 5/5.
+  Page-COW SATB real mode is GREEN.
+
+### TASK 3 — A/B compiled-SATB vs page-SATB (5-run medians, last-iter):
+  xalan:    compiled 1161ms | page 2129ms  (+83%)
+  lusearch: compiled 2212ms | page 7091ms  (+220%)
+  pmd:      compiled 2143ms | page 2097ms  (-2%, PAR)
+  h2@768M: FAILS BOTH configs under noref (h2 requires reference types
+  -- SoftReference caches; known from Compressor work) -> excluded from
+  the noref matrix by construction, not a page-mode defect.
+
+### HONEST VERDICT
+Correctness: achieved (v1 config: no-reference-types + non-moving +
+heap headroom for floating garbage).  Performance: page mode is at PAR
+on pmd but SLOWER on write-dense benchmarks (xalan +83%, lusearch
++220%) at 512M -- the per-store barrier's removal does not yet pay for
+fault costs + sentinel-fixpoint drain + retention-driven extra GCs.
+Mirror of the Class A granularity story.  OPTIMIZATION ARC (future):
+concurrent drain (pre-sentinel rounds), narrower arming (dirty-chunk
+prediction like Class A), retention trimming (extraction from written
+sub-ranges via dirty-byte tracking inside pages), and pause accounting.
+
+### Design lineage for the paper (~30 characterized bugs):
+conservative -> exact -> conservative+oracle -> EXACT + sentinel
+FIXPOINT (extract only from alloc-snapshot AND live objects; inductive
+completeness; oracle only on rescue-target values where Reference
+referents break the genuineness argument; leaks decay instead of
+compounding because marks reset per cycle).
