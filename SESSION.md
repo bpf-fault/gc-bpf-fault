@@ -926,3 +926,9 @@ running).  Known remaining levers, next session:
   - EAGER sweeping probe: disabling lazy sweep eliminates the entire
     intact-dead class (the root of fixes 14/19) -- likely the single
     highest-value structural simplification for page-mode SATB.
+
+### Flakiness gauge (liveness-split build): luindex 2/3, pmd 2/2.
+The current build is PARTIALLY GREEN with a residual race (not
+deterministic failure): the multi-run protocol is now mandatory for
+attribution.  Prior single-run "regressions" (e.g. luindex on the
+unified-closure build) were likely race noise, not causal.
