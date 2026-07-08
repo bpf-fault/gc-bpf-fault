@@ -891,3 +891,38 @@ the rewritten docs/concurrentimmix-race-report.md:
 Verify-mode page-SATB (passive arming + compiled barrier) is now GREEN
 4/4 on the previously 0/6 config.  NEXT: the cycle-2 extraction deref,
 then real-mode suite, then compiled-vs-page A/B.
+
+## Session 5 (cont. 5): real-mode page-SATB convergence (2026-07-07 evening)
+
+After the race re-attribution, real-mode M2 greening proceeded through
+six more characterized fixes (mmtk-core 33ce67d + follow-ups):
+  14. current-VO liveness filter (lazy-sweep certificate hole);
+  15. bounds-hardened satb accessors (wild slot addresses from
+      corrupted-object iteration are expected inputs, not invariants);
+  16. LOS rescue restored (wholesale rescan covers only to_space, so
+      refs into LOS from overwritten immix slots must be traced from
+      snapshots -- dropping them caused BootstrapMethodError-class
+      under-retention);
+  17. 8-byte alignment filter (snapshot data aliasing the alloc-map's
+      8-byte bit granularity produced ObjectReference 0x...0001, traced
+      into the LOS treadmill, crashing later enumeration -- register
+      autopsy RSI=0x4c0d0001);
+  18. untraced handoff (pre-tracing rescued refs marked-without-scanning
+      => children never traced => under-retention);
+  19. validating closure v2 + wholesale liveness split: intact-dead
+      extraction sources/seeds have STALE slot values, so children must
+      be validated per hop; live-certain seeds (immortal-by-definition,
+      LOS to_space=traced-this-cycle) scan parallel+unvalidated.
+
+MILESTONES: luindex PASSED real page-SATB mode end-to-end (first ever);
+pmd PASSED real mode on the liveness-split build.  Remaining failures
+shuffle between benchmarks per build = residual RACE-dependent bugs;
+single-run-per-build attribution is no longer valid (flakiness gauge
+running).  Known remaining levers, next session:
+  - multi-run protocol per build before attributing:
+  - weak-ref load gap (page mode cannot see Reference.get(); noref
+    config or hybrid weak-ref-only compiled barrier via the binding's
+    set_weak_ref_barrier_enabled gate);
+  - EAGER sweeping probe: disabling lazy sweep eliminates the entire
+    intact-dead class (the root of fixes 14/19) -- likely the single
+    highest-value structural simplification for page-mode SATB.
