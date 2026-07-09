@@ -1176,3 +1176,32 @@ Parallel arming (ArmChunks packets on the Prepare bucket; mmtk-core
     trace parallelization (packetize trace_all).
   - pmd sparse hole (rare, dense fallback documented).
   - noref requirement lift (reference-processor interplay) unchanged.
+
+## Session 6 (closing): all next-optimization levers exercised (2026-07-09)
+
+Levers 2-4 (after occupied-arming/bitmaps/parallel-arm):
+  - PARALLEL DRAIN (kept): re-firing Closure sentinel, one extraction
+    round per quiesce, 8 TraceRescued packets per round (mark-bit
+    atomicity dedups).  ~Par at 512M; structural headroom for big heaps.
+  - FAULT PREFETCH (negative result, gated off): snapshot+wp-clear of
+    the next 3 pages per fault regressed ~10% -- per-fault
+    bpf_fault_writeprotect (mmap lock + TLB flush) exceeds the cost of
+    the faults saved.  Needed sleepable struct_ops (.s) regardless --
+    kept for future use.
+  - pmd sparse hole: deferred (dense fallback documented).
+
+### FINAL TABLE (5-run medians, 20/20 pass; vs compiled):
+              compiled | pre-opt      | final (v3)
+  xalan         1198ms | 2129 (+78%)  | 1890 (+58%)
+  lusearch      2219ms | 7091 (+220%) | 4166 (+88%)
+  luindex       5050ms | ~PAR         | 5231 (+3.6%)
+  pmd(dense)    2159ms | 2097 (-3%)   | 2086 (-3.4%)
+
+### BOTTOM LINE + the one big remaining lever
+Two of four at par-or-faster; write-dense residual (+58/+88%) is now
+dominated by irreducible per-fault cost at this write density -- and
+the kernel's WP resolution takes TWO faults per armed write (marker
+clear + retry into do_wp_page CoW).  Collapsing to ONE fault
+(resolution also mkwrite for exclusive anon) is a ~10-line kernel
+patch in handle_bpf_fault_wp -- would roughly halve remaining fault
+cost.  Needs kernel rebuild + reboot: FUTURE WORK entry point.
