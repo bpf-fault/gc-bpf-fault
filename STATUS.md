@@ -621,3 +621,11 @@ Data: results/classA/rigor/.
   trimming).
 - h2 excluded from noref matrix (requires reference types; fails both
   configs identically).
+
+## Page-COW SATB optimization arc (2026-07-09)
+Final A/B (5-run medians vs compiled SATB): pmd -3% (page FASTER),
+luindex ~PAR, xalan +51% (was +78%), lusearch +87% (was +220%).
+Fixes: occupied-only arming (-84% faults), targeted slice clearing,
+drain bitmaps (19->5ms), parallel arm packets (24.5->1.4ms).
+Config: MMTK_SATB_SPARSE default-on (pmd needs =0 dense).  20/20
+correctness on the record run.
