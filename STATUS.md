@@ -629,3 +629,10 @@ Fixes: occupied-only arming (-84% faults), targeted slice clearing,
 drain bitmaps (19->5ms), parallel arm packets (24.5->1.4ms).
 Config: MMTK_SATB_SPARSE default-on (pmd needs =0 dense).  20/20
 correctness on the record run.
+
+## Optimization levers final (2026-07-09)
+Parallel drain kept (par + scaling headroom); fault prefetch = negative
+result (per-fault wp-clear > savings; gated off).  FINAL: pmd -3.4%
+(page faster), luindex +3.6%, xalan +58% (was +78%), lusearch +88%
+(was +220%).  20/20 pass.  Remaining big lever: kernel one-fault WP
+resolution (mkwrite in handle_bpf_fault_wp; needs reboot).
