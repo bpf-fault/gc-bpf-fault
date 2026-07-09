@@ -1,0 +1,7 @@
+Using scaled threading model. 32 processors detected, 32 threads used to drive the workload, in a possible range of [1,1024]
+Version: h2 2.2.220 derby 10.15.2.0 (use -p to print nominal benchmark stats)
+Preparing the H2 database...
+TPCC configuration: scale: 16, terminals: 32, transactions: 100000
+java.lang.reflect.InvocationTargetException
+Exception in thread "main" 
+Exception: java.lang.OutOfMemoryError thrown from the UncaughtExceptionHandler in thread "main"
