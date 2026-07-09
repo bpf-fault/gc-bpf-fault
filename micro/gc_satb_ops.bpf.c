@@ -21,6 +21,9 @@
 
 char _license[] SEC("license") = "GPL";
 
+extern int bpf_fault_writeprotect(struct bpf_fault_ops_ctx *ctx,
+				  __u64 start, __u64 len, bool enable_wp) __ksym;
+
 #define __arena __attribute__((address_space(1)))
 #define arena_base(map) ((void __arena *)((struct bpf_arena *)(map))->user_vm_start)
 
@@ -35,6 +38,7 @@ volatile __u64 satb_snapshots = 0;
 volatile __u64 satb_read_fail = 0;
 volatile __u32 satb_count = 0;   /* debug counters opt-in */
 volatile __u32 satb_noop = 0;    /* bisect: WP fault -> immediate return */
+volatile __u32 satb_prefetch = 0; /* snapshot+unprotect next pages per fault */
 volatile __u64 satb_dropped = 0; /* arena read-back verify failures */
 
 struct comm_key { char comm[16]; };
@@ -63,7 +67,7 @@ struct {
 	__type(value, struct satb_scratch);
 } satb_scratch_map SEC(".maps");
 
-SEC("struct_ops/handle_wp_fault")
+SEC("struct_ops.s/handle_wp_fault")
 int BPF_PROG(handle_wp_fault, struct bpf_fault_ops_ctx *ops_ctx,
 	     unsigned char *page)
 {
@@ -122,6 +126,44 @@ int BPF_PROG(handle_wp_fault, struct bpf_fault_ops_ctx *ops_ctx,
 	*(__u8 __arena *)(arena + snapbm_off + idx) = 1;
 	if (satb_count)
 		__sync_fetch_and_add(&satb_snapshots, 1);
+	/* PREFETCH: sequential writers fault page-after-page (~9us each).
+	 * Snapshot the next 3 pages too and bulk-resolve their WP --
+	 * snapshot-before-unprotect keeps SATB exact; random writers just
+	 * waste <=3 page copies (~2us each). */
+	if (satb_prefetch) {
+		unsigned long k, kidx, kpa;
+		__u32 zero = 0;
+		struct satb_scratch *s2;
+		int done = 0;
+
+		for (k = 1; k <= 3; k++) {
+			kpa = pa + (k << PAGE_SHIFT);
+			kidx = idx + k;
+			if (kpa - heap_base >= span_len)
+				break;
+			if (*(__u8 __arena *)(arena + snapbm_off + kidx))
+				break;          /* already snapshotted */
+			s2 = bpf_map_lookup_elem(&satb_scratch_map, &zero);
+			if (!s2)
+				break;
+			if (bpf_probe_read_user(s2->w, PAGE_SIZE, (void *)kpa))
+				break;          /* unmapped/unarmed: stop */
+			{
+				__u64 __arena *d2 =
+					(__u64 __arena *)(arena + (kidx << PAGE_SHIFT));
+				int i;
+
+				for (i = 0; i < PAGE_SIZE / 8; i++)
+					d2[i] = s2->w[i];
+			}
+			*(__u8 __arena *)(arena + snapbm_off + kidx) = 1;
+			done = k;
+		}
+		if (done)
+			bpf_fault_writeprotect(ops_ctx, pa + PAGE_SIZE,
+					       (unsigned long)done << PAGE_SHIFT,
+					       false);
+	}
 	return 0;
 }
 
