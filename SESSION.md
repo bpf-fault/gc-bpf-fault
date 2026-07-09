@@ -1151,3 +1151,28 @@ RECORD A/B (5-run medians, 40/40 PASS):
 Two of four at par-or-better; lusearch overhead nearly halved.
 NEXT LEVERS: parallel arm packets (~24ms/cycle dominant), lusearch
 residual (fault volume still 79k/run), pmd sparse hole (long-tail).
+
+## Session 6 (final): optimization arc complete (2026-07-09)
+
+Parallel arming (ArmChunks packets on the Prepare bucket; mmtk-core
+9fb9377): arm setup 24.5ms -> 1.4ms median.  20/20 record-v2 passes.
+
+### FINAL OPTIMIZATION TABLE (5-run medians, last-iter, vs compiled):
+              compiled | pre-opt      | opt-1        | opt-2 (final)
+  xalan         1198ms | 2129 (+78%)  | 2067 (+73%)  | 1810 (+51%)
+  lusearch      2219ms | 7091 (+220%) | 5103 (+130%) | 4153 (+87%)
+  luindex       5050ms |     --       | 5091 (PAR)   | 5229 (+3.5%)
+  pmd(dense)    2159ms | 2097 (-3%)   | 2103 (-3%)   | 2094 (-3%)
+
+### What each step bought (profile -> attribute -> fix):
+  1. occupied-only arming: faults 482k -> 79k (-84%); lusearch -28%.
+  2. targeted slice clearing + drain bitmaps: drain 19.3 -> 5.0ms.
+  3. parallel arm packets: arm 24.5 -> 1.4ms; xalan -12%, lusearch -19%.
+
+### Remaining gaps + levers:
+  - lusearch +87%: residual = per-fault cost (79k x ~9us) + drain trace
+    volume (~1M nodes/run) + second-order effects; next levers = fault
+    handler slimming (single-copy path / batched WP-clear) and drain
+    trace parallelization (packetize trace_all).
+  - pmd sparse hole (rare, dense fallback documented).
+  - noref requirement lift (reference-processor interplay) unchanged.
