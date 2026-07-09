@@ -1132,3 +1132,22 @@ FIXPOINT (extract only from alloc-snapshot AND live objects; inductive
 completeness; oracle only on rescue-target values where Reference
 referents break the genuineness argument; leaks decay instead of
 compounding because marks reset per cycle).
+
+## Session 6: SATB optimization arc (2026-07-09)
+
+Profile -> attribution -> three optimizations (mmtk-core commit):
+occupied-only arming (faults -84%), targeted slice clearing (kills the
+48MB/cycle memset), drain bitmaps (19.3 -> 5.0ms median).  Four crash
+classes en route, each signature-driven: sft-empty panics from stale
+slices (x2 sites), committed-edge slot loads (x2 loops).  pmd keeps a
+rare sparse-arming residual -> dense fallback (MMTK_SATB_SPARSE=0)
+4/4; sparse remains default elsewhere.
+
+RECORD A/B (5-run medians, 40/40 PASS):
+  xalan    1198 vs 2067ms (+73%)   [pre-opt +83%]
+  lusearch 2219 vs 5103ms (+130%)  [pre-opt +220%]
+  luindex  5050 vs 5091ms (PAR)
+  pmd      2159 vs 2103ms (page FASTER by 2.6%)
+Two of four at par-or-better; lusearch overhead nearly halved.
+NEXT LEVERS: parallel arm packets (~24ms/cycle dominant), lusearch
+residual (fault volume still 79k/run), pmd sparse hole (long-tail).
