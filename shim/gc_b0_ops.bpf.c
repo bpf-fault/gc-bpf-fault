@@ -58,7 +58,6 @@ unsigned int  defer_fwd = 0;     /* 1 = forward references in-kernel */
 /* R1 (full in-kernel compaction) params */
 unsigned long livebm_off = 0;    /* arena byte offset of the live-word bitmap */
 unsigned long firstsrc_off = 0;  /* arena byte offset of the per-page first-src index */
-unsigned long busy_off = 0;      /* arena byte offset of per-region in-flight build counters */
 unsigned int  inkernel = 0;      /* 1 = build pages from un-slid from-space */
 
 volatile __u64 b0_fault_count = 0;
@@ -384,15 +383,6 @@ int BPF_PROG(handle_page_fault, struct bpf_fault_ops_ctx *ops_ctx,
 			region_end = total_words;
 		{
 			struct r1_ctx c = { .page = page, .s = s };
-			/* In-flight counter: finish_region quiesces on this
-			 * before releasing the region's alias slot, so the
-			 * MADV_DONTNEED cannot yank the source out from under
-			 * a racing build (which would zero-fill live words). */
-			__u64 __arena *busy = (__u64 __arena *)
-				((__u8 __arena *)arena_base(&fwd_arena) + busy_off) +
-				(srcw0 / R1_REGION_WORDS);
-
-			__sync_fetch_and_add(busy, 1);
 
 			s->lo = srcw0;
 			/* window-aligned load base; the leading sub-window
@@ -410,7 +400,6 @@ int BPF_PROG(handle_page_fault, struct bpf_fault_ops_ctx *ops_ctx,
 						     PAGE_SIZE / 8 : s->outw);
 			if (s->nfwd)
 				__sync_fetch_and_add(&b0_refs_forwarded, s->nfwd);
-			__sync_fetch_and_sub(busy, 1);
 		}
 		if (!dbg_set) {
 			int j;
