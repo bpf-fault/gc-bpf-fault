@@ -125,7 +125,8 @@ static uint64_t b0_span;
 static uint64_t b0_fwdtable; /* userspace base of the forward-table arena */
 static uint64_t b0_refbits;  /* userspace base of the reference bitmap (in arena) */
 static uint64_t b0_livebits; /* userspace base of the live-word bitmap (R1) */
-static uint64_t b0_first_src;/* userspace base of the per-page first-src index (R1) */
+static uint64_t b0_first_src;
+static uint64_t b0_region_busy;/* userspace base of the per-page first-src index (R1) */
 
 /* Returns the arena base address, or 0 on failure. */
 uint64_t gcb0_init(uint64_t space_base, uint64_t span_len)
@@ -176,7 +177,11 @@ uint64_t gcb0_init(uint64_t space_base, uint64_t span_len)
 	size_t refbm_off    = RUP(span_len / 2);
 	size_t livebm_off   = refbm_off  + RUP(span_len / 32);
 	size_t firstsrc_off = livebm_off + RUP(span_len / 64);
-	size_t arena_bytes  = firstsrc_off + RUP(span_len / 128);
+	/* R1: per-region in-flight build counters (u64 per 1 MiB region), so
+	 * the GC can release a region's alias slot concurrently once builds
+	 * quiesce instead of deferring the MADV_DONTNEED into the pause. */
+	size_t busy_off     = firstsrc_off + RUP(span_len / 128);
+	size_t arena_bytes  = busy_off + RUP((span_len >> 20) * 8);
 #undef RUP
 	{
 		if (bpf_map__set_max_entries(b0_skel->maps.fwd_arena, arena_bytes / page)) {
@@ -191,6 +196,7 @@ uint64_t gcb0_init(uint64_t space_base, uint64_t span_len)
 	b0_skel->bss->refbm_off = refbm_off;
 	b0_skel->bss->livebm_off = livebm_off;
 	b0_skel->bss->firstsrc_off = firstsrc_off;
+	b0_skel->bss->busy_off = busy_off;
 	/* mmap the arena so the GC can write the forward table + reference
 	 * bitmap; the BPF prog reads them directly via arena pointers (no
 	 * probe_read).  Arenas must map at their user_vm_start (= map_extra)
@@ -207,6 +213,7 @@ uint64_t gcb0_init(uint64_t space_base, uint64_t span_len)
 		b0_refbits = (uint64_t)a + refbm_off;
 		b0_livebits = (uint64_t)a + livebm_off;
 		b0_first_src = (uint64_t)a + firstsrc_off;
+	b0_region_busy = (uint64_t)a + busy_off;
 	}
 
 	map_bytes = (pages * sizeof(uint64_t) + page - 1) & ~(page - 1);
@@ -375,4 +382,11 @@ uint64_t gcb0_fault_count(void)
 uint64_t gcb0_staged_installs(void)
 {
 	return b0_skel ? b0_skel->bss->b0_staged_installs : 0;
+}
+
+/* R1: address of the per-region in-flight build counter array (u64 per
+ * 1 MiB region), for quiesce-then-release in finish_region. */
+uint64_t gcb0_region_busy(void)
+{
+	return b0_region_busy;
 }
