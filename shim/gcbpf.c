@@ -245,6 +245,7 @@ uint64_t gcb0_refs_forwarded(void)
 
 uint64_t gcb0_compact_words(void) { return b0_skel ? b0_skel->bss->b0_compact_words : 0; }
 uint64_t gcb0_prefail(void) { return b0_skel ? b0_skel->bss->b0_prefail : 0; }
+uint64_t gcb0_prefail_live(void) { return b0_skel ? b0_skel->bss->b0_prefail_live : 0; }
 void gcb0_dbg_print(void) {
 	if (!b0_skel) return;
 	fprintf(stderr, "[r1dbg] off=0x%llx srcw0=%llu scratch0=0x%llx live0=0x%llx set=%llu\n",
@@ -253,6 +254,8 @@ void gcb0_dbg_print(void) {
 		(unsigned long long)b0_skel->bss->dbg_scratch0,
 		(unsigned long long)b0_skel->bss->dbg_live0,
 		(unsigned long long)b0_skel->bss->dbg_set);
+	fprintf(stderr, "[r1cnt2] prefail_live=%llu\n",
+		(unsigned long long)b0_skel->bss->b0_prefail_live);
 	fprintf(stderr, "[r1cnt] staged_installs=%llu refs_fwd=%llu fault_count=%llu\n",
 		(unsigned long long)b0_skel->bss->b0_staged_installs,
 		(unsigned long long)b0_skel->bss->b0_refs_forwarded,

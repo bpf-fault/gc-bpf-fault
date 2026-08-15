@@ -7990,6 +7990,16 @@ enum {
 };
 
 enum {
+	TCA_FLOWER_KEY_CT_FLAGS_NEW = 1,
+	TCA_FLOWER_KEY_CT_FLAGS_ESTABLISHED = 2,
+	TCA_FLOWER_KEY_CT_FLAGS_RELATED = 4,
+	TCA_FLOWER_KEY_CT_FLAGS_TRACKED = 8,
+	TCA_FLOWER_KEY_CT_FLAGS_INVALID = 16,
+	TCA_FLOWER_KEY_CT_FLAGS_REPLY = 32,
+	__TCA_FLOWER_KEY_CT_FLAGS_MAX = 33,
+};
+
+enum {
 	TCA_ROOT_UNSPEC = 0,
 	TCA_ROOT_TAB = 1,
 	TCA_ROOT_FLAGS = 2,
@@ -17815,7 +17825,63 @@ enum ip6_defrag_users {
 	__IP6_DEFRAG_CONNTRACK_BRIDGE_IN = 196608,
 };
 
-enum ip_conntrack_info;
+enum ip_conntrack_dir {
+	IP_CT_DIR_ORIGINAL = 0,
+	IP_CT_DIR_REPLY = 1,
+	IP_CT_DIR_MAX = 2,
+};
+
+enum ip_conntrack_info {
+	IP_CT_ESTABLISHED = 0,
+	IP_CT_RELATED = 1,
+	IP_CT_NEW = 2,
+	IP_CT_IS_REPLY = 3,
+	IP_CT_ESTABLISHED_REPLY = 3,
+	IP_CT_RELATED_REPLY = 4,
+	IP_CT_NUMBER = 5,
+	IP_CT_UNTRACKED = 7,
+};
+
+enum ip_conntrack_status {
+	IPS_EXPECTED_BIT = 0,
+	IPS_EXPECTED = 1,
+	IPS_SEEN_REPLY_BIT = 1,
+	IPS_SEEN_REPLY = 2,
+	IPS_ASSURED_BIT = 2,
+	IPS_ASSURED = 4,
+	IPS_CONFIRMED_BIT = 3,
+	IPS_CONFIRMED = 8,
+	IPS_SRC_NAT_BIT = 4,
+	IPS_SRC_NAT = 16,
+	IPS_DST_NAT_BIT = 5,
+	IPS_DST_NAT = 32,
+	IPS_NAT_MASK = 48,
+	IPS_SEQ_ADJUST_BIT = 6,
+	IPS_SEQ_ADJUST = 64,
+	IPS_SRC_NAT_DONE_BIT = 7,
+	IPS_SRC_NAT_DONE = 128,
+	IPS_DST_NAT_DONE_BIT = 8,
+	IPS_DST_NAT_DONE = 256,
+	IPS_NAT_DONE_MASK = 384,
+	IPS_DYING_BIT = 9,
+	IPS_DYING = 512,
+	IPS_FIXED_TIMEOUT_BIT = 10,
+	IPS_FIXED_TIMEOUT = 1024,
+	IPS_TEMPLATE_BIT = 11,
+	IPS_TEMPLATE = 2048,
+	IPS_UNTRACKED_BIT = 12,
+	IPS_UNTRACKED = 4096,
+	IPS_NAT_CLASH_BIT = 12,
+	IPS_NAT_CLASH = 4096,
+	IPS_HELPER_BIT = 13,
+	IPS_HELPER = 8192,
+	IPS_OFFLOAD_BIT = 14,
+	IPS_OFFLOAD = 16384,
+	IPS_HW_OFFLOAD_BIT = 15,
+	IPS_HW_OFFLOAD = 32768,
+	IPS_UNCHANGEABLE_MASK = 56313,
+	__IPS_MAX_BIT = 16,
+};
 
 enum ip_defrag_users {
 	IP_DEFRAG_LOCAL_DELIVER = 0,
@@ -20203,6 +20269,8 @@ enum nf_log_type {
 	NF_LOG_TYPE_ULOG = 1,
 	NF_LOG_TYPE_MAX = 2,
 };
+
+enum nf_nat_manip_type;
 
 enum nfs_stat {
 	NFS_OK = 0,
@@ -23568,6 +23636,20 @@ enum scsi_vpd_parameters {
 	SCSI_VPD_LIST_SIZE = 36,
 };
 
+enum sctp_conntrack {
+	SCTP_CONNTRACK_NONE = 0,
+	SCTP_CONNTRACK_CLOSED = 1,
+	SCTP_CONNTRACK_COOKIE_WAIT = 2,
+	SCTP_CONNTRACK_COOKIE_ECHOED = 3,
+	SCTP_CONNTRACK_ESTABLISHED = 4,
+	SCTP_CONNTRACK_SHUTDOWN_SENT = 5,
+	SCTP_CONNTRACK_SHUTDOWN_RECD = 6,
+	SCTP_CONNTRACK_SHUTDOWN_ACK_SENT = 7,
+	SCTP_CONNTRACK_HEARTBEAT_SENT = 8,
+	SCTP_CONNTRACK_HEARTBEAT_ACKED = 9,
+	SCTP_CONNTRACK_MAX = 10,
+};
+
 enum sctp_endpoint_type {
 	SCTP_EP_TYPE_SOCKET = 0,
 	SCTP_EP_TYPE_ASSOCIATION = 1,
@@ -24051,9 +24133,10 @@ enum skb_drop_reason_subsys {
 };
 
 enum skb_ext_id {
-	TC_SKB_EXT = 0,
-	SKB_EXT_MPTCP = 1,
-	SKB_EXT_NUM = 2,
+	SKB_EXT_BRIDGE_NF = 0,
+	TC_SKB_EXT = 1,
+	SKB_EXT_MPTCP = 2,
+	SKB_EXT_NUM = 3,
 };
 
 enum skb_tstamp_type {
@@ -28285,6 +28368,8 @@ typedef __kernel_old_uid_t old_uid_t;
 typedef unsigned short pci_bus_flags_t;
 
 typedef unsigned short pci_dev_flags_t;
+
+typedef __u16 port_id;
 
 typedef __kernel_sa_family_t sa_family_t;
 
@@ -43167,6 +43252,7 @@ struct sk_buff {
 		struct list_head tcp_tsorted_anchor;
 		unsigned long _sk_redir;
 	};
+	unsigned long _nfct;
 	unsigned int len;
 	unsigned int data_len;
 	__u16 mac_len;
@@ -43205,6 +43291,7 @@ struct sk_buff {
 			__u8 encapsulation: 1;
 			__u8 encap_hdr_csum: 1;
 			__u8 csum_valid: 1;
+			__u8 ipvs_property: 1;
 			__u8 nf_trace: 1;
 			__u8 offload_fwd_mark: 1;
 			__u8 offload_l3_fwd_mark: 1;
@@ -43276,6 +43363,7 @@ struct sk_buff {
 			__u8 encapsulation: 1;
 			__u8 encap_hdr_csum: 1;
 			__u8 csum_valid: 1;
+			__u8 ipvs_property: 1;
 			__u8 nf_trace: 1;
 			__u8 offload_fwd_mark: 1;
 			__u8 offload_l3_fwd_mark: 1;
@@ -48454,13 +48542,49 @@ struct bputs_entry {
 struct br_input_skb_cb {
 	struct net_device *brdev;
 	u16 frag_max_size;
+	u8 igmp;
+	u8 mrouters_only: 1;
 	u8 proxyarp_replied: 1;
 	u8 src_port_isolated: 1;
 	u8 promisc: 1;
+	u8 br_netfilter_broute: 1;
 	u8 tx_fwd_offload: 1;
 	int src_hwdom;
 	unsigned long fwd_hwdoms;
 	u32 backup_nhid;
+};
+
+struct br_ip {
+	union {
+		__be32 ip4;
+		struct in6_addr ip6;
+	} src;
+	union {
+		__be32 ip4;
+		struct in6_addr ip6;
+		unsigned char mac_addr[6];
+	} dst;
+	__be16 proto;
+	__u16 vid;
+};
+
+struct br_mcast_stats {
+	__u64 igmp_v1queries[2];
+	__u64 igmp_v2queries[2];
+	__u64 igmp_v3queries[2];
+	__u64 igmp_leaves[2];
+	__u64 igmp_v1reports[2];
+	__u64 igmp_v2reports[2];
+	__u64 igmp_v3reports[2];
+	__u64 igmp_parse_errors;
+	__u64 mld_v1queries[2];
+	__u64 mld_v2queries[2];
+	__u64 mld_leaves[2];
+	__u64 mld_v1reports[2];
+	__u64 mld_v2reports[2];
+	__u64 mld_parse_errors;
+	__u64 mcast_bytes[2];
+	__u64 mcast_packets[2];
 };
 
 struct br_mdb_entry {
@@ -48483,6 +48607,13 @@ struct br_port_msg {
 	__u32 ifindex;
 };
 
+struct metadata_dst;
+
+struct br_tunnel_info {
+	__be64 tunnel_id;
+	struct metadata_dst __attribute__((btf_type_tag("rcu"))) *tunnel_dst;
+};
+
 struct branch_entry {
 	union {
 		struct {
@@ -48502,6 +48633,43 @@ struct branch_entry {
 		} split;
 		u64 full;
 	} to;
+};
+
+struct bridge_id {
+	unsigned char prio[2];
+	unsigned char addr[6];
+};
+
+typedef struct bridge_id bridge_id;
+
+struct bridge_mcast_other_query {
+	struct timer_list timer;
+	struct timer_list delay_timer;
+};
+
+struct bridge_mcast_own_query {
+	struct timer_list timer;
+	u32 startup_sent;
+};
+
+struct bridge_mcast_querier {
+	struct br_ip addr;
+	int port_ifidx;
+	seqcount_spinlock_t seq;
+};
+
+struct bridge_mcast_stats {
+	struct br_mcast_stats mstats;
+	struct u64_stats_sync syncp;
+};
+
+struct bridge_stp_xstats {
+	__u64 transition_blk;
+	__u64 transition_fwd;
+	__u64 rx_bpdu;
+	__u64 tx_bpdu;
+	__u64 rx_tcn;
+	__u64 tx_tcn;
 };
 
 struct broadcast_sk {
@@ -83988,11 +84156,9 @@ struct pinctrl_desc {
 	bool link_consumers;
 };
 
-struct intel_community_context;
-
 struct intel_pinctrl_context {
-	struct intel_pad_context *pads;
-	struct intel_community_context *communities;
+	struct intel_pad_context___2 *pads;
+	struct intel_community_context___2 *communities;
 };
 
 struct intel_pinctrl_soc_data;
@@ -84010,9 +84176,11 @@ struct intel_pinctrl {
 	int irq;
 };
 
+struct intel_community_context;
+
 struct intel_pinctrl_context___2 {
-	struct intel_pad_context___2 *pads;
-	struct intel_community_context___2 *communities;
+	struct intel_pad_context *pads;
+	struct intel_community_context *communities;
 };
 
 struct intel_pinctrl___2 {
@@ -87008,6 +87176,53 @@ struct ip_auth_hdr {
 	__be32 spi;
 	__be32 seq_no;
 	__u8 auth_data[0];
+};
+
+struct ip_conntrack_stat {
+	unsigned int found;
+	unsigned int invalid;
+	unsigned int insert;
+	unsigned int insert_failed;
+	unsigned int clash_resolve;
+	unsigned int drop;
+	unsigned int early_drop;
+	unsigned int error;
+	unsigned int expect_new;
+	unsigned int expect_create;
+	unsigned int expect_delete;
+	unsigned int search_restart;
+	unsigned int chaintoolong;
+};
+
+struct ip_ct_sctp {
+	enum sctp_conntrack state;
+	__be32 vtag[2];
+	u8 init[2];
+	u8 last_dir;
+	u8 flags;
+};
+
+struct ip_ct_tcp_state {
+	u_int32_t td_end;
+	u_int32_t td_maxend;
+	u_int32_t td_maxwin;
+	u_int32_t td_maxack;
+	u_int8_t td_scale;
+	u_int8_t flags;
+};
+
+struct ip_ct_tcp {
+	struct ip_ct_tcp_state seen[2];
+	u_int8_t state;
+	u_int8_t last_dir;
+	u_int8_t retrans;
+	u_int8_t last_index;
+	u_int32_t last_seq;
+	u_int32_t last_ack;
+	u_int32_t last_end;
+	u_int16_t last_win;
+	u_int8_t last_wscale;
+	u_int8_t last_flags;
 };
 
 struct ip_esp_hdr {
@@ -93577,6 +93792,12 @@ struct ma_wr_state {
 	unsigned char sufficient_height;
 };
 
+struct mac_addr {
+	unsigned char addr[6];
+};
+
+typedef struct mac_addr mac_addr;
+
 struct mac_address {
 	u8 addr[6];
 };
@@ -93777,8 +93998,6 @@ struct macsec_rx_sc_stats {
 };
 
 struct pcpu_tx_sc_stats;
-
-struct metadata_dst;
 
 struct macsec_tx_sc {
 	bool active;
@@ -100820,6 +101039,55 @@ struct netns_nf {
 	struct nf_hook_entries __attribute__((btf_type_tag("rcu"))) *hooks_ipv4[5];
 	struct nf_hook_entries __attribute__((btf_type_tag("rcu"))) *hooks_ipv6[5];
 	struct nf_hook_entries __attribute__((btf_type_tag("rcu"))) *hooks_arp[3];
+	struct nf_hook_entries __attribute__((btf_type_tag("rcu"))) *hooks_bridge[5];
+	unsigned int defrag_ipv4_users;
+	unsigned int defrag_ipv6_users;
+};
+
+struct nf_ct_event_notifier;
+
+struct nf_generic_net {
+	unsigned int timeout;
+};
+
+struct nf_tcp_net {
+	unsigned int timeouts[14];
+	u8 tcp_loose;
+	u8 tcp_be_liberal;
+	u8 tcp_max_retrans;
+	u8 tcp_ignore_invalid_rst;
+};
+
+struct nf_udp_net {
+	unsigned int timeouts[2];
+};
+
+struct nf_icmp_net {
+	unsigned int timeout;
+};
+
+struct nf_sctp_net {
+	unsigned int timeouts[10];
+};
+
+struct nf_ip_net {
+	struct nf_generic_net generic;
+	struct nf_tcp_net tcp;
+	struct nf_udp_net udp;
+	struct nf_icmp_net icmp;
+	struct nf_icmp_net icmpv6;
+	struct nf_sctp_net sctp;
+};
+
+struct netns_ct {
+	u8 sysctl_log_invalid;
+	u8 sysctl_events;
+	u8 sysctl_acct;
+	u8 sysctl_tstamp;
+	u8 sysctl_checksum;
+	struct ip_conntrack_stat __attribute__((btf_type_tag("percpu"))) *stat;
+	struct nf_ct_event_notifier __attribute__((btf_type_tag("rcu"))) *nf_conntrack_event_cb;
+	struct nf_ip_net nf_ct_proto;
 };
 
 struct netns_nftables {
@@ -100832,6 +101100,8 @@ struct netns_bpf {
 	struct bpf_prog *progs[2];
 	struct list_head links[2];
 };
+
+struct netns_ipvs;
 
 struct mpls_route;
 
@@ -100912,16 +101182,17 @@ struct net {
 	struct netns_ipv4 ipv4;
 	struct netns_ipv6 ipv6;
 	struct netns_nf nf;
+	struct netns_ct ct;
 	struct netns_nftables nft;
 	struct sk_buff_head wext_nlevents;
 	struct net_generic __attribute__((btf_type_tag("rcu"))) *gen;
 	struct netns_bpf bpf;
 	u64 net_cookie;
+	struct netns_ipvs *ipvs;
 	struct netns_mpls mpls;
 	struct netns_xdp xdp;
 	struct netns_mctp mctp;
 	struct sock *diag_nlsk;
-	long: 64;
 	long: 64;
 	long: 64;
 	long: 64;
@@ -100954,6 +101225,228 @@ struct net_aligned_data {
 	long: 64;
 	long: 64;
 	long: 64;
+};
+
+struct rtable {
+	struct dst_entry dst;
+	int rt_genid;
+	unsigned int rt_flags;
+	__u16 rt_type;
+	__u8 rt_is_input;
+	__u8 rt_uses_gateway;
+	int rt_iif;
+	u8 rt_gw_family;
+	union {
+		__be32 rt_gw4;
+		struct in6_addr rt_gw6;
+	};
+	u32 rt_mtu_locked: 1;
+	u32 rt_pmtu: 31;
+};
+
+struct rt6_info {
+	struct dst_entry dst;
+	struct fib6_info __attribute__((btf_type_tag("rcu"))) *from;
+	int sernum;
+	struct rt6key rt6i_dst;
+	struct rt6key rt6i_src;
+	struct in6_addr rt6i_gateway;
+	struct inet6_dev *rt6i_idev;
+	u32 rt6i_flags;
+	unsigned short rt6i_nfheader_len;
+};
+
+struct net_bridge;
+
+struct net_bridge_vlan;
+
+struct net_bridge_mcast {
+	struct net_bridge *br;
+	struct net_bridge_vlan *vlan;
+	u32 multicast_last_member_count;
+	u32 multicast_startup_query_count;
+	u8 multicast_querier;
+	u8 multicast_igmp_version;
+	u8 multicast_router;
+	u8 multicast_mld_version;
+	unsigned long multicast_last_member_interval;
+	unsigned long multicast_membership_interval;
+	unsigned long multicast_querier_interval;
+	unsigned long multicast_query_interval;
+	unsigned long multicast_query_response_interval;
+	unsigned long multicast_startup_query_interval;
+	struct hlist_head ip4_mc_router_list;
+	struct timer_list ip4_mc_router_timer;
+	struct bridge_mcast_other_query ip4_other_query;
+	struct bridge_mcast_own_query ip4_own_query;
+	struct bridge_mcast_querier ip4_querier;
+	struct hlist_head ip6_mc_router_list;
+	struct timer_list ip6_mc_router_timer;
+	struct bridge_mcast_other_query ip6_other_query;
+	struct bridge_mcast_own_query ip6_own_query;
+	struct bridge_mcast_querier ip6_querier;
+};
+
+struct net_bridge {
+	spinlock_t lock;
+	spinlock_t hash_lock;
+	struct hlist_head frame_type_list;
+	struct net_device *dev;
+	unsigned long options;
+	struct rhashtable fdb_hash_tbl;
+	struct list_head port_list;
+	union {
+		struct rtable fake_rtable;
+		struct rt6_info fake_rt6_info;
+	};
+	u32 metrics[17];
+	u16 group_fwd_mask;
+	u16 group_fwd_mask_required;
+	bridge_id designated_root;
+	bridge_id bridge_id;
+	unsigned char topology_change;
+	unsigned char topology_change_detected;
+	u16 root_port;
+	unsigned long max_age;
+	unsigned long hello_time;
+	unsigned long forward_delay;
+	unsigned long ageing_time;
+	unsigned long bridge_max_age;
+	unsigned long bridge_hello_time;
+	unsigned long bridge_forward_delay;
+	unsigned long bridge_ageing_time;
+	u32 root_path_cost;
+	u8 group_addr[6];
+	enum {
+		BR_NO_STP = 0,
+		BR_KERNEL_STP = 1,
+		BR_USER_STP = 2,
+	} stp_enabled;
+	struct net_bridge_mcast multicast_ctx;
+	struct bridge_mcast_stats __attribute__((btf_type_tag("percpu"))) *mcast_stats;
+	u32 hash_max;
+	spinlock_t multicast_lock;
+	struct rhashtable mdb_hash_tbl;
+	struct rhashtable sg_port_tbl;
+	struct hlist_head mcast_gc_list;
+	struct hlist_head mdb_list;
+	struct work_struct mcast_gc_work;
+	struct timer_list hello_timer;
+	struct timer_list tcn_timer;
+	struct timer_list topology_change_timer;
+	struct delayed_work gc_work;
+	struct kobject *ifobj;
+	u32 auto_cnt;
+	atomic_t fdb_n_learned;
+	u32 fdb_max_learned;
+	int last_hwdom;
+	unsigned long busy_hwdoms;
+	struct hlist_head fdb_list;
+};
+
+struct net_bridge_fdb_key {
+	mac_addr addr;
+	u16 vlan_id;
+};
+
+struct net_bridge_port;
+
+struct net_bridge_fdb_entry {
+	struct rhash_head rhnode;
+	struct net_bridge_port *dst;
+	struct net_bridge_fdb_key key;
+	struct hlist_node fdb_node;
+	unsigned long flags;
+	long: 64;
+	long: 64;
+	unsigned long updated;
+	unsigned long used;
+	struct callback_head rcu;
+	long: 64;
+	long: 64;
+	long: 64;
+	long: 64;
+};
+
+struct net_bridge_mcast_port {
+	struct net_bridge_port *port;
+	struct net_bridge_vlan *vlan;
+	struct bridge_mcast_own_query ip4_own_query;
+	struct timer_list ip4_mc_router_timer;
+	struct hlist_node ip4_rlist;
+	struct bridge_mcast_own_query ip6_own_query;
+	struct timer_list ip6_mc_router_timer;
+	struct hlist_node ip6_rlist;
+	unsigned char multicast_router;
+	u32 mdb_n_entries;
+	u32 mdb_max_entries;
+};
+
+struct net_bridge_port {
+	struct net_bridge *br;
+	struct net_device *dev;
+	netdevice_tracker dev_tracker;
+	struct list_head list;
+	unsigned long flags;
+	struct net_bridge_port __attribute__((btf_type_tag("rcu"))) *backup_port;
+	u32 backup_nhid;
+	u8 priority;
+	u8 state;
+	u16 port_no;
+	unsigned char topology_change_ack;
+	unsigned char config_pending;
+	port_id port_id;
+	port_id designated_port;
+	bridge_id designated_root;
+	bridge_id designated_bridge;
+	u32 path_cost;
+	u32 designated_cost;
+	unsigned long designated_age;
+	struct timer_list forward_delay_timer;
+	struct timer_list hold_timer;
+	struct timer_list message_age_timer;
+	struct kobject kobj;
+	struct callback_head rcu;
+	struct net_bridge_mcast_port multicast_ctx;
+	struct bridge_mcast_stats __attribute__((btf_type_tag("percpu"))) *mcast_stats;
+	u32 multicast_eht_hosts_limit;
+	u32 multicast_eht_hosts_cnt;
+	struct hlist_head mglist;
+	char sysfs_name[16];
+	int hwdom;
+	int offload_count;
+	struct netdev_phys_item_id ppid;
+	u16 group_fwd_mask;
+	u16 backup_redirected_cnt;
+	struct bridge_stp_xstats stp_xstats;
+};
+
+struct pcpu_sw_netstats;
+
+struct net_bridge_vlan {
+	struct rhash_head vnode;
+	struct rhash_head tnode;
+	u16 vid;
+	u16 flags;
+	u16 priv_flags;
+	u8 state;
+	struct pcpu_sw_netstats __attribute__((btf_type_tag("percpu"))) *stats;
+	union {
+		struct net_bridge *br;
+		struct net_bridge_port *port;
+	};
+	union {
+		refcount_t refcnt;
+		struct net_bridge_vlan *brvlan;
+	};
+	struct br_tunnel_info tinfo;
+	union {
+		struct net_bridge_mcast br_mcast_ctx;
+		struct net_bridge_mcast_port port_mcast_ctx;
+	};
+	u16 msti;
+	struct list_head vlist;
+	struct callback_head rcu;
 };
 
 struct netdev_tc_txq {
@@ -101073,8 +101566,6 @@ struct net_device_ops;
 struct xps_dev_maps;
 
 struct pcpu_lstats;
-
-struct pcpu_sw_netstats;
 
 struct pcpu_dstats;
 
@@ -102577,9 +103068,153 @@ struct nexthop_grp {
 	__u16 resvd2;
 };
 
-struct nf_conntrack;
+struct nf_bridge_info {
+	enum {
+		BRNF_PROTO_UNCHANGED = 0,
+		BRNF_PROTO_8021Q = 1,
+		BRNF_PROTO_PPPOE = 2,
+	} orig_proto: 8;
+	u8 pkt_otherhost: 1;
+	u8 in_prerouting: 1;
+	u8 bridged_dnat: 1;
+	u8 sabotage_in_done: 1;
+	__u16 frag_max_size;
+	int physinif;
+	struct net_device *physoutdev;
+	union {
+		__be32 ipv4_daddr;
+		struct in6_addr ipv6_daddr;
+		char neigh_header[8];
+	};
+};
 
-struct nf_conntrack_tuple;
+struct nf_conntrack {
+	refcount_t use;
+};
+
+union nf_inet_addr {
+	__u32 all[4];
+	__be32 ip;
+	__be32 ip6[4];
+	struct in_addr in;
+	struct in6_addr in6;
+};
+
+union nf_conntrack_man_proto {
+	__be16 all;
+	struct {
+		__be16 port;
+	} tcp;
+	struct {
+		__be16 port;
+	} udp;
+	struct {
+		__be16 id;
+	} icmp;
+	struct {
+		__be16 port;
+	} dccp;
+	struct {
+		__be16 port;
+	} sctp;
+	struct {
+		__be16 key;
+	} gre;
+};
+
+struct nf_conntrack_man {
+	union nf_inet_addr u3;
+	union nf_conntrack_man_proto u;
+	u_int16_t l3num;
+};
+
+struct nf_conntrack_tuple {
+	struct nf_conntrack_man src;
+	struct {
+		union nf_inet_addr u3;
+		union {
+			__be16 all;
+			struct {
+				__be16 port;
+			} tcp;
+			struct {
+				__be16 port;
+			} udp;
+			struct {
+				u_int8_t type;
+				u_int8_t code;
+			} icmp;
+			struct {
+				__be16 port;
+			} dccp;
+			struct {
+				__be16 port;
+			} sctp;
+			struct {
+				__be16 key;
+			} gre;
+		} u;
+		u_int8_t protonum;
+		struct {} __nfct_hash_offsetend;
+		u_int8_t dir;
+	} dst;
+};
+
+struct nf_conntrack_tuple_hash {
+	struct hlist_nulls_node hnnode;
+	struct nf_conntrack_tuple tuple;
+};
+
+struct nf_ct_udp {
+	unsigned long stream_ts;
+};
+
+struct nf_ct_gre {
+	unsigned int stream_timeout;
+	unsigned int timeout;
+};
+
+union nf_conntrack_proto {
+	struct ip_ct_sctp sctp;
+	struct ip_ct_tcp tcp;
+	struct nf_ct_udp udp;
+	struct nf_ct_gre gre;
+	unsigned int tmpl_padto;
+};
+
+struct nf_ct_ext;
+
+struct nf_conn {
+	struct nf_conntrack ct_general;
+	spinlock_t lock;
+	u32 timeout;
+	struct nf_conntrack_tuple_hash tuplehash[2];
+	unsigned long status;
+	possible_net_t ct_net;
+	struct hlist_node nat_bysource;
+	struct {} __nfct_init_offset;
+	struct nf_conn *master;
+	struct nf_ct_ext *ext;
+	union nf_conntrack_proto proto;
+};
+
+struct nf_conn_labels {
+	unsigned long bits[2];
+};
+
+struct nf_conntrack_zone {
+	u16 id;
+	u8 flags;
+	u8 dir;
+};
+
+struct nf_ct_ext {
+	u8 offset[4];
+	u8 len;
+	unsigned int gen_id;
+	long: 0;
+	char data[0];
+};
 
 struct nf_ct_hook {
 	int (*update)(struct net *, struct sk_buff *);
@@ -102662,11 +103297,19 @@ struct nf_loginfo {
 	} u;
 };
 
+struct nf_nat_hook {
+	int (*parse_nat_setup)(struct nf_conn *, enum nf_nat_manip_type, const struct nlattr *);
+	void (*decode_session)(struct sk_buff *, struct flowi *);
+	void (*remove_nat_bysrc)(struct nf_conn *);
+};
+
 struct nf_queue_entry {
 	struct list_head list;
 	struct sk_buff *skb;
 	unsigned int id;
 	unsigned int hook_index;
+	struct net_device *physin;
+	struct net_device *physout;
 	struct nf_hook_state state;
 	u16 size;
 };
@@ -102687,8 +103330,6 @@ struct nf_sockopt_ops {
 	int (*get)(struct sock *, int, void __attribute__((btf_type_tag("user"))) *, int *);
 	struct module *owner;
 };
-
-struct nf_conn;
 
 struct nfnl_ct_hook {
 	size_t (*build_size)(const struct nf_conn *);
@@ -115210,18 +115851,6 @@ struct rt6_exception_bucket {
 	int depth;
 };
 
-struct rt6_info {
-	struct dst_entry dst;
-	struct fib6_info __attribute__((btf_type_tag("rcu"))) *from;
-	int sernum;
-	struct rt6key rt6i_dst;
-	struct rt6key rt6i_src;
-	struct in6_addr rt6i_gateway;
-	struct inet6_dev *rt6i_idev;
-	u32 rt6i_flags;
-	unsigned short rt6i_nfheader_len;
-};
-
 struct rt6_mtu_change_arg {
 	struct net_device *dev;
 	unsigned int mtu;
@@ -115407,23 +116036,6 @@ struct rta_mfc_stats {
 	__u64 mfcs_packets;
 	__u64 mfcs_bytes;
 	__u64 mfcs_wrong_if;
-};
-
-struct rtable {
-	struct dst_entry dst;
-	int rt_genid;
-	unsigned int rt_flags;
-	__u16 rt_type;
-	__u8 rt_is_input;
-	__u8 rt_uses_gateway;
-	int rt_iif;
-	u8 rt_gw_family;
-	union {
-		__be32 rt_gw4;
-		struct in6_addr rt_gw6;
-	};
-	u32 rt_mtu_locked: 1;
-	u32 rt_pmtu: 31;
 };
 
 struct rtc_param;
@@ -120595,9 +121207,8 @@ struct sk_security_struct {
 
 struct skb_ext {
 	refcount_t refcnt;
-	u8 offset[2];
+	u8 offset[3];
 	u8 chunks;
-	long: 0;
 	char data[0];
 };
 
@@ -128332,6 +128943,30 @@ struct trace_event_data_offsets_bpf_xdp_link_attach_failed {
 	const void *msg_ptr_;
 };
 
+struct trace_event_data_offsets_br_fdb_add {
+	u32 dev;
+	const void *dev_ptr_;
+};
+
+struct trace_event_data_offsets_br_fdb_external_learn_add {
+	u32 br_dev;
+	const void *br_dev_ptr_;
+	u32 dev;
+	const void *dev_ptr_;
+};
+
+struct trace_event_data_offsets_br_fdb_update {
+	u32 br_dev;
+	const void *br_dev_ptr_;
+	u32 dev;
+	const void *dev_ptr_;
+};
+
+struct trace_event_data_offsets_br_mdb_full {
+	u32 dev;
+	const void *dev_ptr_;
+};
+
 struct trace_event_data_offsets_cache_tag_flush {
 	u32 iommu;
 	const void *iommu_ptr_;
@@ -128873,6 +129508,13 @@ struct trace_event_data_offsets_ext4_update_sb {};
 struct trace_event_data_offsets_ext4_writepages {};
 
 struct trace_event_data_offsets_ext4_writepages_result {};
+
+struct trace_event_data_offsets_fdb_delete {
+	u32 br_dev;
+	const void *br_dev_ptr_;
+	u32 dev;
+	const void *dev_ptr_;
+};
 
 struct trace_event_data_offsets_fib6_table_lookup {};
 
@@ -130585,6 +131227,46 @@ struct trace_event_raw_bpf_xdp_link_attach_failed {
 	char __data[0];
 };
 
+struct trace_event_raw_br_fdb_add {
+	struct trace_entry ent;
+	u8 ndm_flags;
+	u32 __data_loc_dev;
+	unsigned char addr[6];
+	u16 vid;
+	u16 nlh_flags;
+	char __data[0];
+};
+
+struct trace_event_raw_br_fdb_external_learn_add {
+	struct trace_entry ent;
+	u32 __data_loc_br_dev;
+	u32 __data_loc_dev;
+	unsigned char addr[6];
+	u16 vid;
+	char __data[0];
+};
+
+struct trace_event_raw_br_fdb_update {
+	struct trace_entry ent;
+	u32 __data_loc_br_dev;
+	u32 __data_loc_dev;
+	unsigned char addr[6];
+	u16 vid;
+	unsigned long flags;
+	char __data[0];
+};
+
+struct trace_event_raw_br_mdb_full {
+	struct trace_entry ent;
+	u32 __data_loc_dev;
+	int af;
+	u16 vid;
+	__u8 src[16];
+	__u8 grp[16];
+	__u8 grpmac[6];
+	char __data[0];
+};
+
 struct trace_event_raw_cache_tag_flush {
 	struct trace_entry ent;
 	u32 __data_loc_iommu;
@@ -132173,6 +132855,15 @@ struct trace_event_raw_ext4_writepages_result {
 	long pages_skipped;
 	unsigned long writeback_index;
 	int sync_mode;
+	char __data[0];
+};
+
+struct trace_event_raw_fdb_delete {
+	struct trace_entry ent;
+	u32 __data_loc_br_dev;
+	u32 __data_loc_dev;
+	unsigned char addr[6];
+	u16 vid;
 	char __data[0];
 };
 
@@ -147998,6 +148689,14 @@ typedef void (*btf_trace_bpf_trigger_tp)(void *, int);
 
 typedef void (*btf_trace_bpf_xdp_link_attach_failed)(void *, const char *);
 
+typedef void (*btf_trace_br_fdb_add)(void *, struct ndmsg *, struct net_device *, const unsigned char *, u16, u16);
+
+typedef void (*btf_trace_br_fdb_external_learn_add)(void *, struct net_bridge *, struct net_bridge_port *, const unsigned char *, u16);
+
+typedef void (*btf_trace_br_fdb_update)(void *, struct net_bridge *, struct net_bridge_port *, const unsigned char *, u16, unsigned long);
+
+typedef void (*btf_trace_br_mdb_full)(void *, const struct net_device *, const struct br_ip *);
+
 typedef void (*btf_trace_break_lease_block)(void *, struct inode *, struct file_lease *);
 
 typedef void (*btf_trace_break_lease_noblock)(void *, struct inode *, struct file_lease *);
@@ -148493,6 +149192,8 @@ typedef void (*btf_trace_ext4_writepages_result)(void *, struct inode *, struct 
 typedef void (*btf_trace_ext4_zero_range)(void *, struct inode *, loff_t, loff_t, int);
 
 typedef void (*btf_trace_fcntl_setlk)(void *, struct inode *, struct file_lock *, int);
+
+typedef void (*btf_trace_fdb_delete)(void *, struct net_bridge *, struct net_bridge_fdb_entry *);
 
 typedef void (*btf_trace_fib6_table_lookup)(void *, const struct net *, const struct fib6_result *, struct fib6_table *, const struct flowi6 *);
 
@@ -150108,9 +150809,9 @@ typedef void (*xhci_get_quirks_t)(struct device *, struct xhci_hcd *);
 
 typedef ZSTD_sequenceProducer_F zstd_sequence_producer_f;
 
-struct dmem_cgroup_region;
-
 struct nf_bridge_frag_data;
+
+struct dmem_cgroup_region;
 
 struct bpf_iter;
 

@@ -65,11 +65,27 @@ volatile __u64 b0_staged_installs = 0;
 volatile __u64 b0_refs_forwarded = 0;
 volatile __u64 b0_compact_words = 0;
 volatile __u64 b0_prefail = 0;
+volatile __u64 b0_prefail_live = 0; /* failed sub-reads with live bits (bad) */
 volatile __u64 dbg_off = 0, dbg_srcw0 = 0, dbg_scratch0 = 0, dbg_live0 = 0, dbg_set = 0;
 volatile __u64 dbg_w[8] = {};
 
-#define R1_SCRATCH_WORDS 1024            /* 8 KiB from-space chunk / page */
-struct r1_scratch { __u64 w[R1_SCRATCH_WORDS]; };
+#define R1_SCRATCH_WORDS 2048            /* 16 KiB from-space chunk / page */
+/* Build state lives in the map value: map reads come back as unknown
+ * scalars, so every bpf_loop pass sees one canonical state and verification
+ * converges (stack-held ctx scalars creep per simulated iteration and blow
+ * the 1M-insn budget).  Fields sit after w[] so chunk probe_reads cannot
+ * clobber them.  cnt[i] = to-space word offset (prefix live count) at which
+ * 64-word source chunk i of the current window starts emitting. */
+#define R1_WIN_CHUNKS (R1_SCRATCH_WORDS / 64)
+struct r1_scratch {
+	__u64 w[R1_SCRATCH_WORDS];
+	__u32 cnt[R1_WIN_CHUNKS];
+	__u32 win;               /* window base (source word, 2048-aligned) */
+	__u32 lo;                /* first source word to emit (first_src) */
+	__u32 outw;              /* live words emitted so far (0..512) */
+	__u32 region_end;        /* stop here: the Compressor compacts per region */
+	__u32 nfwd;              /* refs forwarded (batched into the counter) */
+};
 struct {
 	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
 	__uint(max_entries, 1);
@@ -153,58 +169,186 @@ static __always_inline __u32 forward_narrow(__u32 v)
 
 #define R1_REGION_WORDS (1u << 17)       /* 1 MiB region / 8 bytes */
 
-/* R1 compaction context: build one to-space page from un-slid from-space. */
+/* may_goto-guarded loop condition (bpf_experimental.h `can_loop`): the
+ * verifier bounds the loop via the may_goto iteration budget and prunes
+ * states at the back-edge instead of unrolling -- the only loop form that
+ * survives verification for the word-granular emit loop below (static
+ * unrolls and bpf_loop callbacks both blow the 1M-insn budget; open-coded
+ * iterators fail to converge on the loop-carried bounds). */
+#define can_loop					\
+	({ __label__ l_break, l_continue;		\
+	int __ret = 1;					\
+	asm volatile goto("may_goto %l[l_break]"	\
+			  :::: l_break);		\
+	goto l_continue;				\
+	l_break: __ret = 0;				\
+	l_continue:;					\
+	__ret;						\
+	})
+
+
+/* R1 page build, structured for the BPF verifier.  A page build walks the
+ * live-word bitmap from the page's first_src, copies live words compactly,
+ * and forwards flagged reference dwords.  The naive forms all fail
+ * verification or run slow: a per-word bpf_loop verifies but pays an
+ * indirect call per source word (~190K page builds per window made that the
+ * dominant window cost); wider callback bodies with a carried output cursor
+ * never converge (the cursor's creeping bounds defeat state pruning) and
+ * blow the 1M-insn budget, with static loops, open-coded iterators, and
+ * may_goto alike.  The fix is fwd_word's shape: 64-iteration branchy
+ * callbacks verify fine when each iteration's output position is
+ * INDEPENDENT of the previous ones.  So phase A computes each 64-word
+ * chunk's output offset as a branch-free popcount prefix (linear to
+ * verify), and phase B emits each chunk at its precomputed offset with no
+ * cross-callback state.  ~65 dispatches per page instead of ~2000. */
 struct r1_ctx {
 	unsigned char *page;
 	struct r1_scratch *s;
-	__u32 srcw0;             /* from-space word index of scratch[0] */
-	__u32 srcw;             /* next from-space word to inspect */
-	__u32 outw;            /* live words emitted (0..512) */
-	__u32 region_end;       /* stop here: the Compressor compacts per region */
 };
 
-/* Emit at most one live from-space word per call, forwarding its reference
- * dwords; srcw advances every call, outw only on a live word. */
-static int emit_compact(__u32 index, void *vctx)
+/* Phase A: cnt[i] = output offset of chunk i (prefix live count).  Branch-
+ * free popcount body -- verification is linear, the carried prefix lives in
+ * the map. */
+static int r1_count_step(__u32 i, void *vctx)
 {
 	struct r1_ctx *c = vctx;
+	struct r1_scratch *s = c->s;
 	__u8 __arena *arena = (__u8 __arena *)arena_base(&fwd_arena);
-	__u32 srcw = c->srcw, outw = c->outw, sidx;
-	__u64 word;
-	int h;
+	__u32 w0 = s->win + (i << 6), lo = s->lo, re = s->region_end;
+	__u64 bits;
 
-	/* stop at page full or the region's end (per-region compaction) */
-	if (outw >= PAGE_SIZE / 8 || srcw >= c->region_end)
+	if (i >= R1_WIN_CHUNKS)
 		return 1;
-	c->srcw = srcw + 1;
-	/* live-word bitmap (arena, old positions): 1 bit per 8-byte word */
-	if (!(*(__u8 __arena *)(arena + livebm_off + (srcw >> 3)) & (1u << (srcw & 7))))
-		return 0;
-	sidx = srcw - c->srcw0;
-	if (sidx >= R1_SCRATCH_WORDS)
-		return 1;                           /* chunk exhausted (would reload) */
-	word = c->s->w[sidx & (R1_SCRATCH_WORDS - 1)];
-	/* forward the two 4-byte reference dwords flagged in the (old) refbitmap */
-	for (h = 0; h < 2; h++) {
-		__u32 slot = (srcw << 1) | h;       /* old 4-byte slot index */
-		__u32 v, nv;
+	bits = *(__u64 __arena *)(arena + livebm_off + ((w0 >> 3) & ~7u));
+	/* mask words before first_src and at/after region_end */
+	if (w0 < lo)
+		bits &= (lo - w0 < 64) ? (~0ULL << (lo - w0)) : 0;
+	if (re - w0 < 64)
+		bits &= (1ULL << (re - w0)) - 1;
+	if (w0 >= re)
+		bits = 0;
+	s->cnt[i & (R1_WIN_CHUNKS - 1)] = s->outw;
+	/* branch-free popcount64 */
+	bits = bits - ((bits >> 1) & 0x5555555555555555ULL);
+	bits = (bits & 0x3333333333333333ULL) + ((bits >> 2) & 0x3333333333333333ULL);
+	bits = (bits + (bits >> 4)) & 0x0f0f0f0f0f0f0f0fULL;
+	s->outw += (__u32)((bits * 0x0101010101010101ULL) >> 56);
+	return 0;
+}
 
-		if (!(*(__u8 __arena *)(arena + refbm_off + (slot >> 3)) & (1u << (slot & 7))))
+/* Phase B: emit chunk i at its precomputed offset.  No cross-callback
+ * state: out position derives from cnt[i] alone, so states converge (same
+ * shape as fwd_word). */
+static int r1_emit_step(__u32 i, void *vctx)
+{
+	struct r1_ctx *c = vctx;
+	struct r1_scratch *s = c->s;
+	__u8 __arena *arena = (__u8 __arena *)arena_base(&fwd_arena);
+	__u32 w0 = s->win + (i << 6), lo = s->lo, re = s->region_end;
+	__u32 out;
+	__u64 bits;
+	int j;
+
+	if (i >= R1_WIN_CHUNKS)
+		return 1;
+	out = s->cnt[i & (R1_WIN_CHUNKS - 1)];
+	if (out >= PAGE_SIZE / 8)
+		return 1;                            /* page already full */
+	bits = *(__u64 __arena *)(arena + livebm_off + ((w0 >> 3) & ~7u));
+	if (w0 < lo)
+		bits &= (lo - w0 < 64) ? (~0ULL << (lo - w0)) : 0;
+	if (re - w0 < 64)
+		bits &= (1ULL << (re - w0)) - 1;
+	if (w0 >= re)
+		bits = 0;
+	/* No carried accumulators in registers: a concrete running output
+	 * count (or ref count) gives every loop iteration a distinct
+	 * verifier state and verification explodes 100x past the 1M-insn
+	 * budget.  Each word derives its output slot from a branch-free
+	 * popcount of the live bits BELOW it -- symbolic, so the per-j
+	 * states converge.  Ref counting goes straight to the map. */
+	for (j = 0; j < 64; j++) {
+		__u64 word, below;
+		__u32 pos;
+		int h;
+
+		if (!(bits & (1ULL << j)))
 			continue;
-		v = (h == 0) ? (__u32)word : (__u32)(word >> 32);
-		nv = forward_narrow(v);
-		if (nv == 0)
-			continue;
-		if (h == 0)
-			word = (word & ~0xffffffffULL) | nv;
-		else
-			word = (word & 0xffffffffULL) | ((__u64)nv << 32);
-		__sync_fetch_and_add(&b0_refs_forwarded, 1);
+		below = bits & ((1ULL << j) - 1);
+		below = below - ((below >> 1) & 0x5555555555555555ULL);
+		below = (below & 0x3333333333333333ULL) +
+			((below >> 2) & 0x3333333333333333ULL);
+		below = (below + (below >> 4)) & 0x0f0f0f0f0f0f0f0fULL;
+		pos = out + (__u32)((below * 0x0101010101010101ULL) >> 56);
+		if (pos >= PAGE_SIZE / 8)
+			break;                       /* page full mid-chunk */
+		word = s->w[((i << 6) + j) & (R1_SCRATCH_WORDS - 1)];
+		/* forward the two 4-byte reference dwords flagged in the
+		 * (old) refbitmap */
+		for (h = 0; h < 2; h++) {
+			__u32 slot = ((w0 + j) << 1) | h;
+			__u32 v, nv;
+
+			if (!(*(__u8 __arena *)(arena + refbm_off + (slot >> 3)) & (1u << (slot & 7))))
+				continue;
+			v = (h == 0) ? (__u32)word : (__u32)(word >> 32);
+			nv = forward_narrow(v);
+			if (nv == 0)
+				continue;
+			if (h == 0)
+				word = (word & ~0xffffffffULL) | nv;
+			else
+				word = (word & 0xffffffffULL) | ((__u64)nv << 32);
+			s->nfwd += 1;
+		}
+		*(__u64 *)(c->page + (pos & (PAGE_SIZE / 8 - 1)) * 8) = word;
 	}
-	outw &= (PAGE_SIZE / 8 - 1);                 /* bound outw < 512 */
-	*(__u64 *)(c->page + outw * 8) = word;
-	c->outw = outw + 1;
-	__sync_fetch_and_add(&b0_compact_words, 1);
+	return 0;
+}
+
+/* One source window: load scratch (page-aligned reads; a straddling read
+ * would fail as a unit on a hole and lose the live resident half), count,
+ * emit, advance. */
+static int r1_window_step(__u32 index, void *vctx)
+{
+	struct r1_ctx *c = vctx;
+	struct r1_scratch *s = c->s;
+	__u32 win = s->win, chunk, half;
+
+	if (s->outw >= PAGE_SIZE / 8 || win >= s->region_end)
+		return 1;
+	chunk = R1_SCRATCH_WORDS;
+	if (s->region_end - win < chunk)
+		chunk = s->region_end - win;
+	barrier_var(chunk);
+	if (chunk > R1_SCRATCH_WORDS)
+		chunk = R1_SCRATCH_WORDS;
+	if (bpf_probe_read_user(s->w, (unsigned long)chunk * 8,
+				(void *)(arena_base + (unsigned long)win * 8))) {
+		/* Sparse alias: retry per page; a failing page holds no live
+		 * words (live data is resident -- swap off) and only live
+		 * words are read, so no zeroing.  livehit is the alarm. */
+		half = 0;
+		while (half < chunk && can_loop) {
+			if (bpf_probe_read_user(&s->w[half & (R1_SCRATCH_WORDS - 1)],
+						512 * 8,
+						(void *)(arena_base +
+							 (unsigned long)(win + half) * 8))) {
+				__u8 __arena *lb = (__u8 __arena *)arena_base(&fwd_arena) + livebm_off;
+				__u32 wf = win + half, j, livehit = 0;
+
+				for (j = 0; j < 64; j++)
+					livehit |= *(volatile __u8 __arena *)(lb + (wf >> 3) + j);
+				__sync_fetch_and_add(&b0_prefail, 1);
+				if (livehit)
+					__sync_fetch_and_add(&b0_prefail_live, 1);
+			}
+			half += 512;
+		}
+	}
+	bpf_loop(R1_WIN_CHUNKS, r1_count_step, c, 0);
+	bpf_loop(R1_WIN_CHUNKS, r1_emit_step, c, 0);
+	s->win = win + R1_SCRATCH_WORDS;
 	return 0;
 }
 
@@ -225,38 +369,38 @@ int BPF_PROG(handle_page_fault, struct bpf_fault_ops_ctx *ops_ctx,
 	st = bpf_map_lookup_elem(&page_state, &idx);
 	if (st && *st == B0_STAGED && inkernel) {
 		/* R1: build the page from UN-SLID from-space (no userspace stage). */
-		__u32 zero = 0, srcw0, total_words = span_len >> 3;
+		__u32 zero = 0, srcw0, region_end, total_words = span_len >> 3;
 		__u32 __arena *fs_arena = (__u32 __arena *)((__u8 __arena *)arena_base(&fwd_arena) + firstsrc_off);
 		struct r1_scratch *s = bpf_map_lookup_elem(&r1_scratch_map, &zero);
-		struct r1_ctx c;
-		__u32 chunk;
 
 		__sync_fetch_and_add(&b0_staged_installs, 1);
 		if (!s)
 			return 0;
 		srcw0 = fs_arena[idx];
-		/* bulk-read one from-space chunk (clamped to the span) into scratch */
-		chunk = R1_SCRATCH_WORDS;
-		if (srcw0 < total_words && total_words - srcw0 < chunk)
-			chunk = total_words - srcw0;
-		barrier_var(chunk);
-		if (chunk > R1_SCRATCH_WORDS)            /* bound the read size */
-			chunk = R1_SCRATCH_WORDS;
-		if (bpf_probe_read_user(s->w, (unsigned long)chunk * 8,
-					(void *)(arena_base + (unsigned long)srcw0 * 8))) {
-			__sync_fetch_and_add(&b0_prefail, 1);
-			return -14;
-		}
-		c.page = page;
-		c.s = s;
-		c.srcw0 = srcw0;
-		c.srcw = srcw0;
-		c.outw = 0;
 		/* region of srcw0 -> its global end word (compaction is per region) */
-		c.region_end = ((srcw0 / R1_REGION_WORDS) + 1) * R1_REGION_WORDS;
-		if (c.region_end > total_words)
-			c.region_end = total_words;
-		bpf_loop(R1_SCRATCH_WORDS, emit_compact, &c, 0);
+		region_end = ((srcw0 / R1_REGION_WORDS) + 1) * R1_REGION_WORDS;
+		if (region_end > total_words)
+			region_end = total_words;
+		{
+			struct r1_ctx c = { .page = page, .s = s };
+
+			s->lo = srcw0;
+			/* window-aligned load base; the leading sub-window
+			 * words are masked off via lo */
+			s->win = srcw0 & ~(R1_SCRATCH_WORDS - 1);
+			s->outw = 0;
+			s->region_end = region_end;
+			s->nfwd = 0;
+			/* enough windows to cross a whole region if need be */
+			bpf_loop(R1_REGION_WORDS / R1_SCRATCH_WORDS + 1,
+				 r1_window_step, &c, 0);
+			if (s->outw)
+				__sync_fetch_and_add(&b0_compact_words,
+						     s->outw > PAGE_SIZE / 8 ?
+						     PAGE_SIZE / 8 : s->outw);
+			if (s->nfwd)
+				__sync_fetch_and_add(&b0_refs_forwarded, s->nfwd);
+		}
 		if (!dbg_set) {
 			int j;
 			dbg_off = off; dbg_srcw0 = srcw0;
