@@ -92,7 +92,7 @@ def main():
             cells.append(fmt(d["pause_ms"], "ms"))
         lines.append(rf"{bench} ({heap}) & " + " & ".join(cells) + r" \\")
     lines += [r"\bottomrule", r"\end{tabular}",
-              r"\caption{Concurrent compaction on DaCapo: iteration time and mean GC pause.}",
+              r"\caption{Concurrent compaction: iteration time and mean GC pause.}",
               r"\label{tab:gc-compaction}", r"\end{table}"]
     with open(out, "w") as f:
         f.write("\n".join(lines) + "\n")
