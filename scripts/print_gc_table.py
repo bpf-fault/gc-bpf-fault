@@ -36,10 +36,13 @@ def collect():
                 hs[key]["pause_ms"].append(res["pause_avg_us"] / 1000)
     # Only prefer harness data for a benchmark once every config has both
     # record kinds -- otherwise an in-flight rerun would produce partial
-    # rows mixing configurations.
+    # rows mixing configurations.  Restricted to the benchmarks the
+    # paper-config rerun applies to (currently h2 only).
+    HARNESS_BENCHES = {"h2"}
     complete = {b for b, _, _ in ROWS
-                if all(hs[(b, c)]["time_s"] and hs[(b, c)]["pause_ms"]
-                       for c, _ in CONFIGS)}
+                if b in HARNESS_BENCHES
+                and all(hs[(b, c)]["time_s"] and hs[(b, c)]["pause_ms"]
+                        for c, _ in CONFIGS)}
     seen_hs = set()
     for (b, c), d in hs.items():
         if b in complete:
