@@ -23,18 +23,28 @@ CONFIGS = [("None", "STW"), ("Uffd", r"\uffd"), ("R1", r"\name")]
 def collect():
     """(bench, config) -> {"time_s": [..], "pause_ms": [..]}"""
     out = defaultdict(lambda: {"time_s": [], "pause_ms": []})
-    seen_hs = set()
+    hs = defaultdict(lambda: {"time_s": [], "pause_ms": []})
     for f in sorted(glob.glob(os.path.join(RES, "gc_benchmark_classB_*.json"))):
         for r in json.load(open(f)):
             key = (r["bench"], r["config"])
             res = r["results"]
             if not res.get("passed"):
                 continue
-            seen_hs.add(key)
             if r["kind"] == "throughput" and res.get("last_iter_ms"):
-                out[key]["time_s"].append(res["last_iter_ms"] / 1000)
+                hs[key]["time_s"].append(res["last_iter_ms"] / 1000)
             if r["kind"] == "pauses" and res.get("pause_avg_us"):
-                out[key]["pause_ms"].append(res["pause_avg_us"] / 1000)
+                hs[key]["pause_ms"].append(res["pause_avg_us"] / 1000)
+    # Only prefer harness data for a benchmark once every config has both
+    # record kinds -- otherwise an in-flight rerun would produce partial
+    # rows mixing configurations.
+    complete = {b for b, _, _ in ROWS
+                if all(hs[(b, c)]["time_s"] and hs[(b, c)]["pause_ms"]
+                       for c, _ in CONFIGS)}
+    seen_hs = set()
+    for (b, c), d in hs.items():
+        if b in complete:
+            out[(b, c)] = d
+            seen_hs.add((b, c))
     if os.path.exists(LEGACY):
         heaps = {b: h for b, h, _ in ROWS}
         for r in json.load(open(LEGACY)):
@@ -55,12 +65,11 @@ def collect():
     return out
 
 
-def fmt(vals, unit, bold=False):
+def fmt(vals, unit):
     if not vals:
         return "--"
     m = st.mean(vals)
-    s = f"{m:.1f}s" if unit == "s" else f"{m:.0f}ms"
-    return rf"\textbf{{{s}}}" if bold else s
+    return f"{m:.1f}s" if unit == "s" else f"{m:.0f}ms"
 
 
 def main():
@@ -79,9 +88,8 @@ def main():
         cells = []
         for cfg, _ in CONFIGS:
             d = data[(bench, cfg)]
-            bold = bench == "h2" and cfg == "R1"
-            cells.append(fmt(d["time_s"], "s", bold))
-            cells.append(fmt(d["pause_ms"], "ms", bold))
+            cells.append(fmt(d["time_s"], "s"))
+            cells.append(fmt(d["pause_ms"], "ms"))
         lines.append(rf"{bench} ({heap}) & " + " & ".join(cells) + r" \\")
     lines += [r"\bottomrule", r"\end{tabular}",
               r"\caption{Concurrent compaction on DaCapo: iteration time and mean GC pause.}",
