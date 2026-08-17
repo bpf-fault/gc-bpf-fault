@@ -18,7 +18,7 @@ echo "[papercfg] SMT off, swap off, ASLR off"
 
 # h2 first: it carries the headline numbers.
 sudo "$S/run_gc_bench.py" --klass B --bench h2 --heap 768M \
-	--configs None,Uffd,R1 --invocations 5 --pauses -n 6 --timeout 1800
+	--configs None,Uffd,R1 --invocations 3 --pauses -n 6 --timeout 1800
 for spec in "pmd 336M" "xalan 80M" "lusearch 128M"; do
 	set -- $spec
 	sudo "$S/run_gc_bench.py" --klass B --bench "$1" --heap "$2" \
