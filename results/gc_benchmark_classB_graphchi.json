@@ -1,0 +1,138 @@
+[
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "graphchi",
+  "config": "None",
+  "heap": "384M",
+  "invocation": 1,
+  "n_iters": 6,
+  "wall_s": 41.1,
+  "timestamp": 1786833478,
+  "log": "logs/graphchi.384M.None.1.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 5571,
+   "iters_ms": [
+    7141,
+    5976,
+    5557,
+    5513,
+    5628,
+    5571
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "graphchi",
+  "config": "None",
+  "heap": "384M",
+  "invocation": 1,
+  "n_iters": 6,
+  "wall_s": 45.1,
+  "timestamp": 1786833519,
+  "log": "logs/graphchi.384M.None.1.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 5596,
+   "iters_ms": [
+    7370,
+    5993,
+    5603,
+    5582,
+    5563,
+    5596
+   ],
+   "pause_avg_us": 25305,
+   "pause_max_us": 32731,
+   "gcs": 336,
+   "pause_hist": [
+    [
+     8192,
+     16384,
+     6
+    ],
+    [
+     16384,
+     32768,
+     330
+    ]
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "graphchi",
+  "config": "R1",
+  "heap": "384M",
+  "invocation": 1,
+  "n_iters": 6,
+  "wall_s": 52.2,
+  "timestamp": 1786833564,
+  "log": "logs/graphchi.384M.R1.1.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 7475,
+   "iters_ms": [
+    8826,
+    7776,
+    7457,
+    7495,
+    7469,
+    7475
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "graphchi",
+  "config": "R1",
+  "heap": "384M",
+  "invocation": 1,
+  "n_iters": 6,
+  "wall_s": 56.2,
+  "timestamp": 1786833616,
+  "log": "logs/graphchi.384M.R1.1.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 7421,
+   "iters_ms": [
+    9311,
+    7662,
+    7424,
+    7437,
+    7434,
+    7421
+   ],
+   "pause_avg_us": 24356,
+   "pause_max_us": 46934,
+   "gcs": 336,
+   "pause_hist": [
+    [
+     4096,
+     8192,
+     6
+    ],
+    [
+     8192,
+     16384,
+     0
+    ],
+    [
+     16384,
+     32768,
+     308
+    ],
+    [
+     32768,
+     65536,
+     22
+    ]
+   ]
+  }
+ }
+]

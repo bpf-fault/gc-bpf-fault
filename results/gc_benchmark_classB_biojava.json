@@ -1,0 +1,389 @@
+[
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "biojava",
+  "config": "None",
+  "heap": "288M",
+  "invocation": 1,
+  "n_iters": 6,
+  "wall_s": 319.0,
+  "timestamp": 1786834378,
+  "log": "logs/biojava.288M.None.1.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 46242,
+   "iters_ms": [
+    86128,
+    46089,
+    46338,
+    46465,
+    46404,
+    46242
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "biojava",
+  "config": "None",
+  "heap": "288M",
+  "invocation": 1,
+  "n_iters": 6,
+  "wall_s": 551.7,
+  "timestamp": 1786834697,
+  "log": "logs/biojava.288M.None.1.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 94512,
+   "iters_ms": [
+    72961,
+    94943,
+    94929,
+    94728,
+    94551,
+    94512
+   ],
+   "pause_avg_us": 1532879,
+   "pause_max_us": 1741053,
+   "gcs": 312,
+   "pause_hist": [
+    [
+     4096,
+     8192,
+     1
+    ],
+    [
+     8192,
+     16384,
+     5
+    ],
+    [
+     16384,
+     32768,
+     0
+    ],
+    [
+     32768,
+     65536,
+     0
+    ],
+    [
+     65536,
+     131072,
+     0
+    ],
+    [
+     131072,
+     262144,
+     1
+    ],
+    [
+     262144,
+     524288,
+     5
+    ],
+    [
+     524288,
+     1048576,
+     17
+    ],
+    [
+     1048576,
+     2097152,
+     283
+    ]
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "biojava",
+  "config": "R1",
+  "heap": "288M",
+  "invocation": 1,
+  "n_iters": 6,
+  "wall_s": 360.0,
+  "timestamp": 1786835249,
+  "log": "logs/biojava.288M.R1.1.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 54145,
+   "iters_ms": [
+    86842,
+    54473,
+    54270,
+    54602,
+    54284,
+    54145
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "biojava",
+  "config": "R1",
+  "heap": "288M",
+  "invocation": 1,
+  "n_iters": 6,
+  "wall_s": 564.2,
+  "timestamp": 1786835609,
+  "log": "logs/biojava.288M.R1.1.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 96833,
+   "iters_ms": [
+    75050,
+    96818,
+    97031,
+    96561,
+    96758,
+    96833
+   ],
+   "pause_avg_us": 1486836,
+   "pause_max_us": 1698457,
+   "gcs": 312,
+   "pause_hist": [
+    [
+     4096,
+     8192,
+     6
+    ],
+    [
+     8192,
+     16384,
+     0
+    ],
+    [
+     16384,
+     32768,
+     0
+    ],
+    [
+     32768,
+     65536,
+     0
+    ],
+    [
+     65536,
+     131072,
+     0
+    ],
+    [
+     131072,
+     262144,
+     1
+    ],
+    [
+     262144,
+     524288,
+     5
+    ],
+    [
+     524288,
+     1048576,
+     22
+    ],
+    [
+     1048576,
+     2097152,
+     278
+    ]
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "biojava",
+  "config": "None",
+  "heap": "384M",
+  "invocation": 1,
+  "n_iters": 6,
+  "wall_s": 297.9,
+  "timestamp": 1786837050,
+  "log": "logs/biojava.384M.None.1.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 46856,
+   "iters_ms": [
+    61940,
+    46882,
+    46977,
+    46859,
+    47030,
+    46856
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "biojava",
+  "config": "None",
+  "heap": "384M",
+  "invocation": 1,
+  "n_iters": 6,
+  "wall_s": 258.0,
+  "timestamp": 1786837348,
+  "log": "logs/biojava.384M.None.1.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 37275,
+   "iters_ms": [
+    66538,
+    37391,
+    37155,
+    37194,
+    37327,
+    37275
+   ],
+   "pause_avg_us": 876694,
+   "pause_max_us": 1898234,
+   "gcs": 210,
+   "pause_hist": [
+    [
+     8192,
+     16384,
+     6
+    ],
+    [
+     16384,
+     32768,
+     0
+    ],
+    [
+     32768,
+     65536,
+     0
+    ],
+    [
+     65536,
+     131072,
+     0
+    ],
+    [
+     131072,
+     262144,
+     0
+    ],
+    [
+     262144,
+     524288,
+     11
+    ],
+    [
+     524288,
+     1048576,
+     160
+    ],
+    [
+     1048576,
+     2097152,
+     33
+    ]
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "biojava",
+  "config": "R1",
+  "heap": "384M",
+  "invocation": 1,
+  "n_iters": 6,
+  "wall_s": 259.3,
+  "timestamp": 1786837606,
+  "log": "logs/biojava.384M.R1.1.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 38247,
+   "iters_ms": [
+    67645,
+    38157,
+    37976,
+    37848,
+    37998,
+    38247
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "biojava",
+  "config": "R1",
+  "heap": "384M",
+  "invocation": 1,
+  "n_iters": 6,
+  "wall_s": 290.5,
+  "timestamp": 1786837865,
+  "log": "logs/biojava.384M.R1.1.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 44062,
+   "iters_ms": [
+    64891,
+    44131,
+    43969,
+    44081,
+    44205,
+    44062
+   ],
+   "pause_avg_us": 904453,
+   "pause_max_us": 1816307,
+   "gcs": 210,
+   "pause_hist": [
+    [
+     4096,
+     8192,
+     2
+    ],
+    [
+     8192,
+     16384,
+     4
+    ],
+    [
+     16384,
+     32768,
+     0
+    ],
+    [
+     32768,
+     65536,
+     0
+    ],
+    [
+     65536,
+     131072,
+     0
+    ],
+    [
+     131072,
+     262144,
+     0
+    ],
+    [
+     262144,
+     524288,
+     11
+    ],
+    [
+     524288,
+     1048576,
+     163
+    ],
+    [
+     1048576,
+     2097152,
+     30
+    ]
+   ]
+  }
+ }
+]

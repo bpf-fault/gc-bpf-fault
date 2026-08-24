@@ -1,0 +1,624 @@
+[
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "xalan",
+  "config": "None",
+  "heap": "80M",
+  "invocation": 1,
+  "n_iters": 6,
+  "wall_s": 12.2,
+  "timestamp": 1786968254,
+  "log": "logs/xalan.80M.None.1.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 1702,
+   "iters_ms": [
+    2556,
+    1744,
+    1696,
+    1688,
+    1674,
+    1702
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "xalan",
+  "config": "None",
+  "heap": "80M",
+  "invocation": 1,
+  "n_iters": 6,
+  "wall_s": 16.0,
+  "timestamp": 1786968266,
+  "log": "logs/xalan.80M.None.1.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 1675,
+   "iters_ms": [
+    2509,
+    1717,
+    1733,
+    1691,
+    1737,
+    1675
+   ],
+   "pause_avg_us": 9701,
+   "pause_max_us": 21685,
+   "gcs": 451,
+   "pause_hist": [
+    [
+     4096,
+     8192,
+     3
+    ],
+    [
+     8192,
+     16384,
+     447
+    ],
+    [
+     16384,
+     32768,
+     1
+    ]
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "xalan",
+  "config": "Uffd",
+  "heap": "80M",
+  "invocation": 1,
+  "n_iters": 6,
+  "wall_s": 14.0,
+  "timestamp": 1786968282,
+  "log": "logs/xalan.80M.Uffd.1.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 1979,
+   "iters_ms": [
+    2854,
+    2047,
+    2045,
+    1987,
+    1981,
+    1979
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "xalan",
+  "config": "Uffd",
+  "heap": "80M",
+  "invocation": 1,
+  "n_iters": 6,
+  "wall_s": 17.6,
+  "timestamp": 1786968296,
+  "log": "logs/xalan.80M.Uffd.1.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 1953,
+   "iters_ms": [
+    2868,
+    2026,
+    1930,
+    1961,
+    1930,
+    1953
+   ],
+   "pause_avg_us": 8431,
+   "pause_max_us": 16754,
+   "gcs": 450,
+   "pause_hist": [
+    [
+     2048,
+     4096,
+     2
+    ],
+    [
+     4096,
+     8192,
+     220
+    ],
+    [
+     8192,
+     16384,
+     227
+    ],
+    [
+     16384,
+     32768,
+     1
+    ]
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "xalan",
+  "config": "R1",
+  "heap": "80M",
+  "invocation": 1,
+  "n_iters": 6,
+  "wall_s": 13.4,
+  "timestamp": 1786968314,
+  "log": "logs/xalan.80M.R1.1.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 1878,
+   "iters_ms": [
+    2734,
+    1939,
+    1913,
+    1855,
+    1857,
+    1878
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "xalan",
+  "config": "R1",
+  "heap": "80M",
+  "invocation": 1,
+  "n_iters": 6,
+  "wall_s": 17.2,
+  "timestamp": 1786968327,
+  "log": "logs/xalan.80M.R1.1.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 1879,
+   "iters_ms": [
+    2739,
+    1917,
+    1866,
+    1905,
+    1878,
+    1879
+   ],
+   "pause_avg_us": 8374,
+   "pause_max_us": 17913,
+   "gcs": 450,
+   "pause_hist": [
+    [
+     4096,
+     8192,
+     223
+    ],
+    [
+     8192,
+     16384,
+     226
+    ],
+    [
+     16384,
+     32768,
+     1
+    ]
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "xalan",
+  "config": "None",
+  "heap": "80M",
+  "invocation": 2,
+  "n_iters": 6,
+  "wall_s": 12.0,
+  "timestamp": 1786968344,
+  "log": "logs/xalan.80M.None.2.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 1674,
+   "iters_ms": [
+    2522,
+    1695,
+    1683,
+    1670,
+    1652,
+    1674
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "xalan",
+  "config": "None",
+  "heap": "80M",
+  "invocation": 2,
+  "n_iters": 6,
+  "wall_s": 16.2,
+  "timestamp": 1786968356,
+  "log": "logs/xalan.80M.None.2.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 1730,
+   "iters_ms": [
+    2620,
+    1765,
+    1738,
+    1730,
+    1714,
+    1730
+   ],
+   "pause_avg_us": 9759,
+   "pause_max_us": 15499,
+   "gcs": 456,
+   "pause_hist": [
+    [
+     4096,
+     8192,
+     3
+    ],
+    [
+     8192,
+     16384,
+     453
+    ]
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "xalan",
+  "config": "Uffd",
+  "heap": "80M",
+  "invocation": 2,
+  "n_iters": 6,
+  "wall_s": 13.9,
+  "timestamp": 1786968372,
+  "log": "logs/xalan.80M.Uffd.2.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 1974,
+   "iters_ms": [
+    2827,
+    2020,
+    1980,
+    1998,
+    1969,
+    1974
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "xalan",
+  "config": "Uffd",
+  "heap": "80M",
+  "invocation": 2,
+  "n_iters": 6,
+  "wall_s": 17.7,
+  "timestamp": 1786968386,
+  "log": "logs/xalan.80M.Uffd.2.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 2012,
+   "iters_ms": [
+    2853,
+    2001,
+    2004,
+    1960,
+    1943,
+    2012
+   ],
+   "pause_avg_us": 8335,
+   "pause_max_us": 17257,
+   "gcs": 451,
+   "pause_hist": [
+    [
+     2048,
+     4096,
+     2
+    ],
+    [
+     4096,
+     8192,
+     223
+    ],
+    [
+     8192,
+     16384,
+     225
+    ],
+    [
+     16384,
+     32768,
+     1
+    ]
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "xalan",
+  "config": "R1",
+  "heap": "80M",
+  "invocation": 2,
+  "n_iters": 6,
+  "wall_s": 13.7,
+  "timestamp": 1786968404,
+  "log": "logs/xalan.80M.R1.2.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 1940,
+   "iters_ms": [
+    2738,
+    1972,
+    1936,
+    1941,
+    1938,
+    1940
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "xalan",
+  "config": "R1",
+  "heap": "80M",
+  "invocation": 2,
+  "n_iters": 6,
+  "wall_s": 17.5,
+  "timestamp": 1786968418,
+  "log": "logs/xalan.80M.R1.2.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 1948,
+   "iters_ms": [
+    2791,
+    1964,
+    1962,
+    1926,
+    1946,
+    1948
+   ],
+   "pause_avg_us": 8593,
+   "pause_max_us": 22953,
+   "gcs": 456,
+   "pause_hist": [
+    [
+     4096,
+     8192,
+     227
+    ],
+    [
+     8192,
+     16384,
+     227
+    ],
+    [
+     16384,
+     32768,
+     2
+    ]
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "xalan",
+  "config": "None",
+  "heap": "80M",
+  "invocation": 3,
+  "n_iters": 6,
+  "wall_s": 12.4,
+  "timestamp": 1786968435,
+  "log": "logs/xalan.80M.None.3.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 1731,
+   "iters_ms": [
+    2526,
+    1741,
+    1784,
+    1750,
+    1738,
+    1731
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "xalan",
+  "config": "None",
+  "heap": "80M",
+  "invocation": 3,
+  "n_iters": 6,
+  "wall_s": 16.1,
+  "timestamp": 1786968448,
+  "log": "logs/xalan.80M.None.3.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 1700,
+   "iters_ms": [
+    2596,
+    1746,
+    1722,
+    1707,
+    1725,
+    1700
+   ],
+   "pause_avg_us": 9735,
+   "pause_max_us": 15676,
+   "gcs": 456,
+   "pause_hist": [
+    [
+     4096,
+     8192,
+     4
+    ],
+    [
+     8192,
+     16384,
+     452
+    ]
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "xalan",
+  "config": "Uffd",
+  "heap": "80M",
+  "invocation": 3,
+  "n_iters": 6,
+  "wall_s": 13.9,
+  "timestamp": 1786968464,
+  "log": "logs/xalan.80M.Uffd.3.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 1975,
+   "iters_ms": [
+    2820,
+    2013,
+    1992,
+    1948,
+    2021,
+    1975
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "xalan",
+  "config": "Uffd",
+  "heap": "80M",
+  "invocation": 3,
+  "n_iters": 6,
+  "wall_s": 18.0,
+  "timestamp": 1786968478,
+  "log": "logs/xalan.80M.Uffd.3.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 2030,
+   "iters_ms": [
+    2910,
+    2054,
+    2061,
+    2010,
+    2030,
+    2030
+   ],
+   "pause_avg_us": 8409,
+   "pause_max_us": 21124,
+   "gcs": 456,
+   "pause_hist": [
+    [
+     2048,
+     4096,
+     5
+    ],
+    [
+     4096,
+     8192,
+     222
+    ],
+    [
+     8192,
+     16384,
+     227
+    ],
+    [
+     16384,
+     32768,
+     2
+    ]
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "xalan",
+  "config": "R1",
+  "heap": "80M",
+  "invocation": 3,
+  "n_iters": 6,
+  "wall_s": 13.5,
+  "timestamp": 1786968496,
+  "log": "logs/xalan.80M.R1.3.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 1893,
+   "iters_ms": [
+    2739,
+    1923,
+    1931,
+    1901,
+    1917,
+    1893
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "xalan",
+  "config": "R1",
+  "heap": "80M",
+  "invocation": 3,
+  "n_iters": 6,
+  "wall_s": 17.3,
+  "timestamp": 1786968509,
+  "log": "logs/xalan.80M.R1.3.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 1918,
+   "iters_ms": [
+    2794,
+    1915,
+    1909,
+    1897,
+    1918,
+    1918
+   ],
+   "pause_avg_us": 8475,
+   "pause_max_us": 16402,
+   "gcs": 456,
+   "pause_hist": [
+    [
+     2048,
+     4096,
+     1
+    ],
+    [
+     4096,
+     8192,
+     225
+    ],
+    [
+     8192,
+     16384,
+     229
+    ],
+    [
+     16384,
+     32768,
+     1
+    ]
+   ]
+  }
+ }
+]

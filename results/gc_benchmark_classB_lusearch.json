@@ -1,0 +1,727 @@
+[
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "lusearch",
+  "config": "None",
+  "heap": "128M",
+  "invocation": 1,
+  "n_iters": 6,
+  "wall_s": 35.0,
+  "timestamp": 1786968527,
+  "log": "logs/lusearch.128M.None.1.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 5096,
+   "iters_ms": [
+    5881,
+    5875,
+    5034,
+    5032,
+    5207,
+    5206,
+    5005,
+    5004,
+    5118,
+    5116,
+    5096,
+    5095
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "lusearch",
+  "config": "None",
+  "heap": "128M",
+  "invocation": 1,
+  "n_iters": 6,
+  "wall_s": 37.2,
+  "timestamp": 1786968562,
+  "log": "logs/lusearch.128M.None.1.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 4872,
+   "iters_ms": [
+    5604,
+    5598,
+    4945,
+    4942,
+    4980,
+    4978,
+    4982,
+    4981,
+    4862,
+    4860,
+    4872,
+    4871
+   ],
+   "pause_avg_us": 9985,
+   "pause_max_us": 16314,
+   "gcs": 1315,
+   "pause_hist": [
+    [
+     4096,
+     8192,
+     1
+    ],
+    [
+     8192,
+     16384,
+     1314
+    ]
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "lusearch",
+  "config": "Uffd",
+  "heap": "128M",
+  "invocation": 1,
+  "n_iters": 6,
+  "wall_s": 57.2,
+  "timestamp": 1786968599,
+  "log": "logs/lusearch.128M.Uffd.1.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 8914,
+   "iters_ms": [
+    9484,
+    9479,
+    8879,
+    8877,
+    8848,
+    8847,
+    8929,
+    8928,
+    8964,
+    8963,
+    8914,
+    8912
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "lusearch",
+  "config": "Uffd",
+  "heap": "128M",
+  "invocation": 1,
+  "n_iters": 6,
+  "wall_s": 61.4,
+  "timestamp": 1786968656,
+  "log": "logs/lusearch.128M.Uffd.1.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 8986,
+   "iters_ms": [
+    9590,
+    9584,
+    8994,
+    8992,
+    8950,
+    8948,
+    8995,
+    8994,
+    8915,
+    8913,
+    8986,
+    8985
+   ],
+   "pause_avg_us": 9717,
+   "pause_max_us": 24885,
+   "gcs": 1315,
+   "pause_hist": [
+    [
+     2048,
+     4096,
+     3
+    ],
+    [
+     4096,
+     8192,
+     650
+    ],
+    [
+     8192,
+     16384,
+     560
+    ],
+    [
+     16384,
+     32768,
+     102
+    ]
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "lusearch",
+  "config": "R1",
+  "heap": "128M",
+  "invocation": 1,
+  "n_iters": 6,
+  "wall_s": 54.7,
+  "timestamp": 1786968717,
+  "log": "logs/lusearch.128M.R1.1.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 8484,
+   "iters_ms": [
+    9057,
+    9050,
+    8520,
+    8517,
+    8367,
+    8366,
+    8489,
+    8486,
+    8491,
+    8490,
+    8484,
+    8482
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "lusearch",
+  "config": "R1",
+  "heap": "128M",
+  "invocation": 1,
+  "n_iters": 6,
+  "wall_s": 58.8,
+  "timestamp": 1786968772,
+  "log": "logs/lusearch.128M.R1.1.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 8442,
+   "iters_ms": [
+    9213,
+    9208,
+    8511,
+    8508,
+    8483,
+    8481,
+    8578,
+    8576,
+    8493,
+    8491,
+    8442,
+    8441
+   ],
+   "pause_avg_us": 11104,
+   "pause_max_us": 27910,
+   "gcs": 1315,
+   "pause_hist": [
+    [
+     4096,
+     8192,
+     649
+    ],
+    [
+     8192,
+     16384,
+     337
+    ],
+    [
+     16384,
+     32768,
+     329
+    ]
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "lusearch",
+  "config": "None",
+  "heap": "128M",
+  "invocation": 2,
+  "n_iters": 6,
+  "wall_s": 33.8,
+  "timestamp": 1786968831,
+  "log": "logs/lusearch.128M.None.2.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 4915,
+   "iters_ms": [
+    5922,
+    5916,
+    5142,
+    5141,
+    4938,
+    4937,
+    4885,
+    4884,
+    4875,
+    4873,
+    4915,
+    4914
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "lusearch",
+  "config": "None",
+  "heap": "128M",
+  "invocation": 2,
+  "n_iters": 6,
+  "wall_s": 37.3,
+  "timestamp": 1786968865,
+  "log": "logs/lusearch.128M.None.2.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 4912,
+   "iters_ms": [
+    5626,
+    5619,
+    4999,
+    4996,
+    5012,
+    5011,
+    4832,
+    4830,
+    4976,
+    4975,
+    4912,
+    4910
+   ],
+   "pause_avg_us": 10003,
+   "pause_max_us": 15084,
+   "gcs": 1309,
+   "pause_hist": [
+    [
+     4096,
+     8192,
+     1
+    ],
+    [
+     8192,
+     16384,
+     1308
+    ]
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "lusearch",
+  "config": "Uffd",
+  "heap": "128M",
+  "invocation": 2,
+  "n_iters": 6,
+  "wall_s": 57.2,
+  "timestamp": 1786968902,
+  "log": "logs/lusearch.128M.Uffd.2.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 8817,
+   "iters_ms": [
+    9425,
+    9420,
+    8919,
+    8917,
+    8980,
+    8978,
+    8969,
+    8968,
+    8913,
+    8911,
+    8817,
+    8816
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "lusearch",
+  "config": "Uffd",
+  "heap": "128M",
+  "invocation": 2,
+  "n_iters": 6,
+  "wall_s": 61.3,
+  "timestamp": 1786968959,
+  "log": "logs/lusearch.128M.Uffd.2.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 8852,
+   "iters_ms": [
+    9741,
+    9734,
+    9049,
+    9047,
+    8880,
+    8878,
+    8939,
+    8937,
+    8837,
+    8835,
+    8852,
+    8850
+   ],
+   "pause_avg_us": 9614,
+   "pause_max_us": 23814,
+   "gcs": 1315,
+   "pause_hist": [
+    [
+     2048,
+     4096,
+     3
+    ],
+    [
+     4096,
+     8192,
+     648
+    ],
+    [
+     8192,
+     16384,
+     580
+    ],
+    [
+     16384,
+     32768,
+     84
+    ]
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "lusearch",
+  "config": "R1",
+  "heap": "128M",
+  "invocation": 2,
+  "n_iters": 6,
+  "wall_s": 54.9,
+  "timestamp": 1786969020,
+  "log": "logs/lusearch.128M.R1.2.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 8492,
+   "iters_ms": [
+    9193,
+    9187,
+    8438,
+    8436,
+    8564,
+    8562,
+    8391,
+    8389,
+    8543,
+    8541,
+    8492,
+    8490
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "lusearch",
+  "config": "R1",
+  "heap": "128M",
+  "invocation": 2,
+  "n_iters": 6,
+  "wall_s": 58.3,
+  "timestamp": 1786969075,
+  "log": "logs/lusearch.128M.R1.2.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 8423,
+   "iters_ms": [
+    9212,
+    9206,
+    8400,
+    8397,
+    8348,
+    8346,
+    8423,
+    8422,
+    8425,
+    8423,
+    8423,
+    8421
+   ],
+   "pause_avg_us": 10898,
+   "pause_max_us": 24296,
+   "gcs": 1315,
+   "pause_hist": [
+    [
+     4096,
+     8192,
+     649
+    ],
+    [
+     8192,
+     16384,
+     374
+    ],
+    [
+     16384,
+     32768,
+     292
+    ]
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "lusearch",
+  "config": "None",
+  "heap": "128M",
+  "invocation": 3,
+  "n_iters": 6,
+  "wall_s": 34.1,
+  "timestamp": 1786969133,
+  "log": "logs/lusearch.128M.None.3.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 5059,
+   "iters_ms": [
+    5788,
+    5783,
+    5060,
+    5059,
+    4997,
+    4995,
+    4976,
+    4975,
+    5138,
+    5136,
+    5059,
+    5056
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "lusearch",
+  "config": "None",
+  "heap": "128M",
+  "invocation": 3,
+  "n_iters": 6,
+  "wall_s": 37.1,
+  "timestamp": 1786969168,
+  "log": "logs/lusearch.128M.None.3.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 4837,
+   "iters_ms": [
+    5665,
+    5659,
+    4982,
+    4980,
+    4918,
+    4917,
+    4890,
+    4888,
+    4889,
+    4887,
+    4837,
+    4835
+   ],
+   "pause_avg_us": 9926,
+   "pause_max_us": 14329,
+   "gcs": 1309,
+   "pause_hist": [
+    [
+     4096,
+     8192,
+     1
+    ],
+    [
+     8192,
+     16384,
+     1308
+    ]
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "lusearch",
+  "config": "Uffd",
+  "heap": "128M",
+  "invocation": 3,
+  "n_iters": 6,
+  "wall_s": 56.8,
+  "timestamp": 1786969205,
+  "log": "logs/lusearch.128M.Uffd.3.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 8952,
+   "iters_ms": [
+    9365,
+    9359,
+    8815,
+    8813,
+    8856,
+    8855,
+    8836,
+    8834,
+    8795,
+    8793,
+    8952,
+    8950
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "lusearch",
+  "config": "Uffd",
+  "heap": "128M",
+  "invocation": 3,
+  "n_iters": 6,
+  "wall_s": 60.9,
+  "timestamp": 1786969261,
+  "log": "logs/lusearch.128M.Uffd.3.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 8917,
+   "iters_ms": [
+    9530,
+    9523,
+    8912,
+    8910,
+    8799,
+    8798,
+    8943,
+    8942,
+    8854,
+    8852,
+    8917,
+    8915
+   ],
+   "pause_avg_us": 9685,
+   "pause_max_us": 20873,
+   "gcs": 1315,
+   "pause_hist": [
+    [
+     2048,
+     4096,
+     5
+    ],
+    [
+     4096,
+     8192,
+     644
+    ],
+    [
+     8192,
+     16384,
+     573
+    ],
+    [
+     16384,
+     32768,
+     93
+    ]
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "lusearch",
+  "config": "R1",
+  "heap": "128M",
+  "invocation": 3,
+  "n_iters": 6,
+  "wall_s": 54.5,
+  "timestamp": 1786969322,
+  "log": "logs/lusearch.128M.R1.3.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 8387,
+   "iters_ms": [
+    9159,
+    9153,
+    8340,
+    8337,
+    8434,
+    8432,
+    8424,
+    8422,
+    8473,
+    8471,
+    8387,
+    8385
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "lusearch",
+  "config": "R1",
+  "heap": "128M",
+  "invocation": 3,
+  "n_iters": 6,
+  "wall_s": 59.0,
+  "timestamp": 1786969377,
+  "log": "logs/lusearch.128M.R1.3.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 8483,
+   "iters_ms": [
+    9261,
+    9255,
+    8572,
+    8569,
+    8551,
+    8549,
+    8551,
+    8549,
+    8516,
+    8514,
+    8483,
+    8481
+   ],
+   "pause_avg_us": 11187,
+   "pause_max_us": 25842,
+   "gcs": 1315,
+   "pause_hist": [
+    [
+     2048,
+     4096,
+     1
+    ],
+    [
+     4096,
+     8192,
+     648
+    ],
+    [
+     8192,
+     16384,
+     330
+    ],
+    [
+     16384,
+     32768,
+     336
+    ]
+   ]
+  }
+ }
+]

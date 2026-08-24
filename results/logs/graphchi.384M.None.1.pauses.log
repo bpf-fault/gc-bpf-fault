@@ -1,0 +1,62 @@
+Attaching 2 probes...
+Using scaled threading model. 32 processors detected, 32 threads used to drive the workload, in a possible range of [1,unlimited]
+Version: graphchi 0.2.2 (use -p to print nominal benchmark stats)
+===== DaCapo 23.11-MR2-chopin graphchi starting warmup 1 =====
+Found shards -- no need to preprocess
+Set latent factor dimension to: 20
+Initializing latent factors for 285050 vertices
+Creating 1 blocks
+Total edges: 1000000
+Left 284808, Right 241
+===== DaCapo 23.11-MR2-chopin graphchi completed warmup 1 in 7370 msec =====
+===== DaCapo 23.11-MR2-chopin graphchi starting warmup 2 =====
+Found shards -- no need to preprocess
+Set latent factor dimension to: 20
+Initializing latent factors for 285050 vertices
+Creating 1 blocks
+Total edges: 1000000
+Left 284808, Right 241
+===== DaCapo 23.11-MR2-chopin graphchi completed warmup 2 in 5993 msec =====
+===== DaCapo 23.11-MR2-chopin graphchi starting warmup 3 =====
+Found shards -- no need to preprocess
+Set latent factor dimension to: 20
+Initializing latent factors for 285050 vertices
+Creating 1 blocks
+Total edges: 1000000
+Left 284808, Right 241
+===== DaCapo 23.11-MR2-chopin graphchi completed warmup 3 in 5603 msec =====
+===== DaCapo 23.11-MR2-chopin graphchi starting warmup 4 =====
+Found shards -- no need to preprocess
+Set latent factor dimension to: 20
+Initializing latent factors for 285050 vertices
+Creating 1 blocks
+Total edges: 1000000
+Left 284808, Right 241
+===== DaCapo 23.11-MR2-chopin graphchi completed warmup 4 in 5582 msec =====
+===== DaCapo 23.11-MR2-chopin graphchi starting warmup 5 =====
+Found shards -- no need to preprocess
+Set latent factor dimension to: 20
+Initializing latent factors for 285050 vertices
+Creating 1 blocks
+Total edges: 1000000
+Left 284808, Right 241
+===== DaCapo 23.11-MR2-chopin graphchi completed warmup 5 in 5563 msec =====
+===== DaCapo 23.11-MR2-chopin graphchi starting =====
+Found shards -- no need to preprocess
+Set latent factor dimension to: 20
+Initializing latent factors for 285050 vertices
+Creating 1 blocks
+Total edges: 1000000
+Left 284808, Right 241
+===== DaCapo 23.11-MR2-chopin graphchi PASSED in 5596 msec =====
+
+
+@avg_us: 25305
+
+@gcs: 336
+@max_us: 32731
+@pause_us: 
+[8K, 16K)              6 |                                                    |
+[16K, 32K)           330 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+
+

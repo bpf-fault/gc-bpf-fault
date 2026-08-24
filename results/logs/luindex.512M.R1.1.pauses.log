@@ -1,0 +1,24 @@
+Attaching 2 probes...
+Version: lucene 9.7.0 (use -p to print nominal benchmark stats)
+===== DaCapo 23.11-MR2-chopin luindex starting warmup 1 =====
+Adding documents from enwiki-anarchism-abydos.md: Adding documents from enwiki-anarchism-abydos.md: 500
+Adding documents from enwiki-abydos-copleston.md: Adding documents from enwiki-abydos-copleston.md: 1000Adding documents from enwiki-abydos-copleston.md: 2000Adding documents from enwiki-abydos-copleston.md: 3000Adding documents from enwiki-abydos-copleston.md: 4000Adding documents from enwiki-abydos-copleston.md: 5000Adding documents from enwiki-abydos-copleston.md: 5500
+Optimizing...
+===== DaCapo 23.11-MR2-chopin luindex completed warmup 1 in 6348 msec =====
+===== DaCapo 23.11-MR2-chopin luindex starting =====
+Adding documents from enwiki-anarchism-abydos.md: Adding documents from enwiki-anarchism-abydos.md: 500
+Adding documents from enwiki-abydos-copleston.md: Adding documents from enwiki-abydos-copleston.md: 1000Adding documents from enwiki-abydos-copleston.md: 2000Adding documents from enwiki-abydos-copleston.md: 3000Adding documents from enwiki-abydos-copleston.md: 4000Adding documents from enwiki-abydos-copleston.md: 5000Adding documents from enwiki-abydos-copleston.md: 5500
+Optimizing...
+===== DaCapo 23.11-MR2-chopin luindex PASSED in 5219 msec =====
+
+
+@avg_us: 11181
+
+@gcs: 10
+@max_us: 18022
+@pause_us: 
+[4K, 8K)               1 |@@@@@@                                              |
+[8K, 16K)              8 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+[16K, 32K)             1 |@@@@@@                                              |
+
+

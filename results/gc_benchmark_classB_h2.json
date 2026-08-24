@@ -1,0 +1,797 @@
+[
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "h2",
+  "config": "None",
+  "heap": "768M",
+  "invocation": 1,
+  "n_iters": 6,
+  "wall_s": 469.2,
+  "timestamp": 1786959329,
+  "log": "logs/h2.768M.None.1.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 41466,
+   "iters_ms": [
+    51460,
+    51443,
+    41530,
+    41525,
+    41302,
+    41298,
+    41786,
+    41781,
+    41938,
+    41935,
+    41466,
+    41463
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "h2",
+  "config": "None",
+  "heap": "768M",
+  "invocation": 1,
+  "n_iters": 6,
+  "wall_s": 461.1,
+  "timestamp": 1786959799,
+  "log": "logs/h2.768M.None.1.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 40296,
+   "iters_ms": [
+    49918,
+    49901,
+    40346,
+    40341,
+    40315,
+    40311,
+    40351,
+    40348,
+    40192,
+    40188,
+    40296,
+    40293
+   ],
+   "pause_avg_us": 519169,
+   "pause_max_us": 746179,
+   "gcs": 732,
+   "pause_hist": [
+    [
+     65536,
+     131072,
+     2
+    ],
+    [
+     131072,
+     262144,
+     6
+    ],
+    [
+     262144,
+     524288,
+     435
+    ],
+    [
+     524288,
+     1048576,
+     289
+    ]
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "h2",
+  "config": "Uffd",
+  "heap": "768M",
+  "invocation": 1,
+  "n_iters": 6,
+  "wall_s": 533.2,
+  "timestamp": 1786960260,
+  "log": "logs/h2.768M.Uffd.1.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 47410,
+   "iters_ms": [
+    57077,
+    57061,
+    47214,
+    47210,
+    47004,
+    47000,
+    47044,
+    47041,
+    47596,
+    47588,
+    47410,
+    47395
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "h2",
+  "config": "Uffd",
+  "heap": "768M",
+  "invocation": 1,
+  "n_iters": 6,
+  "wall_s": 521.0,
+  "timestamp": 1786960793,
+  "log": "logs/h2.768M.Uffd.1.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 45409,
+   "iters_ms": [
+    54639,
+    54622,
+    46275,
+    46256,
+    46849,
+    46839,
+    45932,
+    45915,
+    45985,
+    45970,
+    45409,
+    45405
+   ],
+   "pause_avg_us": 374453,
+   "pause_max_us": 799424,
+   "gcs": 733,
+   "pause_hist": [
+    [
+     32768,
+     65536,
+     2
+    ],
+    [
+     65536,
+     131072,
+     56
+    ],
+    [
+     131072,
+     262144,
+     305
+    ],
+    [
+     262144,
+     524288,
+     123
+    ],
+    [
+     524288,
+     1048576,
+     247
+    ]
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "h2",
+  "config": "R1",
+  "heap": "768M",
+  "invocation": 1,
+  "n_iters": 6,
+  "wall_s": 405.3,
+  "timestamp": 1786961314,
+  "log": "logs/h2.768M.R1.1.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 34825,
+   "iters_ms": [
+    42277,
+    42261,
+    34715,
+    34704,
+    34621,
+    34614,
+    34672,
+    34665,
+    34819,
+    34812,
+    34825,
+    34818
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "h2",
+  "config": "R1",
+  "heap": "768M",
+  "invocation": 1,
+  "n_iters": 6,
+  "wall_s": 409.0,
+  "timestamp": 1786961719,
+  "log": "logs/h2.768M.R1.1.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 34922,
+   "iters_ms": [
+    42928,
+    42911,
+    34640,
+    34636,
+    34755,
+    34751,
+    34897,
+    34887,
+    34623,
+    34620,
+    34922,
+    34911
+   ],
+   "pause_avg_us": 303427,
+   "pause_max_us": 589191,
+   "gcs": 737,
+   "pause_hist": [
+    [
+     32768,
+     65536,
+     1
+    ],
+    [
+     65536,
+     131072,
+     27
+    ],
+    [
+     131072,
+     262144,
+     319
+    ],
+    [
+     262144,
+     524288,
+     337
+    ],
+    [
+     524288,
+     1048576,
+     53
+    ]
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "h2",
+  "config": "None",
+  "heap": "768M",
+  "invocation": 2,
+  "n_iters": 6,
+  "wall_s": 469.9,
+  "timestamp": 1786962128,
+  "log": "logs/h2.768M.None.2.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 41620,
+   "iters_ms": [
+    50820,
+    50804,
+    41729,
+    41724,
+    41662,
+    41658,
+    41621,
+    41618,
+    41422,
+    41418,
+    41620,
+    41616
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "h2",
+  "config": "None",
+  "heap": "768M",
+  "invocation": 2,
+  "n_iters": 6,
+  "wall_s": 464.9,
+  "timestamp": 1786962598,
+  "log": "logs/h2.768M.None.2.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 40633,
+   "iters_ms": [
+    50154,
+    50138,
+    40793,
+    40789,
+    41062,
+    41058,
+    40420,
+    40416,
+    40807,
+    40804,
+    40633,
+    40630
+   ],
+   "pause_avg_us": 523355,
+   "pause_max_us": 755670,
+   "gcs": 733,
+   "pause_hist": [
+    [
+     65536,
+     131072,
+     2
+    ],
+    [
+     131072,
+     262144,
+     6
+    ],
+    [
+     262144,
+     524288,
+     419
+    ],
+    [
+     524288,
+     1048576,
+     306
+    ]
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "h2",
+  "config": "Uffd",
+  "heap": "768M",
+  "invocation": 2,
+  "n_iters": 6,
+  "wall_s": 523.0,
+  "timestamp": 1786963063,
+  "log": "logs/h2.768M.Uffd.2.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 46237,
+   "iters_ms": [
+    55515,
+    55499,
+    46332,
+    46328,
+    46549,
+    46545,
+    46449,
+    46431,
+    46572,
+    46569,
+    46237,
+    46228
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "h2",
+  "config": "Uffd",
+  "heap": "768M",
+  "invocation": 2,
+  "n_iters": 6,
+  "wall_s": 535.5,
+  "timestamp": 1786963586,
+  "log": "logs/h2.768M.Uffd.2.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 47453,
+   "iters_ms": [
+    56259,
+    56242,
+    47685,
+    47667,
+    47436,
+    47418,
+    47482,
+    47478,
+    47820,
+    47804,
+    47453,
+    47436
+   ],
+   "pause_avg_us": 385511,
+   "pause_max_us": 828232,
+   "gcs": 732,
+   "pause_hist": [
+    [
+     32768,
+     65536,
+     2
+    ],
+    [
+     65536,
+     131072,
+     57
+    ],
+    [
+     131072,
+     262144,
+     303
+    ],
+    [
+     262144,
+     524288,
+     94
+    ],
+    [
+     524288,
+     1048576,
+     276
+    ]
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "h2",
+  "config": "R1",
+  "heap": "768M",
+  "invocation": 2,
+  "n_iters": 6,
+  "wall_s": 404.9,
+  "timestamp": 1786964121,
+  "log": "logs/h2.768M.R1.2.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 34759,
+   "iters_ms": [
+    42829,
+    42813,
+    34405,
+    34400,
+    34471,
+    34467,
+    34322,
+    34318,
+    34620,
+    34616,
+    34759,
+    34749
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "h2",
+  "config": "R1",
+  "heap": "768M",
+  "invocation": 2,
+  "n_iters": 6,
+  "wall_s": 410.4,
+  "timestamp": 1786964526,
+  "log": "logs/h2.768M.R1.2.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 34349,
+   "iters_ms": [
+    42613,
+    42596,
+    34368,
+    34364,
+    34961,
+    34957,
+    34611,
+    34607,
+    34484,
+    34480,
+    34349,
+    34345
+   ],
+   "pause_avg_us": 304298,
+   "pause_max_us": 589123,
+   "gcs": 738,
+   "pause_hist": [
+    [
+     32768,
+     65536,
+     1
+    ],
+    [
+     65536,
+     131072,
+     28
+    ],
+    [
+     131072,
+     262144,
+     316
+    ],
+    [
+     262144,
+     524288,
+     339
+    ],
+    [
+     524288,
+     1048576,
+     54
+    ]
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "h2",
+  "config": "None",
+  "heap": "768M",
+  "invocation": 3,
+  "n_iters": 6,
+  "wall_s": 470.4,
+  "timestamp": 1786964937,
+  "log": "logs/h2.768M.None.3.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 41423,
+   "iters_ms": [
+    51210,
+    51195,
+    41596,
+    41592,
+    41629,
+    41625,
+    41960,
+    41956,
+    41656,
+    41653,
+    41423,
+    41420
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "h2",
+  "config": "None",
+  "heap": "768M",
+  "invocation": 3,
+  "n_iters": 6,
+  "wall_s": 470.3,
+  "timestamp": 1786965407,
+  "log": "logs/h2.768M.None.3.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 41209,
+   "iters_ms": [
+    50792,
+    50776,
+    41593,
+    41587,
+    41267,
+    41263,
+    41251,
+    41247,
+    41165,
+    41162,
+    41209,
+    41206
+   ],
+   "pause_avg_us": 534438,
+   "pause_max_us": 767897,
+   "gcs": 729,
+   "pause_hist": [
+    [
+     65536,
+     131072,
+     2
+    ],
+    [
+     131072,
+     262144,
+     5
+    ],
+    [
+     262144,
+     524288,
+     382
+    ],
+    [
+     524288,
+     1048576,
+     340
+    ]
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "h2",
+  "config": "Uffd",
+  "heap": "768M",
+  "invocation": 3,
+  "n_iters": 6,
+  "wall_s": 531.7,
+  "timestamp": 1786965877,
+  "log": "logs/h2.768M.Uffd.3.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 47112,
+   "iters_ms": [
+    56526,
+    56509,
+    47105,
+    47100,
+    47099,
+    47095,
+    46976,
+    46973,
+    47115,
+    47111,
+    47112,
+    47108
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "h2",
+  "config": "Uffd",
+  "heap": "768M",
+  "invocation": 3,
+  "n_iters": 6,
+  "wall_s": 536.5,
+  "timestamp": 1786966409,
+  "log": "logs/h2.768M.Uffd.3.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 47367,
+   "iters_ms": [
+    56349,
+    56333,
+    47153,
+    47149,
+    47281,
+    47277,
+    47200,
+    47196,
+    47399,
+    47396,
+    47367,
+    47363
+   ],
+   "pause_avg_us": 386253,
+   "pause_max_us": 841358,
+   "gcs": 732,
+   "pause_hist": [
+    [
+     32768,
+     65536,
+     2
+    ],
+    [
+     65536,
+     131072,
+     50
+    ],
+    [
+     131072,
+     262144,
+     312
+    ],
+    [
+     262144,
+     524288,
+     91
+    ],
+    [
+     524288,
+     1048576,
+     277
+    ]
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "h2",
+  "config": "R1",
+  "heap": "768M",
+  "invocation": 3,
+  "n_iters": 6,
+  "wall_s": 405.6,
+  "timestamp": 1786966946,
+  "log": "logs/h2.768M.R1.3.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 34629,
+   "iters_ms": [
+    42436,
+    42419,
+    34924,
+    34908,
+    34735,
+    34731,
+    34688,
+    34685,
+    34916,
+    34909,
+    34629,
+    34626
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "h2",
+  "config": "R1",
+  "heap": "768M",
+  "invocation": 3,
+  "n_iters": 6,
+  "wall_s": 406.4,
+  "timestamp": 1786967351,
+  "log": "logs/h2.768M.R1.3.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 34310,
+   "iters_ms": [
+    42083,
+    42067,
+    34481,
+    34458,
+    34474,
+    34460,
+    34244,
+    34240,
+    34167,
+    34164,
+    34310,
+    34307
+   ],
+   "pause_avg_us": 302655,
+   "pause_max_us": 591338,
+   "gcs": 733,
+   "pause_hist": [
+    [
+     32768,
+     65536,
+     1
+    ],
+    [
+     65536,
+     131072,
+     27
+    ],
+    [
+     131072,
+     262144,
+     319
+    ],
+    [
+     262144,
+     524288,
+     333
+    ],
+    [
+     524288,
+     1048576,
+     53
+    ]
+   ]
+  }
+ }
+]

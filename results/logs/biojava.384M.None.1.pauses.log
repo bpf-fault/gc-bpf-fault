@@ -1,0 +1,37 @@
+Attaching 2 probes...
+Version: biojava 7.0.2 (use -p to print nominal benchmark stats)
+===== DaCapo 23.11-MR2-chopin biojava starting warmup 1 =====
+Processing sequences: 5%Processing sequences: 10%Processing sequences: 15%Processing sequences: 20%Processing sequences: 25%Processing sequences: 30%Processing sequences: 35%Processing sequences: 40%Processing sequences: 45%Processing sequences: 50%Processing sequences: 55%Processing sequences: 60%Processing sequences: 65%Processing sequences: 70%Processing sequences: 75%Processing sequences: 80%Processing sequences: 85%Processing sequences: 90%Processing sequences: 95%Processing sequences: 100%
+===== DaCapo 23.11-MR2-chopin biojava completed warmup 1 in 66538 msec =====
+===== DaCapo 23.11-MR2-chopin biojava starting warmup 2 =====
+Processing sequences: 5%Processing sequences: 10%Processing sequences: 15%Processing sequences: 20%Processing sequences: 25%Processing sequences: 30%Processing sequences: 35%Processing sequences: 40%Processing sequences: 45%Processing sequences: 50%Processing sequences: 55%Processing sequences: 60%Processing sequences: 65%Processing sequences: 70%Processing sequences: 75%Processing sequences: 80%Processing sequences: 85%Processing sequences: 90%Processing sequences: 95%Processing sequences: 100%
+===== DaCapo 23.11-MR2-chopin biojava completed warmup 2 in 37391 msec =====
+===== DaCapo 23.11-MR2-chopin biojava starting warmup 3 =====
+Processing sequences: 5%Processing sequences: 10%Processing sequences: 15%Processing sequences: 20%Processing sequences: 25%Processing sequences: 30%Processing sequences: 35%Processing sequences: 40%Processing sequences: 45%Processing sequences: 50%Processing sequences: 55%Processing sequences: 60%Processing sequences: 65%Processing sequences: 70%Processing sequences: 75%Processing sequences: 80%Processing sequences: 85%Processing sequences: 90%Processing sequences: 95%Processing sequences: 100%
+===== DaCapo 23.11-MR2-chopin biojava completed warmup 3 in 37155 msec =====
+===== DaCapo 23.11-MR2-chopin biojava starting warmup 4 =====
+Processing sequences: 5%Processing sequences: 10%Processing sequences: 15%Processing sequences: 20%Processing sequences: 25%Processing sequences: 30%Processing sequences: 35%Processing sequences: 40%Processing sequences: 45%Processing sequences: 50%Processing sequences: 55%Processing sequences: 60%Processing sequences: 65%Processing sequences: 70%Processing sequences: 75%Processing sequences: 80%Processing sequences: 85%Processing sequences: 90%Processing sequences: 95%Processing sequences: 100%
+===== DaCapo 23.11-MR2-chopin biojava completed warmup 4 in 37194 msec =====
+===== DaCapo 23.11-MR2-chopin biojava starting warmup 5 =====
+Processing sequences: 5%Processing sequences: 10%Processing sequences: 15%Processing sequences: 20%Processing sequences: 25%Processing sequences: 30%Processing sequences: 35%Processing sequences: 40%Processing sequences: 45%Processing sequences: 50%Processing sequences: 55%Processing sequences: 60%Processing sequences: 65%Processing sequences: 70%Processing sequences: 75%Processing sequences: 80%Processing sequences: 85%Processing sequences: 90%Processing sequences: 95%Processing sequences: 100%
+===== DaCapo 23.11-MR2-chopin biojava completed warmup 5 in 37327 msec =====
+===== DaCapo 23.11-MR2-chopin biojava starting =====
+Processing sequences: 5%Processing sequences: 10%Processing sequences: 15%Processing sequences: 20%Processing sequences: 25%Processing sequences: 30%Processing sequences: 35%Processing sequences: 40%Processing sequences: 45%Processing sequences: 50%Processing sequences: 55%Processing sequences: 60%Processing sequences: 65%Processing sequences: 70%Processing sequences: 75%Processing sequences: 80%Processing sequences: 85%Processing sequences: 90%Processing sequences: 95%Processing sequences: 100%
+===== DaCapo 23.11-MR2-chopin biojava PASSED in 37275 msec =====
+
+
+@avg_us: 876694
+
+@gcs: 210
+@max_us: 1898234
+@pause_us: 
+[8K, 16K)              6 |@                                                   |
+[16K, 32K)             0 |                                                    |
+[32K, 64K)             0 |                                                    |
+[64K, 128K)            0 |                                                    |
+[128K, 256K)           0 |                                                    |
+[256K, 512K)          11 |@@@                                                 |
+[512K, 1M)           160 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+[1M, 2M)              33 |@@@@@@@@@@                                          |
+
+

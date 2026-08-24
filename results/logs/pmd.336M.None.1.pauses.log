@@ -1,0 +1,35 @@
+Attaching 2 probes...
+Using scaled threading model. 16 processors detected, 16 threads used to drive the workload, in a possible range of [1,1024]
+Version: pmd 6.55.0 (use -p to print nominal benchmark stats)
+===== DaCapo 23.11-MR2-chopin pmd starting warmup 1 =====
+Checked: 0%Checked: 5%Checked: 10%Checked: 15%Checked: 20%Checked: 25%Checked: 30%Checked: 35%Checked: 40%Checked: 45%Checked: 50%Checked: 55%Checked: 60%Checked: 65%Checked: 70%Checked: 75%Checked: 80%Checked: 85%Checked: 90%Checked: 95%Checked: 100%PMD checked 601 files.
+===== DaCapo 23.11-MR2-chopin pmd completed warmup 1 in 5950 msec =====
+===== DaCapo 23.11-MR2-chopin pmd starting warmup 2 =====
+Checked: 0%Checked: 5%Checked: 10%Checked: 15%Checked: 20%Checked: 25%Checked: 30%Checked: 35%Checked: 40%Checked: 45%Checked: 50%Checked: 55%Checked: 60%Checked: 65%Checked: 70%Checked: 75%Checked: 80%Checked: 85%Checked: 90%Checked: 95%Checked: 100%PMD checked 601 files.
+===== DaCapo 23.11-MR2-chopin pmd completed warmup 2 in 3441 msec =====
+===== DaCapo 23.11-MR2-chopin pmd starting warmup 3 =====
+Checked: 0%Checked: 5%Checked: 10%Checked: 15%Checked: 20%Checked: 25%Checked: 30%Checked: 35%Checked: 40%Checked: 45%Checked: 50%Checked: 55%Checked: 60%Checked: 65%Checked: 70%Checked: 75%Checked: 80%Checked: 85%Checked: 90%Checked: 95%Checked: 100%PMD checked 601 files.
+===== DaCapo 23.11-MR2-chopin pmd completed warmup 3 in 3085 msec =====
+===== DaCapo 23.11-MR2-chopin pmd starting warmup 4 =====
+Checked: 0%Checked: 5%Checked: 10%Checked: 15%Checked: 20%Checked: 25%Checked: 30%Checked: 35%Checked: 40%Checked: 45%Checked: 50%Checked: 55%Checked: 60%Checked: 65%Checked: 70%Checked: 75%Checked: 80%Checked: 85%Checked: 90%Checked: 95%Checked: 100%PMD checked 601 files.
+===== DaCapo 23.11-MR2-chopin pmd completed warmup 4 in 3126 msec =====
+===== DaCapo 23.11-MR2-chopin pmd starting warmup 5 =====
+Checked: 0%Checked: 5%Checked: 10%Checked: 15%Checked: 20%Checked: 25%Checked: 30%Checked: 35%Checked: 40%Checked: 45%Checked: 50%Checked: 55%Checked: 60%Checked: 65%Checked: 70%Checked: 75%Checked: 80%Checked: 85%Checked: 90%Checked: 95%Checked: 100%PMD checked 601 files.
+===== DaCapo 23.11-MR2-chopin pmd completed warmup 5 in 3139 msec =====
+===== DaCapo 23.11-MR2-chopin pmd starting =====
+Checked: 0%Checked: 5%Checked: 10%Checked: 15%Checked: 20%Checked: 25%Checked: 30%Checked: 35%Checked: 40%Checked: 45%Checked: 50%Checked: 55%Checked: 60%Checked: 65%Checked: 70%Checked: 75%Checked: 80%Checked: 85%Checked: 90%Checked: 95%Checked: 100%PMD checked 601 files.
+===== DaCapo 23.11-MR2-chopin pmd PASSED in 3092 msec =====
+
+
+@avg_us: 80489
+
+@gcs: 127
+@max_us: 122799
+@pause_us: 
+[4K, 8K)               1 |                                                    |
+[8K, 16K)              1 |                                                    |
+[16K, 32K)            12 |@@@@@@                                              |
+[32K, 64K)            11 |@@@@@                                               |
+[64K, 128K)          102 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+
+

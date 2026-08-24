@@ -1,0 +1,734 @@
+[
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "pmd",
+  "config": "None",
+  "heap": "336M",
+  "invocation": 1,
+  "n_iters": 6,
+  "wall_s": 23.5,
+  "timestamp": 1786967758,
+  "log": "logs/pmd.336M.None.1.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 3075,
+   "iters_ms": [
+    6124,
+    3607,
+    3189,
+    3070,
+    3135,
+    3075
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "pmd",
+  "config": "None",
+  "heap": "336M",
+  "invocation": 1,
+  "n_iters": 6,
+  "wall_s": 26.9,
+  "timestamp": 1786967781,
+  "log": "logs/pmd.336M.None.1.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 3092,
+   "iters_ms": [
+    5950,
+    3441,
+    3085,
+    3126,
+    3139,
+    3092
+   ],
+   "pause_avg_us": 80489,
+   "pause_max_us": 122799,
+   "gcs": 127,
+   "pause_hist": [
+    [
+     4096,
+     8192,
+     1
+    ],
+    [
+     8192,
+     16384,
+     1
+    ],
+    [
+     16384,
+     32768,
+     12
+    ],
+    [
+     32768,
+     65536,
+     11
+    ],
+    [
+     65536,
+     131072,
+     102
+    ]
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "pmd",
+  "config": "Uffd",
+  "heap": "336M",
+  "invocation": 1,
+  "n_iters": 6,
+  "wall_s": 27.3,
+  "timestamp": 1786967808,
+  "log": "logs/pmd.336M.Uffd.1.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 3659,
+   "iters_ms": [
+    6481,
+    4272,
+    3877,
+    3840,
+    3822,
+    3659
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "pmd",
+  "config": "Uffd",
+  "heap": "336M",
+  "invocation": 1,
+  "n_iters": 6,
+  "wall_s": 31.3,
+  "timestamp": 1786967835,
+  "log": "logs/pmd.336M.Uffd.1.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 3816,
+   "iters_ms": [
+    6586,
+    4253,
+    3901,
+    3848,
+    3822,
+    3816
+   ],
+   "pause_avg_us": 68985,
+   "pause_max_us": 145307,
+   "gcs": 127,
+   "pause_hist": [
+    [
+     2048,
+     4096,
+     1
+    ],
+    [
+     4096,
+     8192,
+     0
+    ],
+    [
+     8192,
+     16384,
+     4
+    ],
+    [
+     16384,
+     32768,
+     13
+    ],
+    [
+     32768,
+     65536,
+     54
+    ],
+    [
+     65536,
+     131072,
+     48
+    ],
+    [
+     131072,
+     262144,
+     7
+    ]
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "pmd",
+  "config": "R1",
+  "heap": "336M",
+  "invocation": 1,
+  "n_iters": 6,
+  "wall_s": 26.4,
+  "timestamp": 1786967867,
+  "log": "logs/pmd.336M.R1.1.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 3576,
+   "iters_ms": [
+    6541,
+    4036,
+    3716,
+    3633,
+    3581,
+    3576
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "pmd",
+  "config": "R1",
+  "heap": "336M",
+  "invocation": 1,
+  "n_iters": 6,
+  "wall_s": 30.3,
+  "timestamp": 1786967893,
+  "log": "logs/pmd.336M.R1.1.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 3596,
+   "iters_ms": [
+    6708,
+    3960,
+    3706,
+    3593,
+    3554,
+    3596
+   ],
+   "pause_avg_us": 67505,
+   "pause_max_us": 131295,
+   "gcs": 127,
+   "pause_hist": [
+    [
+     4096,
+     8192,
+     1
+    ],
+    [
+     8192,
+     16384,
+     1
+    ],
+    [
+     16384,
+     32768,
+     7
+    ],
+    [
+     32768,
+     65536,
+     59
+    ],
+    [
+     65536,
+     131072,
+     58
+    ],
+    [
+     131072,
+     262144,
+     1
+    ]
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "pmd",
+  "config": "None",
+  "heap": "336M",
+  "invocation": 2,
+  "n_iters": 6,
+  "wall_s": 23.0,
+  "timestamp": 1786967923,
+  "log": "logs/pmd.336M.None.2.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 3041,
+   "iters_ms": [
+    5950,
+    3563,
+    3074,
+    3055,
+    3058,
+    3041
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "pmd",
+  "config": "None",
+  "heap": "336M",
+  "invocation": 2,
+  "n_iters": 6,
+  "wall_s": 26.8,
+  "timestamp": 1786967946,
+  "log": "logs/pmd.336M.None.2.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 2962,
+   "iters_ms": [
+    5906,
+    3559,
+    3070,
+    3098,
+    3095,
+    2962
+   ],
+   "pause_avg_us": 80222,
+   "pause_max_us": 128342,
+   "gcs": 126,
+   "pause_hist": [
+    [
+     8192,
+     16384,
+     2
+    ],
+    [
+     16384,
+     32768,
+     12
+    ],
+    [
+     32768,
+     65536,
+     12
+    ],
+    [
+     65536,
+     131072,
+     100
+    ]
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "pmd",
+  "config": "Uffd",
+  "heap": "336M",
+  "invocation": 2,
+  "n_iters": 6,
+  "wall_s": 27.3,
+  "timestamp": 1786967973,
+  "log": "logs/pmd.336M.Uffd.2.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 3729,
+   "iters_ms": [
+    6560,
+    4203,
+    3906,
+    3811,
+    3792,
+    3729
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "pmd",
+  "config": "Uffd",
+  "heap": "336M",
+  "invocation": 2,
+  "n_iters": 6,
+  "wall_s": 31.4,
+  "timestamp": 1786968000,
+  "log": "logs/pmd.336M.Uffd.2.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 3889,
+   "iters_ms": [
+    6697,
+    4218,
+    3924,
+    3820,
+    3811,
+    3889
+   ],
+   "pause_avg_us": 69000,
+   "pause_max_us": 151672,
+   "gcs": 127,
+   "pause_hist": [
+    [
+     2048,
+     4096,
+     1
+    ],
+    [
+     4096,
+     8192,
+     0
+    ],
+    [
+     8192,
+     16384,
+     2
+    ],
+    [
+     16384,
+     32768,
+     13
+    ],
+    [
+     32768,
+     65536,
+     55
+    ],
+    [
+     65536,
+     131072,
+     43
+    ],
+    [
+     131072,
+     262144,
+     13
+    ]
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "pmd",
+  "config": "R1",
+  "heap": "336M",
+  "invocation": 2,
+  "n_iters": 6,
+  "wall_s": 26.4,
+  "timestamp": 1786968032,
+  "log": "logs/pmd.336M.R1.2.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 3592,
+   "iters_ms": [
+    6619,
+    4021,
+    3668,
+    3564,
+    3577,
+    3592
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "pmd",
+  "config": "R1",
+  "heap": "336M",
+  "invocation": 2,
+  "n_iters": 6,
+  "wall_s": 30.0,
+  "timestamp": 1786968058,
+  "log": "logs/pmd.336M.R1.2.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 3569,
+   "iters_ms": [
+    6396,
+    4071,
+    3689,
+    3568,
+    3569,
+    3569
+   ],
+   "pause_avg_us": 66728,
+   "pause_max_us": 128573,
+   "gcs": 126,
+   "pause_hist": [
+    [
+     4096,
+     8192,
+     1
+    ],
+    [
+     8192,
+     16384,
+     0
+    ],
+    [
+     16384,
+     32768,
+     10
+    ],
+    [
+     32768,
+     65536,
+     59
+    ],
+    [
+     65536,
+     131072,
+     56
+    ]
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "pmd",
+  "config": "None",
+  "heap": "336M",
+  "invocation": 3,
+  "n_iters": 6,
+  "wall_s": 23.2,
+  "timestamp": 1786968088,
+  "log": "logs/pmd.336M.None.3.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 3100,
+   "iters_ms": [
+    5962,
+    3574,
+    3230,
+    2988,
+    3112,
+    3100
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "pmd",
+  "config": "None",
+  "heap": "336M",
+  "invocation": 3,
+  "n_iters": 6,
+  "wall_s": 27.2,
+  "timestamp": 1786968112,
+  "log": "logs/pmd.336M.None.3.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 3109,
+   "iters_ms": [
+    6051,
+    3528,
+    3178,
+    3171,
+    3116,
+    3109
+   ],
+   "pause_avg_us": 83125,
+   "pause_max_us": 127330,
+   "gcs": 127,
+   "pause_hist": [
+    [
+     4096,
+     8192,
+     1
+    ],
+    [
+     8192,
+     16384,
+     1
+    ],
+    [
+     16384,
+     32768,
+     10
+    ],
+    [
+     32768,
+     65536,
+     9
+    ],
+    [
+     65536,
+     131072,
+     106
+    ]
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "pmd",
+  "config": "Uffd",
+  "heap": "336M",
+  "invocation": 3,
+  "n_iters": 6,
+  "wall_s": 27.3,
+  "timestamp": 1786968139,
+  "log": "logs/pmd.336M.Uffd.3.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 3777,
+   "iters_ms": [
+    6581,
+    4021,
+    3927,
+    3854,
+    3780,
+    3777
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "pmd",
+  "config": "Uffd",
+  "heap": "336M",
+  "invocation": 3,
+  "n_iters": 6,
+  "wall_s": 31.0,
+  "timestamp": 1786968166,
+  "log": "logs/pmd.336M.Uffd.3.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 3794,
+   "iters_ms": [
+    6628,
+    4225,
+    3852,
+    3779,
+    3757,
+    3794
+   ],
+   "pause_avg_us": 68330,
+   "pause_max_us": 145608,
+   "gcs": 127,
+   "pause_hist": [
+    [
+     2048,
+     4096,
+     1
+    ],
+    [
+     4096,
+     8192,
+     0
+    ],
+    [
+     8192,
+     16384,
+     4
+    ],
+    [
+     16384,
+     32768,
+     13
+    ],
+    [
+     32768,
+     65536,
+     53
+    ],
+    [
+     65536,
+     131072,
+     47
+    ],
+    [
+     131072,
+     262144,
+     9
+    ]
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "pmd",
+  "config": "R1",
+  "heap": "336M",
+  "invocation": 3,
+  "n_iters": 6,
+  "wall_s": 26.6,
+  "timestamp": 1786968197,
+  "log": "logs/pmd.336M.R1.3.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 3575,
+   "iters_ms": [
+    6731,
+    3990,
+    3733,
+    3611,
+    3552,
+    3575
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "pmd",
+  "config": "R1",
+  "heap": "336M",
+  "invocation": 3,
+  "n_iters": 6,
+  "wall_s": 30.1,
+  "timestamp": 1786968224,
+  "log": "logs/pmd.336M.R1.3.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 3583,
+   "iters_ms": [
+    6552,
+    3971,
+    3572,
+    3592,
+    3568,
+    3583
+   ],
+   "pause_avg_us": 66603,
+   "pause_max_us": 123497,
+   "gcs": 127,
+   "pause_hist": [
+    [
+     4096,
+     8192,
+     1
+    ],
+    [
+     8192,
+     16384,
+     2
+    ],
+    [
+     16384,
+     32768,
+     9
+    ],
+    [
+     32768,
+     65536,
+     57
+    ],
+    [
+     65536,
+     131072,
+     58
+    ]
+   ]
+  }
+ }
+]

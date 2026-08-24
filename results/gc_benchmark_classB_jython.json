@@ -1,0 +1,128 @@
+[
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "jython",
+  "config": "None",
+  "heap": "672M",
+  "invocation": 1,
+  "n_iters": 6,
+  "wall_s": 53.7,
+  "timestamp": 1786836260,
+  "log": "logs/jython.672M.None.1.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 7161,
+   "iters_ms": [
+    10631,
+    8789,
+    8619,
+    8194,
+    7803,
+    7161
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "jython",
+  "config": "None",
+  "heap": "672M",
+  "invocation": 1,
+  "n_iters": 6,
+  "wall_s": 57.2,
+  "timestamp": 1786836314,
+  "log": "logs/jython.672M.None.1.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 7116,
+   "iters_ms": [
+    10519,
+    8717,
+    8574,
+    8138,
+    7732,
+    7116
+   ],
+   "pause_avg_us": 26483,
+   "pause_max_us": 30041,
+   "gcs": 38,
+   "pause_hist": [
+    [
+     16384,
+     32768,
+     38
+    ]
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "jython",
+  "config": "R1",
+  "heap": "672M",
+  "invocation": 1,
+  "n_iters": 6,
+  "wall_s": 63.6,
+  "timestamp": 1786836371,
+  "log": "logs/jython.672M.R1.1.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 8809,
+   "iters_ms": [
+    12171,
+    10403,
+    10267,
+    9808,
+    9418,
+    8809
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "jython",
+  "config": "R1",
+  "heap": "672M",
+  "invocation": 1,
+  "n_iters": 6,
+  "wall_s": 68.0,
+  "timestamp": 1786836435,
+  "log": "logs/jython.672M.R1.1.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 8897,
+   "iters_ms": [
+    12286,
+    10492,
+    10368,
+    9930,
+    9547,
+    8897
+   ],
+   "pause_avg_us": 33480,
+   "pause_max_us": 69857,
+   "gcs": 38,
+   "pause_hist": [
+    [
+     16384,
+     32768,
+     18
+    ],
+    [
+     32768,
+     65536,
+     19
+    ],
+    [
+     65536,
+     131072,
+     1
+    ]
+   ]
+  }
+ }
+]

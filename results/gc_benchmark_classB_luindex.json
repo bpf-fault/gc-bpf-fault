@@ -1,0 +1,62 @@
+[
+ {
+  "class": "B",
+  "kind": "throughput",
+  "bench": "luindex",
+  "config": "R1",
+  "heap": "512M",
+  "invocation": 1,
+  "n_iters": 2,
+  "wall_s": 26.7,
+  "timestamp": 1786828003,
+  "log": "logs/luindex.512M.R1.1.throughput.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 5176,
+   "iters_ms": [
+    6397,
+    5176
+   ]
+  }
+ },
+ {
+  "class": "B",
+  "kind": "pauses",
+  "bench": "luindex",
+  "config": "R1",
+  "heap": "512M",
+  "invocation": 1,
+  "n_iters": 2,
+  "wall_s": 30.5,
+  "timestamp": 1786828029,
+  "log": "logs/luindex.512M.R1.1.pauses.log",
+  "results": {
+   "passed": true,
+   "last_iter_ms": 5219,
+   "iters_ms": [
+    6348,
+    5219
+   ],
+   "pause_avg_us": 11181,
+   "pause_max_us": 18022,
+   "gcs": 10,
+   "pause_hist": [
+    [
+     4096,
+     8192,
+     1
+    ],
+    [
+     8192,
+     16384,
+     8
+    ],
+    [
+     16384,
+     32768,
+     1
+    ]
+   ]
+  }
+ }
+]

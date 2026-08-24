@@ -1,0 +1,110 @@
+Attaching 2 probes...
+Version: jython v2.7.3 (use -p to print nominal benchmark stats)
+===== DaCapo 23.11-MR2-chopin jython starting warmup 1 =====
+-------------------------------------------------------------------------------
+PYBENCH 2.0
+-------------------------------------------------------------------------------
+* using Jython
+* system check interval set to maximum: 2147483647
+* using timer: time.time
+
+Calibrating tests. Please wait... done.
+
+Running 2 round(s) of the suite at warp factor 20:
+
+* Round 1 done.
+* Round 2 done.
+
+===== DaCapo 23.11-MR2-chopin jython completed warmup 1 in 12286 msec =====
+===== DaCapo 23.11-MR2-chopin jython starting warmup 2 =====
+-------------------------------------------------------------------------------
+PYBENCH 2.0
+-------------------------------------------------------------------------------
+* using Jython
+* system check interval set to maximum: 2147483647
+* using timer: time.time
+
+Calibrating tests. Please wait... done.
+
+Running 2 round(s) of the suite at warp factor 20:
+
+* Round 1 done.
+* Round 2 done.
+
+===== DaCapo 23.11-MR2-chopin jython completed warmup 2 in 10492 msec =====
+===== DaCapo 23.11-MR2-chopin jython starting warmup 3 =====
+-------------------------------------------------------------------------------
+PYBENCH 2.0
+-------------------------------------------------------------------------------
+* using Jython
+* system check interval set to maximum: 2147483647
+* using timer: time.time
+
+Calibrating tests. Please wait... done.
+
+Running 2 round(s) of the suite at warp factor 20:
+
+* Round 1 done.
+* Round 2 done.
+
+===== DaCapo 23.11-MR2-chopin jython completed warmup 3 in 10368 msec =====
+===== DaCapo 23.11-MR2-chopin jython starting warmup 4 =====
+-------------------------------------------------------------------------------
+PYBENCH 2.0
+-------------------------------------------------------------------------------
+* using Jython
+* system check interval set to maximum: 2147483647
+* using timer: time.time
+
+Calibrating tests. Please wait... done.
+
+Running 2 round(s) of the suite at warp factor 20:
+
+* Round 1 done.
+* Round 2 done.
+
+===== DaCapo 23.11-MR2-chopin jython completed warmup 4 in 9930 msec =====
+===== DaCapo 23.11-MR2-chopin jython starting warmup 5 =====
+-------------------------------------------------------------------------------
+PYBENCH 2.0
+-------------------------------------------------------------------------------
+* using Jython
+* system check interval set to maximum: 2147483647
+* using timer: time.time
+
+Calibrating tests. Please wait... done.
+
+Running 2 round(s) of the suite at warp factor 20:
+
+* Round 1 done.
+* Round 2 done.
+
+===== DaCapo 23.11-MR2-chopin jython completed warmup 5 in 9547 msec =====
+===== DaCapo 23.11-MR2-chopin jython starting =====
+-------------------------------------------------------------------------------
+PYBENCH 2.0
+-------------------------------------------------------------------------------
+* using Jython
+* system check interval set to maximum: 2147483647
+* using timer: time.time
+
+Calibrating tests. Please wait... done.
+
+Running 2 round(s) of the suite at warp factor 20:
+
+* Round 1 done.
+* Round 2 done.
+
+===== DaCapo 23.11-MR2-chopin jython PASSED in 8897 msec =====
+
+
+@avg_us: 33480
+
+@gcs: 38
+@max_us: 69857
+@pause_us: 
+[16K, 32K)            18 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@   |
+[32K, 64K)            19 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+[64K, 128K)            1 |@@                                                  |
+
+
