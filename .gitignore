@@ -1,0 +1,10 @@
+# Build artifacts
+shim/build/
+shim/libgcbpf.so
+shim/loadcheck
+shim/*.bpf.o
+shim/*.skel.h
+shim/vmlinux.h
+
+# Benchmark output
+results/
