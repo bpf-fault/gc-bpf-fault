@@ -19,7 +19,7 @@ CC       ?= gcc
 BPF_CFLAGS  = -g -O2 -target bpf -D__TARGET_ARCH_x86
 VMLINUX_BTF ?= /sys/kernel/btf/vmlinux
 
-all: libgcbpf.so
+all: libgcbpf.so loadcheck
 
 $(LIBBPF_DIR)/libbpf.a: $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(LIBBPF_DIR)
 	$(MAKE) -C $(LIBBPF_SRC) BUILD_STATIC_ONLY=1 EXTRA_CFLAGS=-fPIC \
@@ -48,7 +48,13 @@ libgcbpf.so: gcbpf.c gc_wp_ops.skel.h gc_b0_ops.skel.h $(LIBBPF_DIR)/libbpf.a
 	$(CC) -g -O2 -Wall -fPIC -shared -I$(INCLUDE_DIR) -o $@ $< \
 		$(LIBBPF_DIR)/libbpf.a -lelf -lz -lzstd -lpthread
 
+# Standalone smoke test: verifies the Class B handler loads on the
+# running kernel (used by install_gc.sh).
+loadcheck: loadcheck.c gc_b0_ops.skel.h $(LIBBPF_DIR)/libbpf.a
+	$(CC) -g -O2 -Wall -I$(INCLUDE_DIR) -I$(CURDIR) -o $@ $< \
+		$(LIBBPF_DIR)/libbpf.a -lelf -lz -lzstd -lpthread
+
 clean:
-	rm -rf libgcbpf.so *.bpf.o *.skel.h vmlinux.h $(BUILD_DIR)
+	rm -rf libgcbpf.so loadcheck *.bpf.o *.skel.h vmlinux.h $(BUILD_DIR)
 
 .PHONY: all clean
