@@ -106,3 +106,274 @@ uint64_t gcbpf_fault_count(void)
 {
 	return skel ? skel->bss->wp_fault_count : 0;
 }
+
+/* ------------------------------------------------------------------ */
+/*  Class B: fault-driven Compressor compaction (gc_b0_ops)            */
+/* ------------------------------------------------------------------ */
+
+#ifndef MREMAP_DONTUNMAP
+#define MREMAP_DONTUNMAP 4
+#endif
+
+#include "gc_b0_ops.skel.h"
+
+static struct gc_b0_ops_bpf *b0_skel;
+static struct bpf_link *b0_link;
+static uint64_t *b0_state;
+static uint64_t b0_space_base;
+static uint64_t b0_arena_base;
+static uint64_t b0_span;
+static uint64_t b0_fwdtable; /* userspace base of the forward-table arena */
+static uint64_t b0_refbits;  /* userspace base of the reference bitmap (in arena) */
+static uint64_t b0_livebits; /* userspace base of the live-word bitmap (R1) */
+static uint64_t b0_first_src;/* userspace base of the per-page first-src index (R1) */
+
+/* Returns the arena base address, or 0 on failure. */
+uint64_t gcb0_init(uint64_t space_base, uint64_t span_len)
+{
+	size_t pages = span_len / 4096;
+	size_t map_bytes;
+	long page = sysconf(_SC_PAGESIZE);
+	void *arena;
+
+	libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
+
+	/* Over-reserve and align the arena to the heap's 2 MiB phase so
+	 * mremap can move whole PMD tables (move_normal_pmd) instead of
+	 * individual PTEs — this is the difference between a ~60 ms and a
+	 * sub-ms flip for a ~500 MB live heap. */
+	{
+		size_t pmd = 2UL << 20;
+		void *raw = mmap(NULL, span_len + pmd, PROT_NONE,
+				 MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE,
+				 -1, 0);
+		if (raw == MAP_FAILED) {
+			perror("gcb0: arena mmap");
+			return 0;
+		}
+		uint64_t aligned = (((uint64_t)raw + pmd - 1) & ~(pmd - 1)) |
+				   (space_base & (pmd - 1));
+		if (aligned < (uint64_t)raw)
+			aligned += pmd;
+		arena = (void *)aligned;
+	}
+
+	b0_skel = gc_b0_ops_bpf__open();
+	if (!b0_skel) {
+		fprintf(stderr, "gcb0: open skeleton failed\n");
+		return 0;
+	}
+	b0_skel->rodata->space_base = space_base;
+	b0_skel->rodata->arena_base = (unsigned long)arena;
+	b0_skel->rodata->span_len = span_len;
+	if (bpf_map__set_max_entries(b0_skel->maps.page_state, pages)) {
+		fprintf(stderr, "gcb0: set_max_entries failed\n");
+		return 0;
+	}
+	/* BPF arena layout, each region page-aligned, all read directly by the
+	 * prog: [ forward table (span/2) | reference bitmap (span/32) |
+	 * live-word bitmap (span/64, R1) | first_src index (span/128, R1) ]. */
+#define RUP(x) (((x) + page - 1) & ~(size_t)(page - 1))
+	size_t refbm_off    = RUP(span_len / 2);
+	size_t livebm_off   = refbm_off  + RUP(span_len / 32);
+	size_t firstsrc_off = livebm_off + RUP(span_len / 64);
+	size_t arena_bytes  = firstsrc_off + RUP(span_len / 128);
+#undef RUP
+	{
+		if (bpf_map__set_max_entries(b0_skel->maps.fwd_arena, arena_bytes / page)) {
+			fprintf(stderr, "gcb0: arena set_max_entries failed\n");
+			return 0;
+		}
+	}
+	if (gc_b0_ops_bpf__load(b0_skel)) {
+		fprintf(stderr, "gcb0: load failed (root? memlock?)\n");
+		return 0;
+	}
+	b0_skel->bss->refbm_off = refbm_off;
+	b0_skel->bss->livebm_off = livebm_off;
+	b0_skel->bss->firstsrc_off = firstsrc_off;
+	/* mmap the arena so the GC can write the forward table + reference
+	 * bitmap; the BPF prog reads them directly via arena pointers (no
+	 * probe_read).  Arenas must map at their user_vm_start (= map_extra)
+	 * with MAP_FIXED. */
+	{
+		uint64_t va = 1ull << 44; /* must match map_extra in the bpf prog */
+		void *a = mmap((void *)va, arena_bytes, PROT_READ | PROT_WRITE,
+			       MAP_SHARED | MAP_FIXED, bpf_map__fd(b0_skel->maps.fwd_arena), 0);
+		if (a == MAP_FAILED) {
+			perror("gcb0: mmap fwd_arena");
+			return 0;
+		}
+		b0_fwdtable = (uint64_t)a;
+		b0_refbits = (uint64_t)a + refbm_off;
+		b0_livebits = (uint64_t)a + livebm_off;
+		b0_first_src = (uint64_t)a + firstsrc_off;
+	}
+
+	map_bytes = (pages * sizeof(uint64_t) + page - 1) & ~(page - 1);
+	b0_state = mmap(NULL, map_bytes, PROT_READ | PROT_WRITE, MAP_SHARED,
+			bpf_map__fd(b0_skel->maps.page_state), 0);
+	if (b0_state == MAP_FAILED) {
+		perror("gcb0: mmap page_state");
+		b0_state = NULL;
+		return 0;
+	}
+
+	b0_space_base = space_base;
+	b0_arena_base = (uint64_t)arena;
+	b0_span = span_len;
+	return b0_arena_base;
+}
+
+/* Class B v2: set the JVM-dependent forward params (compressed-oops base/shift
+ * and the defer flag).  The arena layout (table at offset 0, refbits at
+ * refbm_off) is set in gcb0_init. */
+void gcb0_set_forward(uint64_t coops_base, unsigned int coops_shift,
+		      unsigned int defer, unsigned int inkernel)
+{
+	if (!b0_skel)
+		return;
+	b0_skel->bss->coops_base = coops_base;
+	b0_skel->bss->coops_shift = coops_shift;
+	b0_skel->bss->defer_fwd = defer;
+	b0_skel->bss->inkernel = inkernel;
+}
+
+uint64_t gcb0_refs_forwarded(void)
+{
+	return b0_skel ? b0_skel->bss->b0_refs_forwarded : 0;
+}
+
+uint64_t gcb0_compact_words(void) { return b0_skel ? b0_skel->bss->b0_compact_words : 0; }
+uint64_t gcb0_prefail(void) { return b0_skel ? b0_skel->bss->b0_prefail : 0; }
+uint64_t gcb0_prefail_live(void) { return b0_skel ? b0_skel->bss->b0_prefail_live : 0; }
+void gcb0_dbg_print(void) {
+	if (!b0_skel) return;
+	fprintf(stderr, "[r1dbg] off=0x%llx srcw0=%llu scratch0=0x%llx live0=0x%llx set=%llu\n",
+		(unsigned long long)b0_skel->bss->dbg_off,
+		(unsigned long long)b0_skel->bss->dbg_srcw0,
+		(unsigned long long)b0_skel->bss->dbg_scratch0,
+		(unsigned long long)b0_skel->bss->dbg_live0,
+		(unsigned long long)b0_skel->bss->dbg_set);
+	fprintf(stderr, "[r1cnt2] prefail_live=%llu\n",
+		(unsigned long long)b0_skel->bss->b0_prefail_live);
+	fprintf(stderr, "[r1cnt] staged_installs=%llu refs_fwd=%llu fault_count=%llu\n",
+		(unsigned long long)b0_skel->bss->b0_staged_installs,
+		(unsigned long long)b0_skel->bss->b0_refs_forwarded,
+		(unsigned long long)b0_skel->bss->b0_fault_count);
+	fprintf(stderr, "[r1page] off=0x%llx w=", (unsigned long long)b0_skel->bss->dbg_off);
+	for (int j = 0; j < 8; j++)
+		fprintf(stderr, "%llx ", (unsigned long long)b0_skel->bss->dbg_w[j]);
+	fprintf(stderr, "\n");
+}
+
+/* Userspace bases of the arena regions: the GC writes the forward table and
+ * reference bitmap here; the prog reads the same memory in-kernel. */
+uint64_t gcb0_fwdtable_base(void)
+{
+	return b0_fwdtable;
+}
+
+uint64_t gcb0_refbits_base(void)
+{
+	return b0_refbits;
+}
+
+uint64_t gcb0_livebits_base(void)
+{
+	return b0_livebits;
+}
+
+uint64_t gcb0_first_src_base(void)
+{
+	return b0_first_src;
+}
+
+/* Flip a region: move its physical pages into the arena slot and (if
+ * do_register) register the original range for missing-fault handling.
+ * Registration persists across cycles (mremap MREMAP_DONTUNMAP keeps the
+ * source VMA and its fault context), so callers skip it after the first
+ * cycle. */
+int gcb0_flip(uint64_t start, uint64_t len, int do_register)
+{
+	void *dst = (void *)(b0_arena_base + (start - b0_space_base));
+	void *r;
+
+	if (!b0_skel)
+		return -1;
+	r = mremap((void *)start, len, len,
+		   MREMAP_MAYMOVE | MREMAP_FIXED | MREMAP_DONTUNMAP, dst);
+	if (r == MAP_FAILED) {
+		perror("gcb0: mremap flip");
+		return -1;
+	}
+	if (!do_register)
+		return 0;
+	if (!b0_link) {
+		b0_link = bpf_map__attach_fault_ops(b0_skel->maps.gc_b0_ops,
+						    (void *)start, len, 0);
+		if (!b0_link) {
+			perror("gcb0: attach_fault_ops");
+			return -1;
+		}
+		return 0;
+	}
+	if (bpf_link__fault_register(bpf_link__fd(b0_link), start, len)) {
+		/* Already registered from a previous cycle is fine. */
+		if (errno != EBUSY && errno != EEXIST) {
+			perror("gcb0: fault_register");
+			return -1;
+		}
+	}
+	return 0;
+}
+
+int gcb0_unregister(uint64_t start, uint64_t len)
+{
+	if (!b0_link)
+		return 0;
+	return bpf_link__fault_unregister(bpf_link__fd(b0_link), start, len);
+}
+
+/* Register a range with the b0 link (first call attaches). */
+int gcb0_register(uint64_t start, uint64_t len)
+{
+	if (!b0_skel)
+		return -1;
+	if (!b0_link) {
+		b0_link = bpf_map__attach_fault_ops(b0_skel->maps.gc_b0_ops,
+						    (void *)start, len, 0);
+		return b0_link ? 0 : -1;
+	}
+	if (bpf_link__fault_register(bpf_link__fd(b0_link), start, len)) {
+		if (errno != EBUSY && errno != EEXIST) {
+			perror("gcb0: fault_register");
+			return -1;
+		}
+	}
+	return 0;
+}
+
+/* Unmap a region's arena slot once all its pages are installed, keeping the
+ * VMA count flat across GC cycles. */
+int gcb0_unmap_arena(uint64_t start, uint64_t len)
+{
+	void *slot = (void *)(b0_arena_base + (start - b0_space_base));
+
+	return munmap(slot, len);
+}
+
+uint64_t *gcb0_state(void)
+{
+	return b0_state;
+}
+
+uint64_t gcb0_fault_count(void)
+{
+	return b0_skel ? b0_skel->bss->b0_fault_count : 0;
+}
+
+uint64_t gcb0_staged_installs(void)
+{
+	return b0_skel ? b0_skel->bss->b0_staged_installs : 0;
+}

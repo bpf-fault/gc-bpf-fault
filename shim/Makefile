@@ -12,6 +12,8 @@ LIBBPF_DIR = $(BUILD_DIR)/libbpf
 INCLUDE_DIR = $(BUILD_DIR)/include
 
 CLANG    ?= clang
+# gc_b0_ops.bpf.c uses BPF arenas and -mcpu=v3; needs clang >= 20.
+CLANG_BPF ?= clang-20
 CC       ?= gcc
 
 BPF_CFLAGS  = -g -O2 -target bpf -D__TARGET_ARCH_x86
@@ -36,10 +38,13 @@ $(BPFTOOL):
 gc_wp_ops.bpf.o: gc_wp_ops.bpf.c vmlinux.h $(LIBBPF_DIR)/libbpf.a
 	$(CLANG) $(BPF_CFLAGS) -I$(INCLUDE_DIR) -I$(CURDIR) -c $< -o $@
 
+gc_b0_ops.bpf.o: gc_b0_ops.bpf.c vmlinux.h $(LIBBPF_DIR)/libbpf.a
+	$(CLANG_BPF) $(BPF_CFLAGS) -mcpu=v3 -I$(INCLUDE_DIR) -I$(CURDIR) -c $< -o $@
+
 %.skel.h: %.bpf.o $(BPFTOOL)
 	$(BPFTOOL) gen skeleton $< > $@
 
-libgcbpf.so: gcbpf.c gc_wp_ops.skel.h $(LIBBPF_DIR)/libbpf.a
+libgcbpf.so: gcbpf.c gc_wp_ops.skel.h gc_b0_ops.skel.h $(LIBBPF_DIR)/libbpf.a
 	$(CC) -g -O2 -Wall -fPIC -shared -I$(INCLUDE_DIR) -o $@ $< \
 		$(LIBBPF_DIR)/libbpf.a -lelf -lz -lzstd -lpthread
 
